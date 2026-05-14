@@ -1,0 +1,123 @@
+<audit-protector></audit-protector>
+<view class="container" style="padding-bottom: {{showCommentDrawer ? '65vh' : '40rpx'}};">
+  <view class="post-list">
+    <block wx:for="{{posts}}" wx:key="_id" wx:for-index="postIndex">
+      <view class="post-card">
+        
+        <view class="card-header">
+          <view class="user-info">
+            <image class="avatar" src="{{item.author.avatar}}" mode="aspectFill" catchtap="onAvatarClick" data-post="{{item}}"></image>
+            <view class="meta-info">
+              <view class="name-line">
+                <text class="nickname">{{item.author.nickName}}</text>
+                <view wx:if="{{item.author.Permission > 0}}" class="role-tag tag-{{item.author.Permission}}">
+                  {{item.author.Permission == 1 ? '教职工' : (item.author.Permission == 2 ? '管理员' : '开发者')}}
+                </view>
+              </view>
+              <text class="time">{{item.relativeTime}}</text>
+            </view>
+          </view>
+          <view class="more-btn" catchtap="onMoreOptions" data-id="{{item._id}}"><text>•••</text></view>
+        </view>
+
+        <view class="card-content" catchtap="goToDetail" data-id="{{item._id}}">
+          <view class="post-title" wx:if="{{item.title}}">{{item.title}}</view>
+          <view class="post-text">{{item.content}}</view>
+          
+          <view class="media-grid" wx:if="{{item.media.length > 0}}">
+            <block wx:for="{{item.media}}" wx:for-item="mediaItem" wx:key="fileID">
+              <image wx:if="{{mediaItem.fileType === 'image'}}" class="media-item" src="{{mediaItem.fileID}}" mode="aspectFill" lazy-load="true" catchtap="previewImage" data-url="{{mediaItem.fileID}}" data-urls="{{item.media}}"></image>
+              <video wx:if="{{mediaItem.fileType === 'video'}}" class="media-item" src="{{mediaItem.fileID}}" show-center-play-btn="{{true}}" controls="{{false}}"></video>
+            </block>
+          </view>
+        </view>
+
+        <view class="card-footer">
+          <view class="action-group">
+            <view class="action-item" catchtap="openComment" data-post="{{item}}" data-index="{{postIndex}}">
+              <image class="action-svg" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23aaaaaa%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M12 21a9 9 0 1 0-9-9c0 1.488.36 2.891 1 4.127L3 21l4.873-1c1.236.64 2.64 1 4.127 1Z%27/%3E%3C/svg%3E"></image>
+              <text class="action-num">{{item.commentCount || 0}}</text>
+            </view>
+            
+            <view class="action-item" catchtap="onLikePost" data-id="{{item._id}}" data-index="{{postIndex}}">
+              <image class="action-svg {{item.hasLiked ? 'heart-pop' : ''}}" src="{{item.hasLiked ? 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23ff4d4f%27 stroke=%27%23ff4d4f%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z%27/%3E%3C/svg%3E' : 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23aaaaaa%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z%27/%3E%3C/svg%3E'}}"/>
+              <text class="action-num {{item.hasLiked ? 'red-num' : ''}}">{{item.likeCount || 0}}</text>
+            </view>
+
+            <view class="action-item" catchtap="onFavoritePost" data-id="{{item._id}}" data-index="{{postIndex}}">
+              <image class="action-svg {{item.hasFavorited ? 'star-pop' : ''}}" src="{{item.hasFavorited ? 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23f5a623%27 stroke=%27%23f5a623%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.165.75c.46.067.644.63.31.956l-3.738 3.645a.53.53 0 0 0-.152.468l.882 5.145c.078.458-.402.806-.81.592L12 16.388a.53.53 0 0 0-.494 0l-4.624 2.43c-.408.215-.888-.134-.81-.592l.882-5.145a.53.53 0 0 0-.152-.468L3.064 8.97c-.334-.326-.15-.89.31-.956l5.165-.75a.53.53 0 0 0 .4-.29l2.31-4.68Z%27/%3E%3C/svg%3E' : 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23aaaaaa%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.165.75c.46.067.644.63.31.956l-3.738 3.645a.53.53 0 0 0-.152.468l.882 5.145c.078.458-.402.806-.81.592L12 16.388a.53.53 0 0 0-.494 0l-4.624 2.43c-.408.215-.888-.134-.81-.592l.882-5.145a.53.53 0 0 0-.152-.468L3.064 8.97c-.334-.326-.15-.89.31-.956l5.165-.75a.53.53 0 0 0 .4-.29l2.31-4.68Z%27/%3E%3C/svg%3E'}}"/>
+              <text class="action-num {{item.hasFavorited ? 'yellow-num' : ''}}">{{item.favoriteCount || 0}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="top-comment-box" wx:if="{{item.topComment}}">
+          <text class="tc-name">{{item.topComment.nickName}}</text>
+          <view wx:if="{{item.topComment.Permission > 0}}" class="role-dot dot-{{item.topComment.Permission}}"></view>
+          <text class="tc-name">：</text>
+          <text class="tc-content">{{item.topComment.content}}</text>
+        </view>
+
+      </view>
+    </block>
+
+    <view class="loading-tips" wx:if="{{!hasMore && posts.length > 0}}">到底啦，快去发现更多内容吧~</view>
+    <view class="loading-tips" wx:if="{{posts.length === 0 && !isLoading}}">你还没有收藏任何动态哦~</view>
+  </view>
+</view>
+
+<view class="comment-drawer {{showCommentDrawer ? 'show' : ''}}">
+  <view class="drawer-header">
+    <text class="drawer-title">全部评论 ({{currentComments.length}})</text>
+    <view class="close-btn" catchtap="closeComment">×</view>
+  </view>
+  <view class="top-input-area">
+    <image class="top-avatar" src="{{currentUserAvatar}}"></image>
+    <view class="input-wrapper">
+      <input class="real-top-input" focus="{{inputFocus}}" placeholder="{{replyTargetName ? '回复 ' + replyTargetName + '：' : '发条友善的评论...'}}" value="{{commentText}}" bindinput="onCommentInput" bindblur="onInputBlur" confirm-type="send" bindconfirm="submitComment" adjust-position="true" cursor-spacing="20" disabled="{{isSubmittingComment}}" />
+      <view class="inline-spinner" wx:if="{{isSubmittingComment}}"></view>
+    </view>
+    <button class="top-send-btn" catchtap="submitComment" disabled="{{!commentText || isSubmittingComment}}">发送</button>
+  </view>
+  <scroll-view class="comment-list" scroll-y="true">
+    <block wx:for="{{currentComments}}" wx:key="_id" wx:for-index="cIndex">
+      <view class="comment-item">
+        <image class="c-avatar" src="{{item.avatar}}" catchtap="onAvatarClick" data-comment="{{item}}"></image>
+        <view class="c-content" catchtap="onReplyClick" data-id="{{item._id}}" data-name="{{item.nickName}}">
+          <view class="c-name-row">
+            <text class="c-name" style="margin-bottom: 0;">{{item.nickName}}</text>
+            <view wx:if="{{item.Permission > 0}}" class="role-dot dot-{{item.Permission}}"></view>
+          </view>
+          <text class="c-text">{{item.content}}</text>
+          <view class="c-footer">
+            <text class="c-time">{{item.time}}</text>
+            <view class="c-actions">
+              <view class="c-action-box" catchtap="onLikeComment" data-id="{{item._id}}" data-index="{{cIndex}}">
+                <image class="c-action-svg {{item.hasLiked ? 'heart-pop' : ''}}" src="{{item.hasLiked ? 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23ff4d4f%27 stroke=%27%23ff4d4f%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z%27/%3E%3C/svg%3E' : 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23aaaaaa%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z%27/%3E%3C/svg%3E'}}" />
+                <text class="c-action-num {{item.hasLiked ? 'red-num' : ''}}">{{item.likes || 0}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="sub-comments" wx:if="{{item.subComments && item.subComments.length > 0}}">
+            <block wx:for="{{item.isExpanded ? item.subComments : [item.subComments[0]]}}" wx:for-item="sub" wx:key="_id">
+              <view class="sub-item" hover-class="sub-hover" catchtap="onReplyClick" data-id="{{item._id}}" data-name="{{sub.nickName}}">
+                <text class="sub-name">{{sub.nickName}}</text>
+                <view wx:if="{{sub.Permission > 0}}" class="role-dot dot-{{sub.Permission}}"></view>
+                <text wx:if="{{sub.replyToName && sub.replyToName !== item.nickName}}" class="reply-text"> 回复 </text>
+                <text wx:if="{{sub.replyToName && sub.replyToName !== item.nickName}}" class="sub-name">{{sub.replyToName}}</text>
+                <text class="colon">：</text>
+                <text class="sub-text">{{sub.content}}</text>
+              </view>
+            </block>
+            <view class="expand-btn" wx:if="{{item.subComments.length > 1 && !item.isExpanded}}" catchtap="expandReplies" data-index="{{cIndex}}">
+              展开剩余 {{item.subComments.length - 1}} 条回复 ▾
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+    <view style="height: 60rpx;"></view> 
+  </scroll-view>
+</view>
+
+<profile-popup show="{{showProfilePopup}}" target-data="{{currentProfile}}" bind:close="closeProfilePopup"></profile-popup>

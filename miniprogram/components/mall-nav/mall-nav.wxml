@@ -1,0 +1,9 @@
+<view class="mall-nav" style="height: {{navHeight}}px; padding-top: {{statusBarHeight}}px; background: {{bgColor}};">
+  <view class="nav-content" style="height: {{capsuleHeight}}px;">
+    <view class="nav-left" bindtap="goBack" wx:if="{{showBack}}">
+      <view class="back-arrow"></view>
+    </view>
+    <view class="nav-title" style="color: {{titleColor}};">{{title}}</view>
+  </view>
+</view>
+<view style="height: {{navHeight}}px;"></view>

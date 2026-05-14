@@ -1,0 +1,24 @@
+<view class="tab-bar">
+  <view class="tab-bar-item" data-path="/pages/index/index" data-index="0" bindtap="switchTab">
+    <view class="icon-box {{selected === 0 ? 'active' : ''}}">
+      <view class="tab-icon icon-home {{selected === 0 ? 'active' : ''}}"></view>
+      <view class="tab-text">首页</view>
+    </view>
+  </view>
+
+  <view class="tab-bar-item center-item" data-path="/pages/upload/upload" data-index="1" bindtap="switchTab">
+    <view class="special-wrapper">
+      <view class="special-btn {{selected === 1 ? 'active-bg' : ''}}">
+        <view class="plus-icon {{selected === 1 ? 'white-icon' : ''}}">+</view>
+      </view>
+      <view class="tab-text {{selected === 1 ? 'active-text' : ''}}">上传</view>
+    </view>
+  </view>
+
+  <view class="tab-bar-item" data-path="/pages/mine/mine" data-index="2" bindtap="switchTab">
+    <view class="icon-box {{selected === 2 ? 'active' : ''}}">
+      <view class="tab-icon icon-mine {{selected === 2 ? 'active' : ''}}"></view>
+      <view class="tab-text">我的</view>
+    </view>
+  </view>
+</view>

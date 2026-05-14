@@ -1,0 +1,95 @@
+<view class="detail-mask" wx:if="{{show}}" bindtap="onClose"></view>
+  
+<view class="detail-drawer {{show ? 'show' : ''}}">
+  <view class="plum-bg"></view>
+
+  <view class="d-header">
+    <text class="d-title">{{item.name}}</text>
+    <view class="d-close" bindtap="onClose">×</view>
+  </view>
+  
+  <scroll-view class="d-content" scroll-y>
+    <view class="preview-showcase-inset antique-border-inner">
+      <block wx:if="{{item.type === 'bg'}}">
+        <view class="p-group">
+          <view class="p-label center-label">名片效果</view>
+          <view class="p-card-wrapper real-card-ratio center-layout card-shadow">
+            <image class="p-bg" src="{{item.bgUrlLarge}}" mode="aspectFill"></image>
+            <view class="p-mock-content {{item.text_theme_enum === 'dark' ? 'mock-dark' : 'mock-light'}}">
+              <view class="mock-avatar-center"></view>
+              <view class="mock-name-line"></view>
+              <view class="mock-bio-line"></view>
+            </view>
+          </view>
+        </view>
+        <view class="p-group">
+          <view class="p-label left-label">列表效果</view>
+          <view class="p-card-wrapper social-strip-ratio left-layout card-shadow">
+            <image class="p-bg" src="{{item.bgUrlSmall}}" mode="aspectFill"></image>
+            <view class="p-mock-content {{item.text_theme_enum === 'dark' ? 'mock-dark' : 'mock-light'}}">
+              <view class="mock-avatar-left"></view>
+              <view class="mock-text-col">
+                <view class="mock-line title"></view>
+                <view class="mock-line desc"></view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <block wx:elif="{{item.type === 'frame'}}">
+        <view class="p-group" style="margin-top: 20rpx;">
+          <view class="p-label center-label" style="margin-bottom: 30rpx;">佩戴效果预览</view>
+          <view class="p-avatar-huge-center">
+            <view class="mock-avatar-huge-base"></view>
+            <image class="p-frame-img {{item.realSizeLevel === 'epic' ? 'size-epic' : 'size-normal'}}" src="{{item.avatarFrameUrl}}" mode="aspectFit" style="{{item.realShadow ? 'filter: ' + item.realShadow + ';' : ''}}"></image>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <view class="desc-section-plain">
+      <view class="d-section-title">物品说明</view>
+      <view class="rich-text-box">
+        <rich-text wx:if="{{item.detailDesc}}" nodes="{{item.detailDesc}}"></rich-text>
+        <view wx:elif="{{mode === 'market'}}">来自跳蚤集市的玩家寄售物品。购买后将自动存入您的个人衣橱中。</view>
+        <view wx:else style="color: #666;">暂无详细介绍</view>
+      </view>
+    </view>
+    <view style="height: 180rpx;"></view>
+  </scroll-view>
+
+  <view class="d-footer glass-footer">
+    <block wx:if="{{mode === 'outfit'}}">
+      <view class="d-price-simple">
+        <view class="owned-tag" wx:if="{{item.isOwned}}">已拥有</view>
+        <block wx:else>
+          <text class="price-num" wx:if="{{item.uiTag === 'rare'}}">绝版典藏</text>
+          <text class="price-num" wx:elif="{{item.uiTag === 'event'}}">活动限定</text>
+          <text class="price-num" wx:elif="{{item.authLogic === 'achievement'}}">特殊解锁</text>
+          <text class="price-num" wx:elif="{{item.price > 0}}">{{item.price}}</text>
+          <text class="price-num" wx:else>免费</text>
+          <text class="price-unit" wx:if="{{item.price > 0 && item.authLogic !== 'achievement' && item.uiTag !== 'rare' && item.uiTag !== 'event'}}">{{item.priceUnitDisplay}}</text>
+        </block>
+      </view>
+      <view class="d-btn-group">
+        <view class="auth-lock-big" wx:if="{{item.authLogic === 'role' && item.authCondition === '1' && userInfo.Permission !== 1}}">仅教职工专属</view>
+        <block wx:else>
+          <button class="d-btn using" wx:if="{{item.isEquipped}}">当前使用中</button>
+          <button class="d-btn equip" wx:elif="{{item.isOwned}}" catchtap="onEquip">立即装备</button>
+          <button class="d-btn claim {{item.uiTag === 'rare' ? 'rare-btn' : item.uiTag === 'event' ? 'event-btn' : item.authLogic === 'achievement' ? 'achieve-btn' : ''}}" wx:else catchtap="onClaim">{{item.uiTag === 'rare' ? '该装扮已绝版' : item.uiTag === 'event' ? '前往参与活动' : '获取装扮'}}</button>
+        </block>
+      </view>
+    </block>
+
+    <block wx:elif="{{mode === 'market'}}">
+      <view class="d-price-simple">
+        <text class="price-num">{{item.price}}</text>
+        <text class="price-unit">积分</text>
+      </view>
+      <view class="d-btn-group">
+        <button class="d-btn claim" catchtap="onBuy">确认购买</button>
+      </view>
+    </block>
+  </view>
+</view>

@@ -1,0 +1,77 @@
+<view class="container">
+  <view wx:if="{{isLoading}}" class="status-center">
+    <view class="loading-text">正在同步数据...</view>
+  </view>
+
+  <view wx:elif="{{!isRegistered}}" class="content-card">
+    <view class="form-box">
+      <view class="title">身份绑定</view>
+      <view class="subtitle">请完成授权并填写准确信息，以解锁完整权限</view>
+      
+      <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+        <image class="avatar-preview" src="{{avatarUrl || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2SJPGicvHB29Rn5d5m45Eea_avatar/0'}}" mode="aspectFill"></image>
+        <view class="avatar-tip">{{avatarUrl ? '头像已就绪' : '点击授权头像'}}</view>
+      </button>
+
+      <view class="input-group">
+        <view class="label">展示昵称 <text style="color: #ff4d4f; font-weight: normal; margin-left: 6rpx;">*</text></view>
+        <input type="nickname" class="input-field {{nickNameError ? 'error-border' : ''}}" placeholder="点击一键填入" value="{{tempNickName}}" bindinput="handleInputNickName" bindblur="checkNickNameSilent" />
+        <view class="error-text" wx:if="{{nickNameError}}">{{nickNameError}}</view>
+      </view>
+
+      <view class="input-group">
+        <view class="label">真实姓名 <text style="color: #ff4d4f; font-weight: normal; margin-left: 6rpx;">*</text></view>
+        <input class="input-field" placeholder="请输入姓名" value="{{tempName}}" bindinput="handleInputName" />
+      </view>
+      
+      <view class="input-group">
+        <view class="label">班级 (如: 智能网联CZ2301) <text style="color: #ff4d4f; font-weight: normal; margin-left: 6rpx;">*</text></view>
+        <input class="input-field" placeholder="请输入完整班级名" value="{{tempClass}}" bindinput="handleInputClass" />
+      </view>
+
+      <view class="input-group">
+        <view class="label">所属校区 <text style="color: #ff4d4f; font-weight: normal; margin-left: 6rpx;">*</text></view>
+        <picker bindchange="handleCampusChange" value="{{campusIndex}}" range="{{campusList}}">
+          <view class="input-field picker-view">
+            {{campusList[campusIndex]}} 
+            <text class="arrow">▼</text> 
+          </view>
+        </picker>
+      </view>
+      
+      <button class="submit-btn" hover-class="button-hover" loading="{{isSubmitting}}" bindtap="submitForm">
+        {{isSubmitting ? '提交中...' : '提交注册'}}
+      </button>
+      
+      <view class="faculty-entrance" bindtap="goToFacultyRegister">教职工注册入口</view>
+      
+      <navigator class="privacy-link" url="/pages/settings/privacy/policy/policy" hover-class="none">《用户隐私政策》</navigator>
+    </view>
+  </view>
+
+  <view wx:else>
+    <view wx:if="{{userInfo.registerStatus === 0}}" class="content-card status-center">
+      <icon type="waiting" size="60" color="#FFcc00"/>
+      <view class="status-title">资料审核中</view>
+      <view class="status-desc">管理员正在努力核对中，请稍后刷新</view>
+      <button size="mini" bindtap="checkLoginStatus">刷新状态</button>
+    </view>
+
+    <view wx:elif="{{userInfo.registerStatus === 2}}" class="content-card status-center">
+      <icon type="warn" size="60" color="#FF4D4F"/>
+      <view class="status-title" style="color: #FF4D4F;">审核未通过</view>
+      <view class="rejection-box">
+        <text class="rejection-label">驳回详情</text>
+        <text class="rejection-text">{{userInfo.rejectionReason || '信息填写不规范，请修改后重试'}}</text>
+      </view>
+      <view class="status-desc">请点击下方按钮重新填写信息</view>
+      <button class="white-btn" bindtap="applyReRegister">重新填写资料</button>
+    </view>
+
+    <view wx:elif="{{userInfo.registerStatus === 1 || userInfo.registerStatus === 3}}" class="content-card status-center">
+      <icon type="success" size="60" color="#07c160"/>
+      <view class="status-title" style="color: #07c160;">认证已通过</view>
+      <view class="status-desc">{{userInfo.registerStatus === 1 ? '正在为您跳转' : '云端同步权限已解锁，正在返回...'}}</view>
+    </view>
+  </view>
+</view>

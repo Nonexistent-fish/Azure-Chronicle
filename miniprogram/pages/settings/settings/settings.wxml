@@ -1,0 +1,28 @@
+<view class="container">
+  <view class="page-title">账户与设置</view>
+
+  <view class="settings-card">
+    <navigator url="/pages/settings/privacy/privacy" class="item">
+      <text class="label">隐私信息</text>
+      <text class="arrow">></text>
+    </navigator>
+    <navigator url="/pages/settings/changelog/changelog" class="item">
+      <text class="label">更新记录</text>
+      <text class="arrow">></text>
+    </navigator>
+
+    <view class="item" bindtap="onUnsubscribe">
+      <text class="label danger-text">注销账号</text>
+      <text class="arrow">></text>
+    </view>
+    
+    <navigator url="/pages/settings/about/about" class="item">
+      <text class="label">关于</text>
+      <text class="arrow">></text>
+    </navigator>
+  </view>
+
+  <view class="footer-info">
+    <text>已注册校友：{{totalUsers || '--'}} 人</text>
+  </view>
+</view>

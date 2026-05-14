@@ -1,0 +1,160 @@
+<scroll-view scroll-y class="container">
+  <view class="status-banner status-{{post.status}}" wx:if="{{ (isAuthor || (isAdmin && post.status !== 1)) && post.status !== undefined }}">
+    <text>{{statusText}}</text>
+  </view>
+
+  <view class="card">
+    <view class="post-header">
+      <view class="user-info" catchtap="onAvatarClick" data-source="post">
+        <image class="avatar" src="{{post.author.avatar || defaultAvatar}}"></image>
+        <view class="header-info">
+          <view class="name-line">
+            <text class="nickname">{{post.author.nickName}}</text>
+            <view class="role-tag tag-{{post.author.Permission || 0}}" wx:if="{{post.author.Permission > 0}}">
+              {{post.author.Permission == 1 ? '教职工' : (post.author.Permission == 2 ? '管理员' : '开发者')}}
+            </view>
+          </view>
+          <text class="post-time">{{post.timeDisplay}}</text>
+        </view>
+      </view>
+      <view class="more-btn" catchtap="onMoreOptions">···</view>
+    </view>
+
+    <view class="post-content">
+      <view class="post-title" wx:if="{{post.title}}">{{post.title}}</view>
+      <text user-select="true" class="post-text-content">{{post.content}}</text>
+    </view>
+
+    <view class="media-box" wx:if="{{post.media && post.media.length > 0}}">
+      <block wx:for="{{post.media}}" wx:key="fileID" wx:for-item="media" wx:for-index="index">
+        <image wx:if="{{media.fileType === 'image' || !media.fileType}}" class="media-img" src="{{media.fileID}}" mode="widthFix" lazy-load="true" show-menu-by-longpress="true" catchtap="onPreviewMedia" data-current="{{index}}"></image>
+        <view wx:if="{{media.fileType === 'video'}}" class="video-preview-container" style="position: relative; width: 100%; height: 450rpx; margin-bottom: 16rpx; border-radius: 12rpx; overflow: hidden;" catchtap="onPreviewMedia" data-current="{{index}}">
+          <video src="{{media.fileID}}" show-center-play-btn="{{false}}" show-play-btn="{{false}}" controls="{{false}}" object-fit="cover" style="width: 100%; height: 100%; pointer-events: none; display: block;"></video>
+          <view style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center;">
+            <view style="width: 100rpx; height: 100rpx; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+              <view style="border-left: 32rpx solid white; border-top: 20rpx solid transparent; border-bottom: 20rpx solid transparent; margin-left: 10rpx;"></view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <view class="post-footer-actions">
+      <view class="action-item" catchtap="scrollToComments">
+        <image class="action-svg" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23aaaaaa%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M12 21a9 9 0 1 0-9-9c0 1.488.36 2.891 1 4.127L3 21l4.873-1c1.236.64 2.64 1 4.127 1Z%27/%3E%3C/svg%3E"></image>
+        <text class="action-num">{{post.commentCount || 0}}</text>
+      </view>
+
+      <view class="action-item" catchtap="onLikePost">
+        <image class="action-svg {{post.hasLiked ? 'heart-pop' : ''}}" src="{{post.hasLiked ? 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23ff4d4f%27 stroke=%27%23ff4d4f%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z%27/%3E%3C/svg%3E' : 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23aaaaaa%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z%27/%3E%3C/svg%3E'}}" />
+        <text class="action-num {{post.hasLiked ? 'red-num' : ''}}">{{post.likeCount || 0}}</text>
+      </view>
+
+      <view class="action-item" catchtap="onFavoritePost">
+        <image class="action-svg {{post.hasFavorited ? 'star-pop' : ''}}" src="{{post.hasFavorited ? 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23faad14%27 stroke=%27%23faad14%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpolygon points=%2712 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2%27/%3E%3C/svg%3E' : 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23aaaaaa%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpolygon points=%2712 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2%27/%3E%3C/svg%3E'}}" />
+        <text class="action-num {{post.hasFavorited ? 'yellow-num' : ''}}">{{post.favoriteCount || 0}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card likes-panel" wx:if="{{isAuthor && likeUsers.length > 0}}">
+    <view class="panel-title">最近收到的点赞 ({{likeUsers.length}})</view>
+    <scroll-view scroll-x class="likers-scroll">
+      <view class="liker-wrap" wx:for="{{likeUsers}}" wx:key="_id">
+        <image class="liker-avatar" src="{{item.avatar}}" catchtap="onAvatarClick" data-source="liker" data-index="{{index}}"></image>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="card admin-panel" wx:if="{{isAuthor || isAdmin}}">
+    <view class="panel-title">作品管理</view>
+    <block wx:if="{{isAuthor}}">
+      <view class="setting-item">
+        <view>
+          <view class="item-label">设为私密</view>
+          <view class="item-desc">仅自己可见，不再推荐到首页</view>
+          <view class="lock-tip" wx:if="{{post.status === 1 && !post.isPrivate}}">* 发布满24小时后才能转为私密</view>
+        </view>
+        <switch checked="{{post.isPrivate}}" bindchange="onTogglePrivacy" color="#07c160" disabled="{{post.status === 2}}"></switch>
+      </view>
+      <button class="edit-btn" catchtap="onEdit" wx:if="{{post.status === 2 || post.status === 0}}">重新编辑</button>
+    </block>
+    <button class="delete-btn {{canDelete ? '' : 'plain'}}" catchtap="onDelete" disabled="{{!canDelete}}">
+      {{isAdmin && !isAuthor ? '管理员强制删除' : '永久删除'}}
+    </button>
+    <view wx:if="{{deleteTip && !canDelete && !isAdmin}}" style="text-align:center; font-size:22rpx; color:#faad14; margin-top:16rpx; font-weight: bold;">{{deleteTip}}</view>
+    <view wx:if="{{isAdmin && isAuthor}}" style="text-align:center; font-size:22rpx; color:#ccc; margin-top:16rpx;">(您拥有管理员权限，可无视时间限制随时删除)</view>
+  </view>
+
+  <view class="card comments-section" id="comment-section">
+    <view class="comments-header">
+      <view class="comment-count">共 {{post.commentCount || 0}} 条评论</view>
+      <view class="sort-tabs">
+        <view class="sort-tab {{commentSort === 'popular' ? 'active' : ''}}" catchtap="changeSort" data-sort="popular">最热</view>
+        <view class="sort-divider">|</view>
+        <view class="sort-tab {{commentSort === 'newest' ? 'active' : ''}}" catchtap="changeSort" data-sort="newest">最新</view>
+      </view>
+    </view>
+
+    <view class="comment-list" wx:if="{{comments.length > 0}}">
+      <block wx:for="{{comments}}" wx:key="_id" wx:for-index="index" wx:for-item="item">
+        <view class="comment-item">
+          <image class="c-avatar" src="{{item.avatar || defaultAvatar}}" catchtap="onAvatarClick" data-source="comment" data-index="{{index}}"></image>
+          <view class="c-main">
+            <view class="c-name-row">
+              <text class="c-name">{{item.nickName}}</text>
+              <view class="role-dot dot-{{item.Permission || 0}}" wx:if="{{item.Permission > 0}}"></view>
+            </view>
+            <view class="c-content" catchtap="onReplyClick" data-id="{{item._id}}" data-name="{{item.nickName}}">{{item.content}}</view>
+            <view class="c-footer">
+              <text class="c-time">{{item.timeDisplay}} <text catchtap="onReplyClick" data-id="{{item._id}}" data-name="{{item.nickName}}" style="color: #576b95; font-weight: bold; margin-left:16rpx;">回复</text></text>
+              <view class="c-actions">
+                <text class="c-delete" wx:if="{{isAdmin || isAuthor || item.authorUID === currentUserId || item._openid === currentOpenId}}" catchtap="onDeleteComment" data-id="{{item._id}}">删除</text>
+                <view class="action-item" catchtap="onLikeComment" data-id="{{item._id}}" data-index="{{index}}">
+                  <image class="action-svg {{item.hasLiked ? 'heart-pop' : ''}}" src="{{item.hasLiked ? 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23ff4d4f%27 stroke=%27%23ff4d4f%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z%27/%3E%3C/svg%3E' : 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23aaaaaa%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z%27/%3E%3C/svg%3E'}}" />
+                  <text class="action-num {{item.hasLiked ? 'red-num' : ''}}">{{item.likes || 0}}</text>
+                </view>
+              </view>
+            </view>
+
+            <view class="sub-comments" wx:if="{{item.subComments && item.subComments.length > 0}}">
+              <block wx:for="{{item.subComments}}" wx:key="_id" wx:for-index="sindex" wx:for-item="subComment">
+                <view class="sub-c-item" hover-class="comment-hover-class" hover-stay-time="100" catchtap="onReplyClick" data-id="{{item._id}}" data-name="{{subComment.nickName}}">
+                  <text class="sub-name" catchtap="onAvatarClick" data-source="subcomment" data-index="{{index}}" data-sindex="{{sindex}}">{{subComment.nickName}}</text>
+                  <view class="role-dot dot-{{subComment.Permission || 0}}" wx:if="{{subComment.Permission > 0}}" style="display:inline-block;"></view>
+                  <block wx:if="{{subComment.replyToName && subComment.replyToName !== item.nickName}}"><text class="reply-text">回复</text><text class="sub-name">{{subComment.replyToName}}</text></block>
+                  <text class="sub-content">：{{subComment.content}}</text>
+                  <view class="c-footer" style="margin-top: 10rpx; border: none; padding: 0;">
+                    <text class="c-time">{{subComment.timeDisplay}}</text>
+                    <view class="c-actions">
+                      <text class="sub-delete" wx:if="{{isAdmin || isAuthor || subComment.authorUID === currentUserId || subComment._openid === currentOpenId}}" catchtap="onDeleteComment" data-id="{{subComment._id}}">删除</text>
+                    </view>
+                  </view>
+                </view>
+              </block>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+    <view class="empty-comments" wx:else>暂无评论，快来抢沙发~</view>
+  </view>
+  
+  <view style="height: 160rpx;"></view>
+</scroll-view>
+
+<view class="bottom-input-bar">
+  <view class="input-wrapper">
+    <input class="comment-input" focus="{{inputFocus}}" placeholder="{{replyTargetName ? '回复 @' + replyTargetName : '说点什么...'}}" model:value="{{commentText}}" bindinput="onCommentInput" bindblur="onInputBlur" confirm-type="send" bindconfirm="submitComment" adjust-position="true" cursor-spacing="20" disabled="{{isSubmitting}}" />
+    <view class="inline-spinner" wx:if="{{isSubmitting}}"></view>
+  </view>
+  <view class="send-btn {{canSend && !isSubmitting ? 'active' : ''}}" catchtap="submitComment">发送</view>
+</view>
+
+<view class="action-sheet-mask {{showActionSheet ? 'show' : ''}}" catchtap="closeActionSheet"></view>
+<view class="action-sheet-panel {{showActionSheet ? 'show' : ''}}">
+  <view class="action-btn-group"><button class="action-btn" catchtap="onReportPostClick">举报该内容</button></view>
+  <view class="action-btn-group" style="margin-bottom: 0;"><button class="action-btn cancel" catchtap="closeActionSheet">取消</button></view>
+</view>
+
+<profile-popup show="{{showProfilePopup}}" targetData="{{currentProfile}}" bind:close="closeProfilePopup"></profile-popup>

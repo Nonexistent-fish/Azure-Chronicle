@@ -1,0 +1,20 @@
+.mall-nav {
+  position: fixed; top: 0; left: 0; width: 100%; z-index: 999; box-sizing: border-box;
+  backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.3);
+}
+
+.nav-content { display: flex; align-items: center; position: relative; padding: 0 30rpx; }
+
+/* 左侧返回区域，增大点击热区 */
+.nav-left { position: absolute; left: 30rpx; height: 100%; display: flex; align-items: center; padding-right: 40rpx; }
+
+/* 纯 CSS 绘制的返回箭头 */
+.back-arrow {
+  width: 20rpx; height: 20rpx;
+  border-top: 4rpx solid #8A181A; border-left: 4rpx solid #8A181A;
+  transform: rotate(-45deg);
+}
+
+/* 标题居中，且不阻挡底层事件 */
+.nav-title { width: 100%; text-align: center; font-size: 32rpx; font-weight: bold; pointer-events: none; }

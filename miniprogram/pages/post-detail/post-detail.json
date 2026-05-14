@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "profile-popup": "/components/profile-popup/profile-popup"
+  },
+  "navigationBarTitleText": "动态详情"
+}

@@ -1,0 +1,143 @@
+<audit-protector></audit-protector>
+<view class="skeleton-screen" wx:if="{{isLoading}}">
+  <view class="custom-nav-bar" style="padding-top: {{statusBarHeight}}px; height: {{navBarHeight}}px;">
+    <view class="back-btn" catchtap="goBack"><view class="back-arrow"></view></view>
+  </view>
+  <view class="skeleton-header" style="margin-top: {{statusBarHeight + navBarHeight + 30}}px;">
+    <view class="skeleton-title skeleton-pulse"></view>
+    <view class="skeleton-subtitle skeleton-pulse"></view>
+  </view>
+  <view class="skeleton-showcase skeleton-pulse"></view>
+  <view class="skeleton-info">
+    <view class="skeleton-name skeleton-pulse"></view>
+    <view class="skeleton-desc skeleton-pulse"></view>
+  </view>
+</view>
+
+<block wx:else>
+  <scroll-view class="gacha-scroll-container" scroll-y="{{hasSecondScreen}}" enhanced="true" show-scrollbar="false" bindtap="handleGlobalTap">
+    <image class="bg-image" src="{{featuredItems[currentIndex].bgUrl || poolInfo.bgUrl}}" mode="aspectFill"></image>
+    <view class="bg-blur-overlay"></view>
+    <view class="halo top-left"></view>
+    <view class="halo bottom-right"></view>
+
+    <view class="custom-nav-bar" style="padding-top: {{statusBarHeight}}px; height: {{navBarHeight}}px;">
+      <view class="back-btn" catchtap="goBack"><view class="back-arrow"></view></view>
+    </view>
+
+    <view class="first-screen">
+      <view class="header" style="margin-top: {{statusBarHeight + navBarHeight + 30}}px;">
+        <view class="title-area">
+          <text class="title">{{poolInfo.title}}</text>
+          <text class="subtitle">{{poolInfo.subtitle}}</text>
+        </view>
+      </view>
+
+      <view class="showcase-area">
+        <view class="showcase-item {{currentIndex === index ? 'active' : 'inactive'}}" wx:for="{{featuredItems}}" wx:key="_id">
+          <image class="featured-img" src="{{item.imageUrl}}" mode="aspectFill"></image>
+        </view>
+      </view>
+
+      <view class="info-area">
+        <view class="info-content" wx:for="{{featuredItems}}" wx:key="_id" style="opacity: {{currentIndex === index && textVisible ? 1 : 0}}; pointer-events: {{currentIndex === index && textVisible ? 'auto' : 'none'}};">
+          <view class="item-name">{{item.name}}</view>
+          <view class="item-desc" catchtap="toggleLore">{{item.desc}}</view>
+          <view class="lore-container {{showLore && currentIndex === index ? 'active' : ''}}">
+            <view class="lore-line" wx:for="{{item.loreLines}}" wx:for-item="line" wx:for-index="lineIdx" wx:key="lineIdx" style="transition-delay: {{lineIdx * 0.1}}s;">{{line}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="second-screen" wx:if="{{hasSecondScreen}}">
+      <view class="module-section milestone-section" wx:if="{{milestones && milestones.length > 0}}">
+        <view class="section-title">祈愿回响 <text class="section-sub">已祈愿: <text class="highlight">{{totalDraws}}</text> 次</text></view>
+        <view class="milestone-scroll-wrapper">
+          <scroll-view class="milestone-scroll" scroll-x="true" enhanced="true" show-scrollbar="false">
+            <view class="progress-container">
+              <view class="progress-bar-bg">
+                <view class="progress-bar-fill" style="width: {{(totalDraws / maxMilestone) * 100 + '%'}};"></view>
+                <view class="nodes">
+                  <view class="node {{totalDraws >= item.target ? 'reached' : ''}} {{item.claimed ? 'claimed' : ''}}" wx:for="{{milestones}}" wx:key="target" style="left: {{(item.target / maxMilestone) * 100 + '%'}};" bindtap="onClaimMilestone" data-index="{{index}}">
+                    <view class="node-text">{{item.target}}次</view>
+                    <view class="node-dot {{!item.isReward ? 'small-dot' : ''}}"></view>
+                    <view class="node-reward-box" wx:if="{{item.isReward}}">
+                      <image class="reward-img" src="{{item.rewardImg}}" mode="aspectFill"></image>
+                      <view class="reward-badge">x{{item.rewardCount}}</view>
+                      <view class="claimed-mask" wx:if="{{item.claimed}}"><text>已领</text></view>
+                    </view>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </scroll-view>
+        </view>
+      </view>
+
+      <view class="module-section exchange-section" wx:if="{{exchangeItems && exchangeItems.length > 0}}">
+        <view class="section-title">凝练工坊 <text class="section-sub">当前碎片: <text class="highlight">{{userFragments}}</text></text></view>
+        <view class="exchange-list">
+          <view class="exchange-card {{userFragments >= item.cost ? 'ready-glow' : ''}}" wx:for="{{exchangeItems}}" wx:key="_id" catchtap="handleExchange" data-id="{{item._id}}">
+            <image class="card-bg-img" src="{{item.imageUrl}}" mode="aspectFill"></image>
+            <view class="card-content">
+              <view class="card-header">
+                <text class="card-name">{{item.name}}</text>
+                <view class="card-cost-box">
+                  <image class="fragment-icon" src="/assets/icons/fragment.png" mode="aspectFit"></image>
+                  <text class="cost-num">{{item.cost}}</text>
+                </view>
+              </view>
+              <view class="card-progress-bar">
+                <view class="fill" style="width: {{userFragments >= item.cost ? '100%' : (userFragments / item.cost * 100) + '%'}};"></view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="bottom-spacer"></view>
+    </view>
+  </scroll-view>
+
+  <view class="floating-bottom-bar">
+    <view class="action-buttons">
+      <view class="btn-wrapper">
+        <image class="gacha-btn" src="/assets/button/gacha1.png" mode="aspectFit" catchtap="doDraw" data-count="1"></image>
+        <view class="light-sweep"></view> 
+      </view>
+      <view class="btn-wrapper gold-glow"> 
+        <image class="gacha-btn" src="/assets/button/gacha5.png" mode="aspectFit" catchtap="doDraw" data-count="5"></image>
+        <view class="light-sweep"></view>
+      </view>
+    </view>
+  </view>
+</block>
+
+<view class="gacha-animation-overlay" wx:if="{{isAnimating}}">
+  <view class="magic-backdrop"></view>
+  <view class="magic-circle"></view>
+  <view class="meteor-shower {{drawCount === 5 ? 'multi' : 'single'}}">
+    <view class="meteor m1"></view>
+    <block wx:if="{{drawCount === 5}}">
+      <view class="meteor m2"></view>
+      <view class="meteor m3"></view>
+      <view class="meteor m4"></view>
+      <view class="meteor m5"></view>
+    </block>
+  </view>
+  <view class="flash-core"></view>
+  <view class="flash-ring"></view>
+</view>
+
+<view class="result-overlay" wx:if="{{showResultModal}}" bindtap="closeResultModal">
+  <view class="result-container">
+    <view class="result-title">祈愿获得</view>
+    <view class="result-list {{drawResults.length > 1 ? 'multi-layout' : ''}}">
+      <view class="result-item" wx:for="{{drawResults}}" wx:key="index">
+        <view class="item-card"><image class="item-img" src="{{item.image}}" mode="aspectFill"></image></view>
+        <view class="item-name">{{item.name}}</view>
+      </view>
+    </view>
+    <view class="close-tip">点击任意处关闭</view>
+  </view>
+</view>

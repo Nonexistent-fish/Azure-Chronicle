@@ -1,0 +1,84 @@
+$neu-bg: #f8f6f2; 
+$neu-shadow-dark: #d9d6ce; 
+$neu-shadow-light: #ffffff; 
+$text-primary: #4a4a4a; 
+$text-secondary: #999890; 
+
+.fortune-landscape-card {
+  width: 100%; height: 100%; background: $neu-bg; padding: 30rpx; box-sizing: border-box;
+  display: flex; flex-direction: row; align-items: center; justify-content: space-between; border: none !important; 
+}
+
+/* 左侧区域 */
+.fc-left-panel { width: 35%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.fc-date-group {
+  text-align: center; margin-bottom: 24rpx;
+  .fc-date { display: block; font-size: 22rpx; font-weight: 900; color: $text-primary; font-family: "Times New Roman", Times, serif;}
+  .fc-week { display: block; font-size: 18rpx; color: $text-secondary; margin-top: 6rpx; letter-spacing: 4rpx; font-weight: bold; }
+}
+.neu-pressed-circle {
+  width: 140rpx; height: 140rpx; border-radius: 50%; background: $neu-bg; display: flex; align-items: center; justify-content: center;
+  box-shadow: inset 6rpx 6rpx 12rpx $neu-shadow-dark, inset -6rpx -6rpx 12rpx $neu-shadow-light;
+}
+.sign-text-wrap {
+  font-size: 44rpx; font-weight: 900; color: #c4463a; letter-spacing: 4rpx;
+  text-shadow: 2rpx 2rpx 4rpx rgba(196, 70, 58, 0.2); font-family: "Times New Roman", Times, serif; text-align: center; line-height: 1.1;
+}
+
+/* 分割线 */
+.fc-divider-vertical { width: 0; height: 85%; border-left: 2rpx dashed rgba(0, 0, 0, 0.08); margin: 0 10rpx; }
+
+/* 右侧区域 */
+.fc-right-panel { width: 60%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding-left: 10rpx; box-sizing: border-box; }
+.fc-luck-row { display: flex; gap: 20rpx; width: 100%; }
+.neu-capsule {
+  flex: 1; background: $neu-bg; padding: 12rpx 0; border-radius: 40rpx; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  box-shadow: 4rpx 4rpx 10rpx $neu-shadow-dark, -4rpx -4rpx 10rpx $neu-shadow-light;
+}
+.luck-label { font-size: 18rpx; color: $text-secondary; margin-bottom: 4rpx; }
+.luck-val { font-size: 24rpx; font-weight: bold; }
+
+/* 宜忌区 */
+.fc-do-dont { display: flex; flex-direction: column; gap: 16rpx; margin: 16rpx 0; }
+.dd-row { display: flex; align-items: center; }
+.dd-pills { font-size: 18rpx; padding: 4rpx 14rpx; border-radius: 20rpx; color: #fff; font-weight: bold; margin-right: 16rpx; flex-shrink: 0; box-shadow: 2rpx 2rpx 6rpx rgba(0,0,0,0.1); }
+.dd-pills.do { background: linear-gradient(135deg, #a0d468, #5b8c00); }
+.dd-pills.dont { background: linear-gradient(135deg, #ffce54, #fa8c16); }
+.dd-text { font-size: 22rpx; color: $text-primary; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* 底部箴言 */
+.fc-footer { border-top: 1rpx solid rgba(0,0,0,0.04); padding-top: 12rpx; }
+.quote-content { font-size: 20rpx; color: $text-secondary; line-height: 1.4; font-style: italic; font-weight: 500; font-family: Georgia, "Times New Roman", Times, serif; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* 锦鲤专属主题 */
+.theme-sp-gold {
+  background: linear-gradient(135deg, #e6cf9c 0%, #fffada 45%, #fffada 55%, #e6cf9c 100%) !important;
+  border: 2rpx solid rgba(255, 236, 179, 0.8) !important;
+  box-shadow: 0 0 30rpx rgba(255, 215, 0, 0.3), inset 0 0 20rpx rgba(255, 250, 220, 0.5) !important;
+
+  &::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; pointer-events: none;
+    background-image: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.15) 0px, transparent 1px, transparent 3px);
+    mix-blend-mode: overlay; 
+  }
+
+  .fc-left-panel, .fc-divider-vertical, .fc-right-panel { position: relative; z-index: 1; }
+  .fc-divider-vertical { border-left: 2rpx dashed rgba(200, 160, 80, 0.5) !important; box-shadow: 1px 0 0 rgba(255, 255, 255, 0.6) !important; }
+  
+  .neu-pressed-circle {
+    background: linear-gradient(145deg, #ffffff, #fff5d7) !important;
+    box-shadow: inset 4rpx 4rpx 8rpx rgba(180, 150, 100, 0.3), inset -4rpx -4rpx 10rpx rgba(255, 255, 255, 1) !important;
+  }
+
+  .sign-text-wrap, .luck-val, .fc-date-group .fc-date { 
+    color: #8c6928 !important; 
+    text-shadow: 0px -1px 0px rgba(100, 70, 20, 0.2), 0px 1px 1px rgba(255, 255, 255, 0.9) !important; 
+  }
+
+  .neu-capsule {
+    background: linear-gradient(to bottom, #ffffff, #fff0c0) !important; border: 1rpx solid rgba(255, 255, 255, 0.6);
+    box-shadow: 4rpx 4rpx 10rpx rgba(180, 150, 100, 0.25), -2rpx -2rpx 6rpx rgba(255, 255, 255, 1) !important;
+  }
+
+  .luck-label, .fc-week, .dd-text, .quote-content, .quote-mark-left, .quote-mark-right { color: rgba(140, 105, 40, 0.9) !important; }
+}

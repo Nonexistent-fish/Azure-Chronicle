@@ -1,0 +1,91 @@
+<audit-protector></audit-protector>
+<mall-nav title="聚宝盆祈福" bgColor="rgba(255,255,255,0.4)" titleColor="#8A181A"></mall-nav>
+
+<view class="chinese-container gradient-bg">
+  <view class="ambient-light warm-glow"></view>
+
+  <view class="lantern-box left-lantern">
+    <view class="lantern" bindtap="openRulesPopup">
+      <view class="rules-icon"><text class="question-mark">?</text></view>
+      <view class="lantern-line"></view>
+      <view class="lantern-tassel"></view>
+    </view>
+  </view>
+  
+  <view class="lantern-box right-lantern">
+    <view class="lantern">
+      <view class="lantern-line"></view>
+      <view class="lantern-tassel"></view>
+    </view>
+  </view>
+
+  <view class="announcement-bar" wx:if="{{isGlobalCooldown}}">
+    <text>📢 全服公告：{{announcementMsg}}</text>
+  </view>
+
+  <view class="treasure-bowl">
+    <view class="bowl-crown"></view>
+    <view class="bowl-desc">全服祈福奖池 (积分)</view>
+    
+    <view class="jade-board">
+      <view class="jade-tile" wx:for="{{jackpotDigits}}" wx:key="index">
+        <view class="digit-column" style="transform: translateY({{ '-' + (item * 10) + '%' }})">
+          <view class="digit" wx:for="{{[0,1,2,3,4,5,6,7,8,9]}}" wx:for-item="num" wx:key="num">{{num}}</view>
+        </view>
+        <view class="tile-glare"></view> 
+      </view>
+    </view>
+
+    <view class="action-panel">
+      <button class="bless-btn {{isPlaying ? 'pressed' : ''}} {{isGlobalCooldown ? 'disabled' : ''}}" hover-class="{{isGlobalCooldown ? '' : 'bless-btn-hover'}}" bindtap="handlePlayLotto">
+        <view class="btn-inner">
+          <text wx:if="{{isGlobalCooldown}}">福缘重置中</text>
+          <text wx:else>虔诚祈福 (-2 积分)</text>
+        </view>
+      </button>
+    </view>
+  </view>
+
+  <view class="golden-roll">
+    <view class="roll-header">
+      <view class="diamond-icon"></view><text>祈 福 金 榜</text><view class="diamond-icon"></view>
+    </view>
+    <view class="roll-list">
+      <view class="roll-item {{item.isWin ? 'win-item' : ''}}" wx:for="{{logs}}" wx:key="key">
+        <text class="roll-time">{{item.time}}</text>
+        <text class="roll-user">【{{item.userName}}】</text>
+        <text class="roll-action">{{item.action}}</text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="blessing-modal" wx:if="{{showModal}}" bindtap="closeModal">
+  <view class="blessing-card" catchtap="closeModal">
+    <view class="antique-border">
+      <view class="plum-bg"></view>
+      <view class="card-header">{{ isGrandPrize ? '🏮 祥瑞降临 🏮' : '🎐 祈福灵签 🎐' }}</view>
+      <image class="blessing-img" src="{{currentImage}}" mode="aspectFill"></image>
+      <view class="card-content">{{ currentBlessing }}</view>
+      <view class="card-grand-text" wx:if="{{isGrandPrize}}">锦鲤附体！喜获 {{winAmount}} 积分！</view>
+      <view class="click-tip">点击任意处收下祝福</view>
+    </view>
+  </view>
+</view>
+
+<view class="center-popup-mask {{showRulesPopup ? 'show' : ''}}" bindtap="closeRulesPopup"></view>
+
+<view class="center-popup-content {{showRulesPopup ? 'show' : ''}}">
+  <view class="rules-header">📜 祈福规则</view>
+  <scroll-view scroll-y class="rules-scroll">
+    <view class="rules-text">
+      <view>1. 每次祈福需消耗 2 积分，存入奖池 1 积分。</view>
+      <view>2. 每次祈福有1%的概率触发【祥瑞降临】，直接清空当前聚宝盆内所有积分奖励！</view>
+      <view>3. 触发大奖后，需12小时冷却期后，奖池回归初始状态（50积分）</view>
+      <view>1% ＞ 0.8%</view>
+    </view>
+  </scroll-view>
+  <view class="rules-btn" bindtap="closeRulesPopup">我知道了</view>
+</view>
+
+<mall-tabbar currentIdx="0"></mall-tabbar>

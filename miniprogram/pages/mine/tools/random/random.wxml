@@ -1,0 +1,42 @@
+<wxs module="styleModule">
+  var getCenterFontSize = function(str) { var len = (str || '').toString().length; return len <= 3 ? '80rpx' : (len <= 5 ? '56rpx' : (len <= 8 ? '42rpx' : '32rpx')); };
+  var getInputFontSize = function(str) { var len = (str || '').toString().length; return len <= 4 ? '40rpx' : (len <= 6 ? '32rpx' : '26rpx'); };
+  module.exports = { getCenterFontSize: getCenterFontSize, getInputFontSize: getInputFontSize };
+</wxs>
+
+<view class="random-page">
+  <view class="wheel-stage">
+    <view class="pointer-arrow"></view>
+    <view class="wheel-outer" style="transform: rotate({{wheelRotation}}deg);">
+      <view class="wheel-tick" wx:for="{{12}}" wx:key="index" style="transform: rotate({{index * 30}}deg);"></view>
+    </view>
+    <view class="wheel-center">
+      <text class="result-value {{isSpinning ? 'flicker' : 'highlight'}}" style="font-size: {{styleModule.getCenterFontSize(displayValue)}}">{{displayValue}}</text>
+    </view>
+  </view>
+
+  <view class="control-panel">
+    <view class="panel-title">设定随机范围</view>
+    <view class="range-box">
+      <view class="input-item">
+        <text class="label">最小值</text>
+        <input class="num-input" type="number" value="{{minVal}}" data-field="minVal" bindinput="handleInput" disabled="{{isSpinning}}" style="font-size: {{styleModule.getInputFontSize(minVal)}}" />
+      </view>
+      
+      <view class="range-divider">
+        <view class="line"></view>
+        <text>至</text>
+        <view class="line"></view>
+      </view>
+
+      <view class="input-item">
+        <text class="label">最大值</text>
+        <input class="num-input" type="number" value="{{maxVal}}" data-field="maxVal" bindinput="handleInput" disabled="{{isSpinning}}" style="font-size: {{styleModule.getInputFontSize(maxVal)}}" />
+      </view>
+    </view>
+
+    <button class="action-btn {{isSpinning ? 'disabled' : ''}}" catchtap="startRandom">
+      <text class="btn-icon">🎯</text> {{isSpinning ? '抽取中...' : '开始抽取'}}
+    </button>
+  </view>
+</view>

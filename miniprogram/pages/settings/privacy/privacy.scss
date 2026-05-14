@@ -1,0 +1,16 @@
+page { background: #f6f7f9; }
+.container { padding: 30rpx 30rpx; box-sizing: border-box; }
+
+.page-title { font-size: 26rpx; color: #999; margin-bottom: 16rpx; margin-left: 12rpx; font-weight: 500; }
+.settings-card { width: 100%; background: white; border-radius: 24rpx; overflow: hidden; box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04); }
+
+.item { display: flex; justify-content: space-between; align-items: center; padding: 35rpx 30rpx; background: white; width: 100%; box-sizing: border-box; transition: background-color 0.2s;
+  &:not(:last-child) { border-bottom: 1rpx solid #f2f2f2; }
+  .label { font-size: 30rpx; color: #333; font-weight: 500; }
+  .value { font-size: 30rpx; color: #666; }
+  .right-box { display: flex; align-items: center;
+    .input { text-align: right; font-size: 30rpx; color: #666; width: 300rpx; margin-right: 12rpx; min-height: 1.4rem; line-height: 1.4rem; }
+    .placeholder-text { color: #bbb; }
+    .edit-icon { font-size: 28rpx; color: #ccc; margin-top: -4rpx; }
+  }
+}

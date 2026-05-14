@@ -1,0 +1,27 @@
+<view class="mall-tabbar-wrap">
+  <view class="mall-tabbar">
+    <view class="tab-item {{currentIdx === 0 ? 'active' : ''}}" data-idx="0" data-path="/pages/mine/market/lotto/lotto" bindtap="switchTab">
+      <view class="tab-icon">
+        <image class="svg-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIGZpbGw9IiMwMDAwMDAiPjxwYXRoIGQ9Ik0xMjggNDI2LjY2N2g3NjhsLTg1LjMzMyA0MjYuNjY2SDIxMy4zMzN6Ii8+PGVsbGlwc2UgY3g9IjUxMiIgY3k9IjQyNi42NjciIHJ4PSIzODQiIHJ5PSIxMjgiLz48Y2lyY2xlIGN4PSI1MTIiIGN5PSIyNTYiIHI9Ijg1LjMzMyIvPjxjaXJjbGUgY3g9IjM0MS4zMzMiIGN5PSIzNDEuMzMzIiByPSI4NS4zMzMiLz48Y2lyY2xlIGN4PSI2ODIuNjY3IiBjeT0iMzQxLjMzMyIgcj0iODUuMzMzIi8+PC9zdmc+"></image>
+      </view>
+      <text class="tab-text">聚宝盆</text>
+    </view>
+
+    <view class="tab-item {{currentIdx === 1 ? 'active' : ''}}" data-idx="1" data-path="/pages/mine/market/market" bindtap="switchTab">
+      <view class="tab-icon">
+        <image class="svg-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIGZpbGw9IiMwMDAwMDAiPjxwYXRoIGQ9Ik04NTMuMzMzIDI5OC42NjdIMTcwLjY2N2MtNDcuMTQ2IDAtODUuMzM0IDM4LjE4Ny04NS4zMzQgODUuMzMzdjI1NmMwIDQ3LjE0NiAzOC4xODggODUuMzMzIDg1LjMzNCA4NS4zMzNoNjgyLjY2NmM0Ny4xNDcgMCA4NS4zMzQtMzguMTg3IDg1LjMzNC04NS4zMzN2LTI1NmMwLTQ3LjE0Ni0zOC4xODctODUuMzMzLTg1LjMzNC04NS4zMzN6TTM4NCA1NTQuNjYyaC00Mi42NjdWNTk3LjMzM2MwIDIzLjU3My0xOS4wOTQgNDIuNjY3LTQyLjY2NiA0Mi42NjdoLTQyLjY2N2MtMjMuNTczIDAtNDIuNjY3LTE5LjA5NC00Mi42NjctNDIuNjY3di00Mi42NjZIMTcwLjY2N2MtMjMuNTc0IDAtNDIuNjY3LTE5LjA5NC00Mi42NjctNDIuNjY3di00Mi42NjdjMC0yMy41NzMgMTkuMDkzLTQyLjY2NiA0Mi42NjctNDIuNjY2aDQyLjY2NnYtNDIuNjY3YzAtMjMuNTczIDE5LjA5NC00Mi42NjcgNDIuNjY3LTQyLjY2N2g0Mi42NjdjMjMuNTcyIDAgNDIuNjY2IDE5LjA5NCA0Mi42NjYgNDIuNjY3djQyLjY2N0gzODRjMjMuNTczIDAgNDIuNjY3IDE5LjA5MyA0Mi42NjcgNDIuNjY2djQyLjY2N2MwIDIzLjU3My0xOS4wOTQgNDIuNjY3LTQyLjY2NyA0Mi42Njd6TTc2OCA1OTcuMzMzYy0zNS4zNDYgMC02NC0yOC42NTQtNjQtNjRzMjguNjU0LTY0IDY0LTY0IDY0IDI4LjY1NCA2NCA2NC0yOC42NTQgNjQtNjQgNjR6TTU5Ny4zMzMgNTk3LjMzM2MtMzUuMzQ2IDAtNjQtMjguNjU0LTY0LTY0czI4LjY1NC02NCA2NC02NCA2NCAyOC42NTQgNjQgNjQtMjguNjU0IDY0LTY0IDY0eiIvPjwvc3ZnPg=="></image>
+      </view>
+      <text class="tab-text">抽奖机</text>
+    </view>
+
+    <view class="tab-item {{currentIdx === 2 ? 'active' : ''}}" data-idx="2" data-path="/pages/mine/market/outfit/outfit" bindtap="switchTab">
+      <view class="tab-icon">
+        <image class="svg-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDI0IDEwMjQiIGZpbGw9IiMwMDAwMDAiPjxwYXRoIGQ9Ik02ODIuNjY3IDIxMy4zMzNBMTcwLjY2NyAxNzAuNjY3IDAgMCAwIDUxMiAzODQgMTcwLjY2NyAxNzAuNjY3IDAgMCAwIDM0MS4zMzMgMjEzLjMzM0g4NS4zMzNsMTcwLjY2NyAyNTZ2Mzg0aDUxMnYtMzg0bDE3MC42NjctMjU2SDY4Mi42Njd6Ii8+PC9zdmc+"></image>
+      </view>
+      <text class="tab-text">外观商城</text>
+    </view>
+  </view>
+</view>
+
+<view class="tabbar-placeholder"></view>
+

@@ -1,0 +1,25 @@
+/* 基础容器 */
+.tab-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 100rpx; background: #ffffff; display: flex; padding-bottom: calc(env(safe-area-inset-bottom) + 20rpx); box-shadow: 0 -1rpx 10rpx rgba(0, 0, 0, 0.05); z-index: 999; }
+.tab-bar-item { flex: 1; display: flex; justify-content: center; align-items: center; }
+
+/* 图标文字组 */
+.icon-box { display: flex; flex-direction: column; align-items: center; color: #999999; &.active { color: #07c160; } }
+.tab-icon { width: 48rpx; height: 48rpx; margin-bottom: 4rpx; background-size: contain; background-repeat: no-repeat; background-position: center; }
+
+/* 内联 Base64 图标集 */
+.icon-home { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath d='M512 128L128 448v448h256V640h256v256h256V448L512 128z' fill='%23999999'/%3E%3C/svg%3E"); }
+.icon-home.active { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath d='M512 128L128 448v448h256V640h256v256h256V448L512 128z' fill='%2307c160'/%3E%3C/svg%3E"); }
+.icon-mine { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath d='M512 512c141.4 0 256-114.6 256-256S653.4 0 512 0 256 114.6 256 256s114.6 256 256 256zm0 64c-235.3 0-426.7 191.4-426.7 426.7 0 11.8 9.6 21.3 21.3 21.3h810.7c11.8 0 21.3-9.6 21.3-21.3 0-235.3-191.4-426.7-426.7-426.7z' fill='%23999999'/%3E%3C/svg%3E"); }
+.icon-mine.active { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1024 1024'%3E%3Cpath d='M512 512c141.4 0 256-114.6 256-256S653.4 0 512 0 256 114.6 256 256s114.6 256 256 256zm0 64c-235.3 0-426.7 191.4-426.7 426.7 0 11.8 9.6 21.3 21.3 21.3h810.7c11.8 0 21.3-9.6 21.3-21.3 0-235.3-191.4-426.7-426.7-426.7z' fill='%2307c160'/%3E%3C/svg%3E"); }
+
+/* 中间悬浮发布按钮 */
+.center-item { position: relative; overflow: visible; }
+.special-wrapper { position: absolute; top: -50rpx; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; z-index: 1000; }
+.special-btn { width: 120rpx; height: 120rpx; background-color: #ffffff; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.1); border: 1rpx solid #eeeeee; margin-bottom: 6rpx; }
+.special-btn.active-bg { background-color: #07c160; border-color: #07c160; box-shadow: 0 4rpx 16rpx rgba(7, 193, 96, 0.4); }
+
+/* 文字与图标修正 */
+.plus-icon { font-size: 70rpx; color: #999999; font-weight: 300; margin-top: -8rpx; }
+.white-icon { color: #ffffff !important; }
+.tab-text { font-size: 20rpx; line-height: 1; }
+.active-text { color: #07c160; }

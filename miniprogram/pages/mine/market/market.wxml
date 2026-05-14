@@ -1,0 +1,50 @@
+<mall-nav title="藏宝阁" bgColor="rgba(255,255,255,0.4)" titleColor="#8A181A"></mall-nav>
+
+<view class="temple-fair-container">
+  <view class="lantern-glow"></view>
+  <view class="lantern-glow right"></view>
+
+  <scroll-view class="main-scroll" scroll-y enable-flex>
+    <view class="lottery-banner-wrapper">
+      <swiper class="lottery-swiper" autoplay circular interval="4000">
+        <block wx:if="{{bannerList.length > 0}}">
+          <swiper-item wx:for="{{bannerList}}" wx:key="_id" bindtap="handleBannerClick" data-item="{{item}}">
+            <view class="lottery-banner pure-image">
+              <image class="banner-bg-img" src="{{item.imageUrl}}" mode="aspectFill"></image>
+            </view>
+          </swiper-item>
+        </block>
+        <block wx:else>
+          <swiper-item>
+            <view class="lottery-banner default-banner">
+              <view class="banner-content">
+                <text class="lottery-title">祈愿抽卡 · 筹备中</text>
+                <text class="lottery-desc">敬请期待新版本上线</text>
+              </view>
+            </view>
+          </swiper-item>
+        </block>
+      </swiper>
+      <view class="floating-lantern"></view>
+    </view>
+
+    <view class="market-section">
+      <view class="section-header">
+        <view class="title-left">
+          <text class="main-title">跳蚤集市</text>
+          <text class="sub-title">玩家自由交易</text>
+        </view>
+      </view>
+
+      <view class="empty-market-state">
+        <image class="empty-icon" src="" mode="aspectFit"></image>
+        <text class="empty-title">集市施工中...</text>
+        <text class="empty-desc">未来您可以在此交易闲置装扮\n赚取丰厚积分</text>
+      </view>
+      
+      <view class="scroll-bottom-padding"></view>
+    </view>
+  </scroll-view>
+</view>
+
+<mall-tabbar currentIdx="1"></mall-tabbar>

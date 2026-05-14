@@ -1,0 +1,228 @@
+<wxs module="flipEngine">
+var startX = 0; var startY = 0; var currentStableAngle = 0; var isDragging = false;
+var DRAG_THRESHOLD = 80; var ROTATE_COEFF = 0.6; 
+function touchstart(e, ins) {
+  var touch = e.touches[0] || e.changedTouches[0];
+  startX = touch.clientX; startY = touch.clientY; isDragging = true;
+  ins.selectComponent('.flipper').setStyle({ transform: 'rotateY(' + currentStableAngle + 'deg)', transition: 'none' });
+}
+function touchmove(e, ins) {
+  if (!isDragging) return;
+  var touch = e.touches[0] || e.changedTouches[0];
+  var deltaX = touch.clientX - startX; var deltaY = touch.clientY - startY;
+  if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 10) return;
+  ins.selectComponent('.flipper').setStyle({ transform: 'rotateY(' + (currentStableAngle + deltaX * ROTATE_COEFF) + 'deg)', transition: 'none' });
+}
+function touchend(e, ins) {
+  if (!isDragging) return; isDragging = false;
+  var deltaX = e.changedTouches[0].clientX - startX;
+  if (Math.abs(deltaX) < 5) {
+    ins.selectComponent('.flipper').setStyle({ transform: 'rotateY(' + currentStableAngle + 'deg)', transition: 'transform 0.3s ease' }); return;
+  }
+  var targetAngle = currentStableAngle;
+  if (Math.abs(deltaX) > DRAG_THRESHOLD) targetAngle = currentStableAngle + (deltaX > 0 ? 180 : -180);
+  var isRealFlip = (targetAngle !== currentStableAngle);
+  currentStableAngle = targetAngle;
+  ins.selectComponent('.flipper').setStyle({ transform: 'rotateY(' + targetAngle + 'deg)', transition: 'transform 0.7s cubic-bezier(0.23, 1, 0.32, 1.05)' });
+  if (isRealFlip) ins.callMethod('onFlipStateSync', {});
+}
+function toggleFlip(e, ins) {
+  currentStableAngle += 180;
+  ins.selectComponent('.flipper').setStyle({ transform: 'rotateY(' + currentStableAngle + 'deg)', transition: 'transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)' });
+  ins.callMethod('onFlipStateSync', {});
+}
+module.exports = { touchstart: touchstart, touchmove: touchmove, touchend: touchend, toggleFlip: toggleFlip };
+</wxs>
+
+<view class="custom-navbar" style="height: {{totalNavHeight}}px;">
+  <view class="nav-title-box" style="margin-top: {{statusBarHeight}}px; height: {{navBarHeight}}px; line-height: {{navBarHeight}}px;">我的</view>
+  <view class="service-icon-box" style="top: {{menuButtonTop}}px; height: {{menuButtonHeight}}px; width: {{menuButtonHeight}}px; left: 15px;" bindtap="goToFeedback">
+    <view class="icon-headphones"></view>
+  </view>
+</view>
+
+<view class="nav-spacer" style="height: {{totalNavHeight}}px;"></view>
+
+<view class="container">
+  <view wx:if="{{isLoading}}" class="status-center"><view class="loading-text">正在同步数据...</view></view>
+
+  <view wx:elif="{{!isRegistered || userInfo.registerStatus !== 1}}" class="unauth-card">
+    <view class="unauth-title">欢迎来到社区</view>
+    <view class="unauth-desc">绑定真实身份，解锁专属名片与全部高级功能</view>
+    <navigator url="/pages/mine/tools/auth/auth" class="unauth-btn" hover-class="unauth-btn-hover">去绑定身份 / 查看状态</navigator>
+  </view>
+
+  <view wx:else>
+    <view class="flip-container" bindtouchstart="{{flipEngine.touchstart}}" bindtouchmove="{{flipEngine.touchmove}}" bindtouchend="{{flipEngine.touchend}}">
+      <view class="flipper">
+        <view class="front">
+          <view class="profile-card {{userInfo.cardTheme === 'light' ? 'theme-light' : 'theme-dark'}}">
+            <image wx:if="{{userInfo.cardBgUrl}}" class="card-bg-img" src="{{userInfo.cardBgUrl}}" mode="aspectFill"></image>
+
+            <view class="likes-stat-badge">
+              <image class="thumb-icon" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23faad14%27%3E%3Cpath d=%27M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3%27/%3E%3C/svg%3E"></image>
+              <text class="likes-num">{{userInfo.profileLikes || 0}}</text>
+            </view>
+
+            <view class="points-stat-badge">
+              <image class="coin-icon" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23faad14%27%3E%3Cpath d=%27M12,3 C16.97,3 21,4.79 21,7 C21,9.21 16.97,11 12,11 C7.03,11 3,9.21 3,7 C3,4.79 7.03,3 12,3 Z M12,13 C16.97,13 21,11.21 21,9 L21,11 C21,13.21 16.97,15 12,15 C7.03,15 3,13.21 3,11 L3,9 C3,11.21 7.03,13 12,13 Z M12,19 C16.97,19 21,17.21 21,15 L21,17 C21,19.21 16.97,21 12,21 C7.03,21 3,19.21 3,17 L3,15 C3,17.21 7.03,19 12,19 Z%27/%3E%3C/svg%3E" mode="aspectFit"></image>
+              <text class="points-num">{{userInfo.points || 0}}</text>
+            </view>
+
+            <view class="dress-up-btn" catchtap="openDressUpDrawer"><view class="icon-svg"></view></view>
+
+            <view class="avatar-wrapper-box">
+              <button class="avatar-btn {{userInfo.avatarFrameSizeLevel === 'epic' ? 'epic-spacing' : ''}}" open-type="chooseAvatar" bind:chooseavatar="onUpdateAvatar">
+                <image wx:if="{{userInfo.avatarFrameUrl && userInfo.avatarFrameUrl !== 'white_shadow'}}" class="avatar-frame size-{{userInfo.avatarFrameSizeLevel || 'normal'}}" src="{{userInfo.avatarFrameUrl}}" mode="aspectFill" style="{{userInfo.avatarFrameShadow ? 'filter: ' + userInfo.avatarFrameShadow + ';' : ''}}"></image>
+                <view wx:if="{{userInfo.avatarFrameUrl === 'white_shadow'}}" class="white-ring-layer"></view>
+                <image class="avatar" src="{{userInfo.weiXinAvatar}}" mode="aspectFill"></image>
+                <view class="edit-icon"></view>
+              </button>
+              <view class="gender-tag gender-{{userInfo.gender || 0}}" catchtap="onChangeGender">
+                <text wx:if="{{userInfo.gender == 1}}">♂</text>
+                <text wx:elif="{{userInfo.gender == 2}}">♀</text>
+                <text wx:else>?</text>
+              </view>
+            </view>
+            
+            <view class="name-row">
+              <view class="name-core">
+                <view class="level-entry-btn" bindtap="openLevelDrawer" style="background: {{levelInfo.color}}; color: #ffffff;">
+                  <text class="lv-text">Lv.{{levelInfo.level}}</text>
+                </view>
+                <input wx:if="{{editState.nickName}}" class="nickname-input editing" value="{{userInfo.nickName}}" focus="{{true}}" bindblur="onUpdateNickName" maxlength="8" />
+                <view wx:else class="nickname-text" bindtap="startEditName">{{userInfo.nickName || '设置昵称'}}<view class="edit-hint-icon"></view></view>
+                <view class="role-tag tag-{{userInfo.Permission || 0}}" wx:if="{{userInfo.Permission > 0}}">
+                  <text wx:if="{{userInfo.Permission == 1}}">教职工</text>
+                  <text wx:elif="{{userInfo.Permission == 2}}">管理员</text>
+                  <text wx:elif="{{userInfo.Permission == 3}}">开发者</text>
+                </view>
+              </view>
+            </view>
+
+            <view class="bio-box">
+              <input wx:if="{{editState.bio}}" class="bio-input editing" value="{{userInfo.bio}}" focus="{{true}}" bindblur="onUpdateBio" placeholder="写点什么介绍自己..." placeholder-style="{{userInfo.cardTheme === 'dark' ? 'color: rgba(255,255,255,0.6)' : 'color: #999'}}" />
+              <view wx:else class="bio-text {{!userInfo.bio ? 'placeholder-style' : ''}}" bindtap="startEditBio">{{userInfo.bio || '写点什么介绍自己...'}}</view>
+            </view>
+            <view class="xp-bar-container"><view class="xp-bar-fill" style="{{xpBarStyle}}"></view></view>
+          </view>
+        </view>
+
+        <view class="back" bindtap="{{flipEngine.toggleFlip}}">
+          <view class="profile-card fortune-card-back">
+            <fortune-card class="fortune-full" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="notice-section" wx:if="{{notice && notice.content}}">
+      <view class="notice-box {{notice.type === 'error' ? 'notice-red' : 'notice-blue'}}">
+        <view class="notice-icon">📢</view>
+        <view class="notice-content-mask"><view class="notice-scroll-text">{{notice.content}}</view></view>
+      </view>
+    </view>
+
+    <view class="menu-list">
+      <view class="menu-item" bindtap="goToMyPosts"><text>📝 我的发布</text><text class="arrow">></text></view>
+      <view class="menu-item" bindtap="goToMyFavorites"><text>⭐️ 我的收藏</text><text class="arrow">></text></view>
+      <view class="menu-item" bindtap="goToMailbox"><text class="menu-text">✉️ 我的信箱</text><view class="right-area"><view class="red-dot" wx:if="{{hasUnreadMail}}"></view><text class="arrow">></text></view></view>
+      <view class="menu-item" bindtap="goToMarket"><text>🛍 积分市场</text><text class="arrow">></text></view>
+      <view class="menu-item" bindtap="goToTools"><text>🧰 工具箱</text><text class="arrow">></text></view>
+      <navigator url="/pages/settings/settings/settings" class="menu-item"><text>⚙️ 设置</text><text class="arrow">></text></navigator>
+      <view class="menu-item admin-entry" wx:if="{{isSuperAdmin}}" bindtap="goToTestWorkbench" style="border-top: 2rpx solid #eee;"><text style="color: #10b981; font-weight: bold;">🛠️ 测试工作台 (开发者专区)</text><text class="arrow">></text></view>
+    </view>
+  </view>
+
+  <view class="drawer-mask" wx:if="{{showDressUpDrawer}}" bindtap="closeDressUpDrawer"></view>
+  <view class="dress-up-drawer {{showDressUpDrawer ? 'show' : ''}}">
+    <view class="drawer-header"><text class="drawer-title">个性装扮</text><view class="drawer-close" bindtap="closeDressUpDrawer">×</view></view>
+    <view class="drawer-tabs">
+      <view class="tab-item {{currentTabIndex === 0 ? 'active' : ''}}" bindtap="switchTab" data-index="0">背景图</view>
+      <view class="tab-item {{currentTabIndex === 1 ? 'active' : ''}}" bindtap="switchTab" data-index="1">头像框</view>
+      <view class="tab-indicator" style="transform: translateX({{ currentTabIndex * 100 + '%' }});"><view class="line"></view></view>
+    </view>
+    <swiper class="drawer-swiper" current="{{currentTabIndex}}" bindchange="onSwiperChange" duration="300">
+      <swiper-item>
+        <scroll-view class="drawer-scroll-area" scroll-y>
+          <view class="skin-grid">
+            <view class="skin-item" wx:for="{{bgSkins}}" wx:key="_id" bindtap="applySkin" data-item="{{item}}">
+              <view class="skin-preview-box {{item.isDefault ? 'default-box' : ''}} {{item.isMall ? 'mall-box' : ''}}">
+                <text wx:if="{{item.isDefault}}" class="default-icon">⬜</text>
+                <block wx:elif="{{item.isMall}}"><text class="mall-icon">🛒</text><text class="mall-text">获取更多</text></block>
+                <block wx:else>
+                  <image class="skin-preview" src="{{item._displayBgUrlSmall}}" mode="aspectFill"></image>
+                  <view class="skin-tag tag-{{item.uiTag}}" wx:if="{{item.uiTag && item.uiTag !== 'none'}}">{{item.uiTag === 'faculty' ? '教职工' : item.uiTag === 'event' ? '限定' : item.uiTag === 'rare' ? '绝版' : '已解锁'}}</view>
+                </block>
+                <view class="skin-selected-mask" wx:if="{{!item.isMall && (userInfo.cardBgUrl || '') === (item.bgUrlLarge || '')}}"><text class="selected-icon">✓ 使用中</text></view>
+              </view>
+              <view class="skin-name {{item.isMall ? 'mall-name' : ''}}">{{item.name}}</view>
+            </view>
+          </view>
+        </scroll-view>
+      </swiper-item>
+
+      <swiper-item>
+        <scroll-view class="drawer-scroll-area" scroll-y>
+          <view class="skin-grid">
+            <view class="skin-item" wx:for="{{frameSkins}}" wx:key="_id" bindtap="applySkin" data-item="{{item}}">
+              <view class="skin-preview-box {{item.isDefault ? 'default-box' : ''}} {{item.isMall ? 'mall-box' : ''}}">
+                <text wx:if="{{item.isDefault && item.avatarFrameUrl === ''}}" class="default-icon">🚫</text>
+                <block wx:elif="{{item.isMall}}"><text class="mall-icon">🛒</text><text class="mall-text">获取更多</text></block>
+                <view wx:elif="{{item.avatarFrameUrl === 'white_shadow'}}" class="css-preview-ring"></view>
+                <block wx:else>
+                  <view style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100rpx; height: 100rpx; border-radius: 50%; background: #e0e0e0;"></view>
+                  <image src="{{item._displayAvatarFrameUrl}}" mode="aspectFit" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2; {{item.realSizeLevel === 'epic' ? 'width: 188rpx; height: 188rpx;' : 'width: 138rpx; height: 138rpx;'}} {{item.realShadow ? 'filter: ' + item.realShadow + ';' : ''}}"></image>
+                  <view class="skin-tag tag-{{item.uiTag}}" wx:if="{{item.uiTag && item.uiTag !== 'none'}}">{{item.uiTag === 'faculty' ? '教职工' : item.uiTag === 'event' ? '限定' : item.uiTag === 'rare' ? '绝版' : '已解锁'}}</view>
+                </block>
+                <view class="skin-selected-mask" wx:if="{{!item.isMall && (userInfo.avatarFrameUrl || '') === (item.avatarFrameUrl || '')}}"><text class="selected-icon">✓ 使用中</text></view>
+              </view>
+              <view class="skin-name {{item.isMall ? 'mall-name' : ''}}">{{item.name}}</view>
+            </view>
+          </view>
+        </scroll-view>
+      </swiper-item>
+    </swiper>
+  </view>
+
+  <view class="drawer-mask" wx:if="{{showLevelDrawer}}" bindtap="closeLevelDrawer"></view>
+  <view class="level-drawer {{showLevelDrawer ? 'show' : ''}}">
+    <view class="drawer-header"><text class="drawer-title">等级成长</text><view class="drawer-close" bindtap="closeLevelDrawer">×</view></view>
+    <scroll-view class="level-scroll" scroll-y>
+      <view class="level-timeline-container">
+        <view class="timeline-group" wx:for="{{levelDataList}}" wx:key="level" wx:for-index="idx">
+          <view class="timeline-left">
+            <view class="node-circle {{item.status === 'passed' || item.status === 'current' ? 'active' : ''}}" style="{{item.status === 'passed' || item.status === 'current' ? 'background: ' + item.color + '; border-color: ' + item.color + '; color: #fff; box-shadow: 0 4rpx 12rpx ' + item.color + '4D;' : ''}}"><text class="node-num">{{item.level}}</text></view>
+            <view class="timeline-track-area" wx:if="{{item.level < 10}}">
+              <view class="line-segment solid-future" wx:if="{{item.status === 'future'}}"></view>
+              <view class="line-segment solid-passed" wx:elif="{{item.status === 'passed'}}" style="background: linear-gradient(to bottom, {{item.color}}, {{levelDataList[idx+1].color || item.color}});"></view>
+              <view class="line-segment active-track" wx:else>
+                <view class="track-bg"></view>
+                <view class="progress-fill" style="height: {{currentLevelProgress + '%'}}; background: linear-gradient(to bottom, {{item.color}}, {{levelDataList[idx+1].color || item.color}});"></view>
+                <view class="user-float-indicator" style="top: {{currentLevelProgress + '%'}};">
+                  <view class="avatar-container">
+                    <image class="mini-avatar" src="{{userInfo.weiXinAvatar}}" mode="aspectFill"></image>
+                    <view class="indicator-tips">你在这里</view>
+                  </view>
+                  <view class="dashed-guide-line"></view>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view class="timeline-right node-content">
+            <view class="node-header">
+              <view class="level-tag" style="background: {{item.color}}">Lv.{{item.level}}</view>
+              <text class="node-title" style="color: {{item.color}}">{{item.title}}</text>
+            </view>
+            <view class="rule-simple" wx:if="{{levelRules[item.level]}}">
+              <text class="rule-text {{item.isUnlocked ? 'unlocked' : 'locked'}}">{{levelRules[item.level]}}</text>
+            </view>
+          </view>
+        </view>
+        <view style="height: 250rpx; padding-bottom: env(safe-area-inset-bottom);"></view> 
+      </view>
+    </scroll-view>
+  </view>
+</view>
+
+<mall-tabbar currentIdx="2"></mall-tabbar>

@@ -1,0 +1,99 @@
+<view class="history-page">
+  <view class="page-header">
+    <view class="page-title">往期话题</view>
+    <view class="page-desc">近7天话题的最终结论</view>
+  </view>
+
+  <view class="empty-state" wx:if="{{!isLoading && historyList.length === 0}}">
+    <view class="empty-text">档案室空空如也</view>
+    <view class="empty-sub">目前还没有已结束的话题哦</view>
+  </view>
+
+  <view class="history-list" wx:if="{{historyList.length > 0}}">
+    <block wx:for="{{historyList}}" wx:key="_id">
+      <view class="history-card">
+        
+        <view class="card-bg-watermark">
+          <text wx:if="{{item.topicType === 'battle'}}">VS</text>
+          <text wx:elif="{{item.topicType === 'choice'}}">PICK</text>
+          <text wx:else>TALK</text>
+        </view>
+
+        <view class="hc-header">
+          <view class="hc-meta-row">
+            <view class="hc-date">{{item.dateDisplay}}</view>
+            <view class="hc-votes">
+              <text class="vote-icon">👥</text>
+              <text class="vote-num">{{item.totalVotes}}</text>
+            </view>
+          </view>
+          <view class="hc-title">{{item.title}}</view>
+        </view>
+
+        <view class="hc-body-battle" wx:if="{{item.topicType === 'battle'}}">
+          <view class="pk-labels">
+            <text class="pk-opt red-opt">{{item.miniOptionA || '红方'}}</text>
+            <text class="pk-opt blue-opt">{{item.miniOptionB || '蓝方'}}</text>
+          </view>
+          <view class="mini-bar-container">
+            <view class="mini-bar-wrapper">
+              <view class="mini-bar-track">
+                <view class="mini-bar-fill red-fill" style="width: {{item.percentAStr}};">
+                  <view class="skew-fix"><text class="result-num">{{item.percentAStr}}</text></view>
+                </view>
+                <view class="gap-line"></view>
+                <view class="mini-bar-fill blue-fill" style="width: {{item.percentBStr}};">
+                  <view class="skew-fix right-fix"><text class="result-num">{{item.percentBStr}}</text></view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="hc-body-choice" wx:elif="{{item.topicType === 'choice'}}">
+          <block wx:for="{{item.optionsDisplay}}" wx:key="index" wx:for-item="opt">
+            <view class="choice-row">
+              <view class="choice-text">{{opt.label}}</view>
+              <view class="choice-bar-group">
+                <view class="choice-track">
+                  <view class="choice-fill {{opt.isTop ? 'is-top' : ''}}" style="width: {{opt.percentStr}};"></view>
+                </view>
+                <text class="choice-percent {{opt.isTop ? 'is-top' : ''}}">{{opt.percentStr}}</text>
+              </view>
+            </view>
+          </block>
+        </view>
+
+        <view class="hc-body-none" wx:else>
+          <view class="none-content-box">
+            <text>{{item.content || '本期话题为开放式讨论...'}}</text>
+          </view>
+        </view>
+
+        <view class="hc-top-comment" wx:if="{{item.topComment}}">
+          <view class="tc-main">
+            <view class="tc-avatar-box">
+              <image class="tc-avatar" src="{{item.topComment.avatar}}" mode="aspectFill"></image>
+              <view class="crown-badge">👑</view>
+            </view>
+            <view class="tc-content-box">
+              <view class="tc-name-row">
+                <text class="tc-name">{{item.topComment.nickName}}</text>
+              </view>
+              <view class="tc-text">“{{item.topComment.content}}”</view>
+            </view>
+            <view class="tc-likes">
+              <view class="heart-icon"></view>
+              <text class="like-count">{{item.topComment.likes}}</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="hc-no-comment" wx:else>
+          <text>暂无神评收录...</text>
+        </view>
+
+      </view>
+    </block>
+  </view>
+</view>

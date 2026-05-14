@@ -1,0 +1,61 @@
+<view class="activity-container" style="background-color: {{activityData.page_bg_color || '#f6f7f9'}}; min-height: {{activityData.page_height ? activityData.page_height + 'rpx' : '100vh'}};">
+  <image wx:if="{{activityData.page_bg_image}}" class="bg-image" src="{{activityData.page_bg_image}}" mode="widthFix"></image>
+  <image wx:if="{{activityData.bgm_url}}" class="bgm-icon {{isPlayingBGM ? 'anim-spin' : ''}}" src="../../images/music-icon.png" bindtap="toggleBGM"></image>
+
+  <view wx:if="{{isOffline}}" class="offline-state">
+    <view class="offline-box">
+      <view class="offline-text">{{offlineTips}}</view>
+      <view class="offline-btn" bindtap="goBack">返回论坛</view>
+    </view>
+  </view>
+
+  <block wx:else>
+    <view wx:if="{{activityData.template_type === 'tpl_ios_card'}}" class="tpl-ios-wrapper">
+      <view class="card-header">
+        <view class="card-title">{{activityData.main_title || ''}}</view>
+        <view class="card-subtitle">{{activityData.sub_title || ''}}</view>
+      </view>
+
+      <view class="ios-glass-card">
+        <view class="card-content">
+          <rich-text nodes="{{activityData.html_content}}"></rich-text>
+        </view>
+        <view class="btn-area">
+          <block wx:for="{{activityData.dynamic_blocks}}" wx:key="index">
+            <view wx:if="{{item.button && !item.button.position}}" class="ios-card-btn {{(item.button.type === 'half_button' || item.button.type === '半长按钮(half_button)' || item.button.type === '半长按钮') ? 'half-btn' : 'full-btn'}} {{item.button.animation ? 'anim-' + item.button.animation : ''}}" style="background: {{item.button.color || '#333'}}; z-index: {{item.button.z_index || 10}};" data-action="{{item.button.action}}" data-action-data="{{item.button.action_data}}" bindtap="handleBlockClick">
+              {{item.button.text || '未命名按钮'}}
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <view wx:else class="rich-text-wrapper">
+      <rich-text nodes="{{activityData.html_content}}"></rich-text>
+      <view class="btn-area-free">
+        <block wx:for="{{activityData.dynamic_blocks}}" wx:key="index">
+          <view wx:if="{{item.button && !item.button.position}}" class="btn-action {{(item.button.type === 'half_button' || item.button.type === '半长按钮(half_button)' || item.button.type === '半长按钮') ? 'half-btn-free' : 'full-btn-free'}} default-flow-free {{item.button.animation ? 'anim-' + item.button.animation : ''}}" style="z-index: {{item.button.z_index || 10}}; background: {{item.button.color || '#07c160'}};" data-action="{{item.button.action}}" data-action-data="{{item.button.action_data}}" bindtap="handleBlockClick">
+            {{item.button.text || '未命名按钮'}}
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <block wx:for="{{activityData.dynamic_blocks}}" wx:key="index">
+      <image wx:if="{{item.float_image}}" class="dynamic-widget pos-{{item.float_image.position}} {{item.float_image.animation ? 'anim-' + item.float_image.animation : ''}}" style="z-index: {{item.float_image.z_index || 999}};" src="{{item.float_image.url}}" mode="aspectFit" data-action="{{item.float_image.action}}" data-action-data="{{item.float_image.action_data}}" bindtap="handleBlockClick"></image>
+      <view wx:if="{{item.button && item.button.position}}" class="dynamic-widget btn-action pos-{{item.button.position}} {{item.button.animation ? 'anim-' + item.button.animation : ''}}" style="z-index: {{item.button.z_index || 999}}; background: {{item.button.color || '#07c160'}};" data-action="{{item.button.action}}" data-action-data="{{item.button.action_data}}" bindtap="handleBlockClick">
+        {{item.button.text || '未命名按钮'}}
+      </view>
+    </block>
+
+    <view class="custom-popup {{showPopup ? 'popup-show' : ''}}" wx:if="{{showPopup}}">
+      <view class="popup-mask" bindtap="closePopup"></view>
+      <view class="popup-content anim-zoomIn">
+        <image class="popup-image" src="{{popupData.image_url}}" mode="widthFix"></image>
+        <view class="popup-title">{{popupData.title}}</view>
+        <view class="popup-desc">{{popupData.desc}}</view>
+        <view class="popup-btn" bindtap="closePopup">开心收下</view>
+      </view>
+    </view>
+  </block>
+</view>

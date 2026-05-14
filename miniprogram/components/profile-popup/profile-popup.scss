@@ -1,0 +1,42 @@
+/* 基础遮罩与容器 */
+.profile-mask { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.5); z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease; &.show { opacity: 1; visibility: visible; } }
+.profile-sheet { position: fixed; bottom: 0; left: 0; width: 100vw; background: #f6f7f9; border-radius: 30rpx 30rpx 0 0; z-index: 1001; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); padding: 40rpx 30rpx calc(40rpx + env(safe-area-inset-bottom)); box-sizing: border-box; height: 41vh; &.show { transform: translateY(0); } }
+
+/* 名片卡片 */
+.mine-card {
+  position: relative; z-index: 1; background: #fff; border-radius: 20rpx; padding: 40rpx 30rpx; display: flex; align-items: center; margin-bottom: 40rpx; transition: all 0.3s ease;
+  .mc-bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; border-radius: 20rpx; }
+  
+  .mc-avatar-wrapper { 
+    position: relative; width: 120rpx; height: 120rpx; margin-right: 30rpx; flex-shrink: 0; border-radius: 50%; overflow: visible !important; transition: margin 0.3s ease;
+    &.epic-spacing { margin-right: 40rpx !important; margin-left: 10rpx !important; }
+    .avatar-frame { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 20; pointer-events: none; &.size-normal { width: 144rpx; height: 144rpx; } &.size-epic { width: 196rpx; height: 196rpx; } }
+    .white-ring-layer { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 128rpx; height: 128rpx; border-radius: 50%; border: 4rpx solid #ffffff; box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.2); z-index: 10; pointer-events: none; box-sizing: border-box; }
+    .mc-avatar { width: 120rpx; height: 120rpx; border-radius: 50%; background: #eee; display: block; position: relative; z-index: 1; }
+    .gender-badge { position: absolute; bottom: -4rpx; right: -4rpx; width: 36rpx; height: 36rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20rpx; font-weight: bold; color: #fff; z-index: 30; border: 3rpx solid #fff; box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.15); &.male { background: #1890ff; } &.female { background: #eb2f96; } }
+  }
+
+  .mc-info { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+  .mc-name-row { display: flex; align-items: center; margin-bottom: 12rpx; }
+  
+  .level-wrapper { background: #ffffff; border-radius: 8rpx; margin-right: 14rpx; flex-shrink: 0; box-shadow: 0 4rpx 10rpx rgba(0,0,0,0.15); display: inline-flex; .level-entry-btn { padding: 4rpx 14rpx; border-radius: 8rpx; display: flex; align-items: center; box-shadow: none; margin-right: 0; .lv-text { font-size: 22rpx; font-weight: 900; font-family: 'Courier New', Courier, monospace; } } }
+  .mc-name { font-size: 34rpx; font-weight: bold; color: #333; max-width: 280rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: font-size 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); &.long-name { font-size: 26rpx; } }
+  
+  .role-wrapper { background: #ffffff; border-radius: 100rpx; margin-left: 14rpx; flex-shrink: 0; box-shadow: 0 4rpx 10rpx rgba(0,0,0,0.15); display: inline-flex; .role-tag { display: inline-flex; align-items: center; justify-content: center; font-size: 20rpx; padding: 6rpx 16rpx; border-radius: 100rpx; font-weight: bold; white-space: nowrap; margin-left: 0; box-shadow: none; &.tag-1 { background: rgba(24, 144, 255, 0.15); color: #1890ff; } &.tag-2 { background: rgba(114, 46, 209, 0.15); color: #722ed1; } &.tag-3 { background: rgba(250, 140, 22, 0.15); color: #fa8c16; border: 1rpx solid rgba(250, 140, 22, 0.3); } } }
+  .mc-bio { font-size: 26rpx; color: #888; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  
+  &.theme-dark { .mc-name { color: #333 !important; } .mc-bio { color: #666 !important; } .level-wrapper, .role-wrapper { box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.2); } }
+  &.theme-light { .mc-name { color: #ffffff !important; text-shadow: 0 2rpx 4rpx rgba(0,0,0,0.2); } .mc-bio { color: rgba(255, 255, 255, 0.8) !important; } .level-wrapper, .role-wrapper { box-shadow: 0 4rpx 10rpx rgba(0,0,0,0.15); } }
+}
+
+.mc-exchange-btn { width: 100%; height: 96rpx; background: #07c160; color: #fff; font-size: 32rpx; font-weight: bold; border-radius: 20rpx; display: flex; justify-content: center; align-items: center; margin-bottom: 24rpx; .btn-icon { width: 40rpx; height: 40rpx; margin-right: 12rpx; } &:active { background: #06ad56; transform: scale(0.98); } }
+
+/* 动效引擎 */
+.mc-like-box { margin-left: 20rpx; padding-left: 20rpx; border-left: 1px solid rgba(200,200,200,0.2); display: flex; align-items: center; justify-content: center; .thumb-wrapper { position: relative; } .thumb-svg { width: 44rpx; height: 44rpx; position: relative; z-index: 10; transition: transform 0.2s; } }
+.haptic-pop { animation: springPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+@keyframes springPop { 0% { transform: scale(1); } 40% { transform: scale(1.4) rotate(-15deg); } 60% { transform: scale(0.85) rotate(10deg); } 80% { transform: scale(1.1) rotate(-5deg); } 100% { transform: scale(1); } }
+
+.particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; .p-icon { position: absolute; width: 32rpx; height: 32rpx; opacity: 0; top: 50%; left: 50%; margin-top:-16rpx; margin-left:-16rpx; } }
+.rare .p-icon, .epic .p-icon, .legendary .p-icon { animation: explodeUp 0.8s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; }
+.pt1 { --tx: -40rpx; --ty: -80rpx; --r: -30deg; animation-delay: 0s !important; } .pt2 { --tx: 0rpx; --ty: -100rpx; --r: 0deg; animation-delay: 0.05s !important; } .pt3 { --tx: 40rpx; --ty: -70rpx; --r: 40deg; animation-delay: 0.1s !important; } .pt4 { --tx: -70rpx; --ty: -60rpx; --r: -50deg; animation-delay: 0.02s !important; } .pt5 { --tx: 60rpx; --ty: -110rpx; --r: 20deg; animation-delay: 0.08s !important; } .pt6 { --tx: 80rpx; --ty: -40rpx; --r: 60deg; animation-delay: 0.15s !important; } .pt7 { --tx: -90rpx; --ty: -120rpx; --r: -80deg; animation-delay: 0.04s !important; } .pt8 { --tx: 30rpx; --ty: -150rpx; --r: -10deg; animation-delay: 0.12s !important; } .pt9 { --tx: 100rpx; --ty: -80rpx; --r: 90deg; animation-delay: 0.18s !important; }
+@keyframes explodeUp { 0% { transform: translate(0, 0) scale(0.3) rotate(0deg); opacity: 1; } 60% { opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(1.3) rotate(var(--r)); opacity: 0; } }

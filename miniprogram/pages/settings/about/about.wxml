@@ -1,0 +1,32 @@
+<view class="safe-header"></view>
+<view class="about-container">
+  
+  <view class="header-box">
+    <image class="real-logo" src="/assets/icons/青笺拾光logo缩.jpg" mode="aspectFill"></image>
+    <text class="app-version">Version 1.3.0</text>
+  </view>
+
+  <view class="content-card">
+    <view class="greeting">嘿，同学你好！👋</view>
+    
+    <view class="paragraph">我和你们一样，每天在学校里上课（混日子）的普通学生。</view>
+    
+    <view class="paragraph">之前刷社交软件时，总能看到其他大学的学生在自己的“校园墙”上热烈讨论、疯狂吃瓜、互帮互助。当时我就在想一个问题：<text class="strong">凭什么别的学校都有，我们学校却没有？</text></view>
+
+    <view class="paragraph">而且，既然决定要做，我们就不能只是“有”，<text class="strong">我们要比别的学校做得更好看、更好用！</text></view>
+    
+    <view class="paragraph">填写你的文案</view>
+  
+    <view class="chicken-soup-box">
+      <text class="quote-mark">“</text>
+      <view class="paragraph">那些你以为枯燥无味的知识，那些你熬夜看过的文档，总有一天会变成你手里的“魔法”，帮你把脑海中的吹过的牛变成现实。种一棵树最好的时间是十年前，其次就是现在。去学、去做、去创造吧！</view>
+    </view>
+  </view>
+
+  <view class="footer-box">
+    <text class="support-text">服务器和云数据库的日常运转都需要真实的成本，如果这个小程序让你觉得还不错，或者曾经帮到了你——</text>
+    <button class="donate-btn" bindtap="goToDonate">
+      <text class="btn-icon">☕</text> 支持一下开发者
+    </button>
+  </view>
+</view>

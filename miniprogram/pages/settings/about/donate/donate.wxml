@@ -1,0 +1,52 @@
+<view class="donate-container">
+  <view class="header">
+    <text class="title">支持与鼓励</text>
+    <text class="subtitle">让我们的校园墙持续“用爱发电”</text>
+  </view>
+
+  <view class="main-card">
+    <view class="intro-section">
+      <view class="paragraph">服务器和云资源的运行需要持续的成本。如果你喜欢这个小程序，或者它曾经带给你便利与快乐，欢迎投喂开发者一杯蜜雪冰城。</view>
+      <view class="paragraph tips">*心意无价，量力而行。多余的钱请留给自己加个鸡腿，不要浪费在我身上啦。</view>
+    </view>
+
+    <view class="transparency-section">
+      <view class="pk-title">收支透明公示</view>
+      
+      <view class="stats-row">
+        <view class="stat-item income">
+          <text class="label">累计赞助</text>
+          <text class="value">¥{{income}}</text>
+        </view>
+        <view class="vs-icon">VS</view>
+        <view class="stat-item expense">
+          <text class="label">累计支出</text>
+          <text class="value">¥{{expense}}</text>
+        </view>
+      </view>
+
+      <view class="pk-bar-track">
+        <view class="pk-bar-fill income-fill" style="width: {{incomePercent + '%'}};"></view>
+      </view>
+      
+      <view class="pk-footer">
+        <text class="pk-ratio">当前收支比：<text style="color: {{incomePercent < 50 ? '#ff4d4f' : '#07c160'}}">{{incomePercent}}%</text></text>
+        <text class="delay-tips">*数据人工统计，可能有 48 小时延迟</text>
+      </view>
+    </view>
+
+    <view class="important-note">
+      <view class="note-header"><text class="note-icon">💡</text> 重要提示</view>
+      <view class="note-content">捐赠时，请务必在爱发电的【留言区】留下您在小程序里绑定过的 <text class="highlight">手机号 / 微信号 / QQ号</text>。</view>
+      <view class="note-footer">以便让我认识您，之后会送上一点点（真的是蚊子腿）的回报以表谢意。</view>
+    </view>
+  </view>
+
+  <view class="footer-action">
+    <button class="afdian-btn" bindtap="copyLink">
+      <text>前往爱发电支持</text>
+      <view class="btn-shine"></view>
+    </button>
+    <text class="footer-tips">点击按钮复制链接，请在浏览器或微信中打开</text>
+  </view>
+</view>

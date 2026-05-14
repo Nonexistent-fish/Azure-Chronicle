@@ -1,0 +1,41 @@
+<view class="fortune-landscape-card {{isSP ? 'theme-sp-gold' : ''}}">
+  <view class="fc-left-panel">
+    <view class="fc-date-group">
+      <text class="fc-date">{{todayDate}}</text>
+      <text class="fc-week">{{dayOfWeek}}</text>
+    </view>
+    <view class="neu-pressed-circle">
+      <view class="sign-text-wrap">{{fortuneLevel}}</view>
+    </view>
+  </view>
+
+  <view class="fc-divider-vertical"></view>
+
+  <view class="fc-right-panel">
+    <view class="fc-luck-row">
+      <view class="neu-capsule">
+        <text class="luck-label">幸运色</text>
+        <text class="luck-val" style="color: #5b8c00;">{{luckyColor}}</text>
+      </view>
+      <view class="neu-capsule">
+        <text class="luck-label">幸运数</text>
+        <text class="luck-val" style="color: #fa8c16;">{{luckyNumber}}</text>
+      </view>
+    </view>
+
+    <view class="fc-do-dont">
+      <view class="dd-row">
+        <view class="dd-pills do">宜</view>
+        <text class="dd-text">{{doThing}}</text>
+      </view>
+      <view class="dd-row">
+        <view class="dd-pills dont">忌</view>
+        <text class="dd-text">{{dontThing}}</text>
+      </view>
+    </view>
+
+    <view class="fc-footer">
+      <text class="quote-content">“{{quote}}”</text>
+    </view>
+  </view>
+</view>

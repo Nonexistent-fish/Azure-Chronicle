@@ -1,0 +1,97 @@
+ 
+<view class="test-container">
+  
+  <view class="section-block">
+    <view class="section-header">
+      <text class="emoji-icon">🛠️</text>
+      <text class="title">数据与审核</text>
+    </view>
+    
+    <view class="tool-grid">
+      <navigator url="/packageAdmin/test/registraion-review/registraion-review" class="tool-card" hover-class="card-hover">
+        <view class="icon-box blue-bg"><text class="tool-emoji">📋</text></view>
+        <view class="tool-info">
+          <text class="tool-name">注册审核</text>
+          <text class="tool-desc">审批新用户</text>
+        </view>
+      </navigator>
+
+      <navigator url="/packageAdmin/test/post-review/post-review" class="tool-card" hover-class="card-hover">
+        <view class="icon-box orange-bg"><text class="tool-emoji">⚖️</text></view>
+        <view class="tool-info">
+          <text class="tool-name">动态审核</text>
+          <text class="tool-desc">管理帖子池</text>
+        </view>
+      </navigator>
+
+      <navigator url="/packageAdmin/test/bug-report/bug-report" class="tool-card" hover-class="card-hover">
+        <view class="icon-box red-bg"><text class="tool-emoji">🐛</text></view>
+        <view class="tool-info">
+          <text class="tool-name">Bug反馈</text>
+          <text class="tool-desc">用户故障池</text>
+        </view>
+      </navigator>
+
+      <navigator url="/packageAdmin/test/report/report" class="tool-card" hover-class="card-hover">
+        <view class="icon-box purple-bg"><text class="tool-emoji">🚨</text></view>
+        <view class="tool-info">
+          <text class="tool-name">举报中心</text>
+          <text class="tool-desc">违规处理池</text>
+        </view>
+      </navigator>
+    </view>
+  </view>
+
+  <view class="section-block transparent-block">
+    <view class="section-header row-between">
+      <view class="header-left">
+        <text class="emoji-icon">🎭</text>
+        <text class="title">人格实验室</text>
+      </view>
+      <button class="add-btn-advanced" hover-class="btn-hover" bindtap="createTestAccount">
+        <view class="css-plus"></view>
+        新建分身
+      </button>
+    </view>
+
+    <view class="persona-list">
+      <block wx:for="{{myAccounts}}" wx:key="_id">
+        <view class="persona-card {{item._id === currentId ? 'is-current' : ''}}" hover-class="{{item._id === currentId ? '' : 'card-hover'}}" hover-stay-time="100">
+          
+          <view class="card-main">
+            <view class="avatar-wrap">
+              <image class="avatar" src="{{item.weiXinAvatar}}" mode="aspectFill"></image>
+              <view wx:if="{{item._id === currentId}}" class="current-badge">正在使用</view>
+            </view>
+            <view class="detail">
+              <view class="name-row">
+                <text class="name">{{item.nickName}}</text>
+              </view>
+              <view class="tag-group">
+                <text class="role-tag tag-{{item.Permission}}">{{item.role}}</text>
+                <text class="status-tag">Status: {{item.registerStatus}}</text>
+              </view>
+            </view>
+          </view>
+          
+          <view class="card-actions">
+            <button class="action-btn switch-btn" hover-class="btn-hover" bindtap="switchAccount" data-index="{{index}}" disabled="{{item._id === currentId}}">
+              {{item._id === currentId ? '当前' : '切换身份'}}
+            </button>
+            
+            <view class="action-btn del-btn" hover-class="del-hover" bindtap="deleteAccount" data-id="{{item._id}}" wx:if="{{index !== 0 && item._id !== currentId}}">
+              <view class="css-close"></view>
+            </view>
+          </view>
+
+        </view>
+      </block>
+      
+      <view wx:if="{{myAccounts.length === 0}}" class="empty-state">
+        <text class="empty-icon">🕳️</text>
+        <text>数据异常，未能找到人格数据</text>
+      </view>
+    </view>
+  </view>
+
+</view>

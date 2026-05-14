@@ -1,0 +1,34 @@
+.activity-container { position: relative; width: 100vw; overflow-x: hidden; min-height: 100vh; }
+.bg-image { position: absolute; top: 0; left: 0; display: block; width: 100vw; height: auto; min-height: 100vh; object-fit: cover; z-index: 0; }
+.bgm-icon { position: fixed; top: 100rpx; right: 30rpx; width: 64rpx; height: 64rpx; z-index: 9999; }
+.offline-state { position: absolute; top: 0; left: 0; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; z-index: 100; background: rgba(255,255,255,0.9); }
+.offline-box { text-align: center; } .offline-text { font-size: 32rpx; color: #666; margin-bottom: 40rpx; } .offline-btn { background: #07c160; color: #fff; padding: 20rpx 60rpx; border-radius: 40rpx; font-weight: bold; }
+
+.tpl-ios-wrapper { position: relative; left: 0; width: 100vw; display: flex; flex-direction: column; align-items: center; padding-bottom: 120rpx; z-index: 10; }
+.card-header { width: 690rpx; text-align: center; margin-top: 100rpx; margin-bottom: 40rpx; display: flex; flex-direction: column; justify-content: flex-start; }
+.card-title { font-size: 56rpx; font-weight: 900; color: #fff; text-shadow: 0 4rpx 16rpx rgba(0,0,0,0.4); min-height: 75rpx; }
+.card-subtitle { font-size: 32rpx; color: rgba(255,255,255,0.9); text-shadow: 0 2rpx 8rpx rgba(0,0,0,0.3); margin-top: 36rpx; min-height: 45rpx; }
+
+.ios-glass-card { width: 690rpx; min-height: 65vh; background: rgba(255,255,255,0.8); backdrop-filter: blur(24px) saturate(150%); border: 2rpx solid rgba(255,255,255,0.5); border-radius: 48rpx; box-shadow: 0 20rpx 50rpx rgba(0,0,0,0.05), inset 0 2rpx 0 rgba(255,255,255,0.6); padding: 50rpx 40rpx; box-sizing: border-box; display: flex; flex-direction: column; }
+.card-content { flex: 1; font-size: 30rpx; color: #333; line-height: 1.8; }
+
+.btn-area, .btn-area-free { width: 100%; margin-top: 40rpx; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; }
+.ios-card-btn { color: #fff; font-size: 32rpx; font-weight: bold; text-align: center; padding: 28rpx 0; border-radius: 24rpx; box-shadow: 0 10rpx 20rpx rgba(0,0,0,0.15); position: relative; box-sizing: border-box; margin-bottom: 20rpx; }
+.btn-action { padding: 24rpx 0; border-radius: 50rpx; color: #fff; font-weight: bold; text-align: center; box-shadow: 0 8rpx 20rpx rgba(0,0,0,0.2); box-sizing: border-box; margin-bottom: 20rpx; }
+.full-btn, .full-btn-free { width: 100%; } .half-btn, .half-btn-free { width: 48%; } .default-flow-free { position: relative; }
+
+.rich-text-wrapper { position: relative; width: 100vw; box-sizing: border-box; z-index: 1; padding: 60rpx 40rpx 140rpx 40rpx; }
+.rich-text-wrapper rich-text, .card-content rich-text { &::after { content: ""; display: block; clear: both; } img { width: calc(50% - 10rpx) !important; display: block !important; height: auto !important; float: left !important; margin: 5rpx !important; border-radius: 12rpx; box-sizing: border-box; } }
+
+.dynamic-widget { position: fixed !important; margin: 0 !important; }
+.pos-top-left { top: 180rpx; left: 40rpx; } .pos-top-center { top: 180rpx; left: 50%; transform: translateX(-50%); } .pos-top-right { top: 180rpx; right: 40rpx; } .pos-center { top: 50%; left: 50%; transform: translate(-50%, -50%); } .pos-bottom-center { bottom: 80rpx; left: 50%; transform: translateX(-50%); } .pos-bottom-right { bottom: 180rpx; right: 40rpx; width: 140rpx; height: 140rpx; }
+
+.anim-spin { animation: spin 4s linear infinite; } @keyframes spin { 100% { transform: rotate(360deg); } }
+.anim-pulse { animation: pulse 2s infinite; } @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+.anim-float { animation: float 3s ease-in-out infinite; } @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20rpx); } }
+.anim-zoomIn { animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; } @keyframes zoomIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+.custom-popup { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+.popup-mask { position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); }
+.popup-content { position: relative; z-index: 10000; width: 620rpx; background: #fff; border-radius: 32rpx; overflow: hidden; text-align: center; padding-bottom: 50rpx; }
+.popup-image { width: 100%; display: block; } .popup-title { font-size: 36rpx; font-weight: bold; color: #333; margin: 40rpx 0 20rpx; } .popup-desc { font-size: 28rpx; color: #888; margin-bottom: 40rpx; padding: 0 40rpx; } .popup-btn { display: inline-block; background: #07c160; color: #fff; padding: 20rpx 100rpx; border-radius: 40rpx; font-weight: bold; }

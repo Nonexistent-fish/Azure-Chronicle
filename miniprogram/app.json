@@ -1,0 +1,74 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/upload/upload",
+    "pages/mine/mine",
+    "pages/settings/settings/settings",
+    "pages/settings/privacy/privacy",
+    "pages/mine/my-posts/my-posts",
+    "pages/post-detail/post-detail",
+    "pages/my-favorites/my-favorites",
+    "pages/index/reports/reports",
+    "pages/mine/faculty-register/faculty-register",
+    "pages/mine/tools/tools",
+    "pages/mine/tools/gear/gear",
+    "pages/mine/tools/dice/dice",
+    "pages/mine/tools/random/random",
+    "pages/mine/tools/conversion/conversion",
+    "pages/mine/tools/countdown/countdown",
+    "pages/mine/tools/auth/auth",
+    "pages/mine/mailbox/mailbox",
+    "pages/mine/market/outfit/outfit",
+    "pages/settings/about/about",
+    "pages/settings/about/donate/donate",
+    "pages/settings/changelog/changelog",
+    "pages/index/daily-topic/daily-topic",
+    "pages/index/daily-topic-history/daily-topic-history",
+    "pages/upload/standard/standard",
+    "pages/settings/privacy/policy/policy",
+    "pages/mine/feedback/feedback",
+    "pages/activity/activity",
+    "pages/mine/tools/reaction/reaction",
+    "pages/mine/market/lotto/lotto",
+    "pages/mine/market/market",
+    "pages/activity/lottery/lottery",
+    "pages/mine/market/launch/launch",
+    "pages/mine/market/gacha/gacha"
+  ],
+  "subpackages": [
+    {
+      "root": "packageAdmin",
+      "name": "admin",
+      "pages": [
+        "test/test",
+        "test/bug-report/bug-report",
+        "test/report/report",
+        "test/post-review/post-review",
+        "test/registraion-review/registraion-review"
+      ]
+    }
+  ],
+  "tabBar": {
+    "custom": true,
+    "color": "#7A7E83",
+    "selectedColor": "#07c160",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/upload/upload",
+        "text": "上传"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的"
+      }
+    ]
+  },
+  "usingComponents": {},
+  "lazyCodeLoading": "requiredComponents"
+}

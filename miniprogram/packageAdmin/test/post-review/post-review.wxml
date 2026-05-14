@@ -1,0 +1,56 @@
+<view class="container">
+  <view class="header-bar">
+    <view class="header-left">
+      <text class="title">动态审核</text>
+      <view class="badge" wx:if="{{totalPending > 0}}">{{totalPending}}</view>
+    </view>
+    <view class="refresh-btn" bindtap="fetchPosts">↻ 刷新</view>
+  </view>
+
+  <scroll-view scroll-y class="scroll-area" enable-flex>
+    <block wx:for="{{postList}}" wx:key="_id" wx:for-index="idx">
+      <view class="post-card">
+        
+        <view class="user-info">
+          <image class="avatar" src="{{item.author.avatar}}" mode="aspectFill"></image>
+          <view class="user-text">
+            <view class="name-row">
+              <text class="nick">{{item.author.nickName}}</text>
+              <text class="tag" wx:if="{{item.isAnonymous}}">匿名</text>
+            </view>
+            <text class="time">{{item.displayTime}}</text>
+          </view>
+        </view>
+
+        <view class="content-text" wx:if="{{item.content}}">
+          <text selectable>{{item.content}}</text>
+        </view>
+
+        <view class="media-grid" wx:if="{{item.media && item.media.length > 0}}">
+          <block wx:for="{{item.media}}" wx:key="fileID" wx:for-item="file" wx:for-index="mediaIdx">
+            <view class="media-item {{item.media.length === 1 ? 'single-mode' : ''}}" bindtap="previewMedia" data-index="{{idx}}" data-idx="{{mediaIdx}}">
+              <image wx:if="{{file.fileType === 'image'}}" src="{{file.thumbUrl}}" mode="{{item.media.length === 1 ? 'widthFix' : 'aspectFill'}}" class="media-img" lazy-load></image>
+              <view wx:elif="{{file.fileType === 'video'}}" class="video-cover">
+                <image src="{{file.thumb || ''}}" mode="aspectFill" class="media-img"></image>
+                <view class="play-icon">▶</view>
+              </view>
+            </view>
+          </block>
+        </view>
+
+        <view class="action-bar">
+          <view wx:if="{{!item._isRejecting}}" class="btn pass" bindtap="handlePass" data-id="{{item._id}}">通过发布</view>
+          <view class="btn {{item._isRejecting ? 'confirm-reject' : 'reject'}}" bindtap="handleRejectToggle" data-index="{{idx}}">{{item._isRejecting ? '确认驳回' : '违规/驳回'}}</view>
+        </view>
+
+        <view class="reject-box" wx:if="{{item._isRejecting}}">
+          <input class="reason-input" placeholder="请输入违规原因 (如: 广告/辱骂)" focus="{{true}}" bindinput="handleReasonInput" data-index="{{idx}}" />
+          <view class="cancel-text" catchtap="handleCancelReject" data-index="{{idx}}">取消</view>
+        </view>
+      </view>
+    </block>
+
+    <view wx:if="{{postList.length === 0 && !isLoading}}" class="empty-tip">🎉 暂无待审核动态</view>
+    <view style="height: 100rpx;"></view>
+  </scroll-view>
+</view>

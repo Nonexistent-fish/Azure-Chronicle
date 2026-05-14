@@ -1,0 +1,28 @@
+<view class="container">
+  <view class="header"></view>
+
+  <view class="timeline">
+    <block wx:for="{{logs}}" wx:key="version">
+      <view class="log-card">
+        <view class="log-header">
+          <view class="version-badge">
+            <text class="v-text">{{item.version}}</text>
+            <text wx:if="{{index === 0}}" class="tag-latest">最新</text>
+          </view>
+          <text class="date">{{item.date}}</text>
+        </view>
+
+        <view class="log-content">
+          <view class="log-item" wx:for="{{item.content}}" wx:for-item="desc" wx:key="*this">
+            <view class="dot"></view>
+            <text class="desc-text">{{desc}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+  
+  <view class="footer">
+    <text>持续优化中...</text>
+  </view>
+</view>

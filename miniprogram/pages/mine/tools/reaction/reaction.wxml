@@ -1,0 +1,102 @@
+<view class="scroll-page">
+  <view class="game-screen">
+    <view class="early-warning {{earlyCount > 0 ? 'show' : ''}}">
+      <view class="warn-icon" wx:for="{{earlyCount}}" wx:key="*this"></view>
+    </view>
+
+    <view class="game-header">
+      <view class="round-info" wx:if="{{gameState !== 'idle' && gameState !== 'done'}}">进度: {{reactionTimes.length}} / {{targetRounds}}</view>
+    </view>
+
+    <view class="top-display-zone">
+      <view class="title-group" wx:if="{{gameState === 'idle'}}">
+        <view class="main-title">反应力测试</view>
+        <view class="main-desc">按钮变成绿色立即点击</view>
+      </view>
+
+      <view class="top-reaction-display" wx:if="{{currentReaction && gameState !== 'idle' && gameState !== 'done'}}">
+        {{currentReaction}} <text class="ms">ms</text>
+      </view>
+
+      <view class="result-panel neo-panel" wx:if="{{gameState === 'done'}}">
+        <view class="r-row">
+          <view class="r-item"><text class="r-label">最快</text><text class="r-val green">{{fastestTime}}<text class="r-unit">ms</text></text></view>
+          <view class="r-item main"><text class="r-label">平均</text><text class="r-val avg">{{averageTime}}<text class="r-unit">ms</text></text></view>
+          <view class="r-item"><text class="r-label">最慢</text><text class="r-val red">{{slowestTime}}<text class="r-unit">ms</text></text></view>
+        </view>
+        
+        <view class="qual-tag qualified" wx:if="{{qualificationStatus === 'qualified'}}">🏆 成绩已上榜！当前处于全服第 {{myRank}} 名</view>
+        <view class="qual-tag notQualified" wx:if="{{qualificationStatus === 'notQualified'}}">成绩未达上榜线 ({{currentThreshold}}ms)</view>
+        <view class="qual-tag unlogged" wx:if="{{qualificationStatus === 'unlogged'}}">未登录，成绩未记录</view>
+        <view class="qual-tag notQualified" wx:if="{{qualificationStatus === 'failed'}}">网络开小差，成绩同步失败</view>
+      </view>
+    </view>
+
+    <view class="center-stage">
+      <view class="neo-dot {{gameState}} {{isPressing ? 'pressing' : ''}}" catchtouchstart="handleDotTouchStart" catchtouchend="handleDotTouchEnd">
+        <view class="fill-bg {{isFilling ? 'filling' : ''}}"></view>
+        <text class="dot-text {{isFilling ? 'white' : ''}}" wx:if="{{dotText}}">{{dotText}}</text>
+      </view>
+      
+      <view class="mode-selector {{gameState === 'idle' ? 'show' : 'hide'}}">
+        <view class="square-btn {{targetRounds === 5 ? 'active' : ''}}" data-rounds="5" catchtap="selectMode">5</view>
+        <view class="square-btn {{targetRounds === 10 ? 'active' : ''}}" data-rounds="10" catchtap="selectMode">10</view>
+      </view>
+    </view>
+
+    <view class="bottom-stage">
+      <view class="native-chart">
+        <view class="chart-grid-bg"></view>
+        <view class="chart-data-layer">
+          <block wx:for="{{chartSegments}}" wx:key="index">
+            <view class="chart-line" style="left: {{item.x}}px; top: {{item.y}}px; width: {{item.length}}px; transform: rotate({{item.angle}}deg);"></view>
+          </block>
+          <block wx:for="{{chartPoints}}" wx:key="index">
+            <view class="chart-point" style="left: {{item.x}}px; top: {{item.y}}px;">
+              <view class="cp-dot"></view>
+              <text class="cp-val">{{item.val}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <view class="swipe-up-hint {{(gameState === 'idle' || gameState === 'done') ? 'show' : 'hide'}}">
+      <text class="arrow">︿</text> 上滑查看全服排行榜 <text class="arrow">︿</text>
+    </view>
+    
+    <view class="custom-toast {{showToastFlag ? 'show' : ''}}">{{toastMsg}}</view>
+  </view>
+
+  <view class="leaderboard-screen">
+    <view class="rank-header">
+      <view class="rank-title-box">
+        <view class="rank-title">⚡ 极速榜</view>
+        <view class="rank-desc">5次测试不收录</view>
+      </view>
+      
+      <view class="neo-refresh-btn" hover-class="neo-refresh-btn-pressed" hover-start-time="0" hover-stay-time="100" catchtap="fetchLeaderboard">
+        <view class="refresh-icon {{isRefreshing ? 'spinning' : ''}}"></view>
+      </view>
+    </view>
+    
+    <view class="rank-list neo-panel">
+      <block wx:for="{{rankList}}" wx:key="_id">
+        <view class="rank-item neo-panel-pressed">
+          <view class="rank-num {{index < 3 ? 'top-' + (index+1) : ''}}">{{index + 1}}</view>
+          <image class="rank-avatar" src="{{item.avatar || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'}}"></image>
+          <view class="rank-info">
+            <view class="rank-name">{{item.nickName}}</view>
+            <view class="rank-stats">最快 {{item.fastest}}ms</view>
+          </view>
+          <view class="rank-score">{{item.average}}ms</view>
+        </view>
+      </block>
+      <view wx:if="{{rankList.length === 0}}" class="empty-tip">暂无排位数据，快去抢首杀！</view>
+    </view>
+  </view>
+
+  <view class="back-to-top {{showBackToTop ? 'show' : ''}}" catchtap="scrollToLeaderboardTop">
+    <view class="arrow-up-icon"></view>
+  </view>
+</view>

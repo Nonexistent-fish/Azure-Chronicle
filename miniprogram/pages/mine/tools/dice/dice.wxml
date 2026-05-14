@@ -1,0 +1,49 @@
+<view class="dice-page">
+  <view class="premium-stage">
+    <block wx:for="{{diceList}}" wx:key="id">
+      <view class="die face-{{item.result}} {{isRolling ? 'rolling' : ''}} {{activeDieIdx === index ? 'active-drag' : ''}} {{item.isDeleting ? 'deleting' : ''}}" style="left: {{item.x}}px; top: {{item.y}}px; z-index: {{item.zIndex}}; --translate-z:{{activeDieIdx === index ? '80px' : '0px'}}; --rotate-x:{{item.rotateX || 0}}deg; --rotate-y:{{item.rotateY || 0}}deg; --scale:{{activeDieIdx === index ? 1.25 : 1}};" data-idx="{{index}}" catchtap="openDieSettings" catchtouchstart="dragStart" catchlongpress="onDieLongPress" catchtouchmove="dragMove" catchtouchend="dragEnd" catchtouchcancel="dragEnd">
+        <view class="die-bg" style="background: {{item.theme.bg}};"></view>
+        <view class="dots-area">
+          <block wx:if="{{item.result === 1}}"><view class="dot center" style="background: {{item.result === 1 && item.theme.id === 'white' ? '#ef4444' : item.theme.dot}}"></view></block>
+          <block wx:if="{{item.result === 2}}"><view class="dot top-left" style="background: {{item.theme.dot}}"></view><view class="dot bottom-right" style="background: {{item.theme.dot}}"></view></block>
+          <block wx:if="{{item.result === 3}}"><view class="dot top-left" style="background: {{item.theme.dot}}"></view><view class="dot center" style="background: {{item.theme.dot}}"></view><view class="dot bottom-right" style="background: {{item.theme.dot}}"></view></block>
+          <block wx:if="{{item.result === 4}}"><view class="dot top-left" style="background: {{item.theme.dot}}"></view><view class="dot top-right" style="background: {{item.theme.dot}}"></view><view class="dot bottom-left" style="background: {{item.theme.dot}}"></view><view class="dot bottom-right" style="background: {{item.theme.dot}}"></view></block>
+          <block wx:if="{{item.result === 5}}"><view class="dot top-left" style="background: {{item.theme.dot}}"></view><view class="dot top-right" style="background: {{item.theme.dot}}"></view><view class="dot center" style="background: {{item.theme.dot}}"></view><view class="dot bottom-left" style="background: {{item.theme.dot}}"></view><view class="dot bottom-right" style="background: {{item.theme.dot}}"></view></block>
+          <block wx:if="{{item.result === 6}}"><view class="dot top-left" style="background: {{item.theme.dot}}"></view><view class="dot top-right" style="background: {{item.theme.dot}}"></view><view class="dot mid-left" style="background: {{item.theme.dot}}"></view><view class="dot mid-right" style="background: {{item.theme.dot}}"></view><view class="dot bottom-left" style="background: {{item.theme.dot}}"></view><view class="dot bottom-right" style="background: {{item.theme.dot}}"></view></block>
+        </view>
+      </view>
+    </block>
+
+    <view class="trash-btn {{showTrash ? 'show' : ''}} {{inTrashZone ? 'danger' : ''}}"><text class="trash-icon">🗑️</text></view>
+    <view class="empty-tip" wx:if="{{diceList.length === 0}}">桌上空空如也</view>
+  </view>
+
+  <view class="glass-panel">
+    <view class="panel-header">
+      <view class="score-box">
+        <text class="score-label">总点数</text>
+        <text class="score-value {{isRolling ? 'blur' : ''}}">{{totalScore}}</text>
+      </view>
+      <view class="action-box">
+        <view class="add-btn" bindtap="addNewDie"><text class="add-icon">+</text> 加骰子</view>
+      </view>
+    </view>
+    <button class="premium-roll-btn {{isRolling ? 'active' : ''}}" bindlongpress="startRoll" bindtouchend="stopRoll" bindtouchcancel="stopRoll">
+      {{isRolling ? '松开结算！' : '长按盘骰子'}}
+    </button>
+  </view>
+
+  <view class="edit-modal {{showEditModal ? 'show' : ''}}" bindtap="closeSettings">
+    <view class="edit-box" catchtap="return">
+      <view class="edit-title">更换材质</view>
+      <view class="theme-grid">
+        <view wx:for="{{themeOptions}}" wx:key="id" class="theme-item {{diceList[editingDieIdx].theme.id === item.id ? 'selected' : ''}}" style="background: {{item.bg}};" data-id="{{item.id}}" bindtap="changeDieColor">
+          <view wx:if="{{diceList[editingDieIdx].theme.id === item.id}}" class="check-mark"></view>
+        </view>
+      </view>
+      <view class="edit-actions">
+        <view class="confirm-btn" bindtap="closeSettings">完成</view>
+      </view>
+    </view>
+  </view>
+</view>

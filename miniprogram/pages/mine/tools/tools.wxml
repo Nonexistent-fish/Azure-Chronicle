@@ -1,0 +1,62 @@
+<mall-nav title="青笺校园日记" bgColor="transparent" titleColor="#1F2937"></mall-nav>
+
+<view class="global-bg-decoration">
+  <view class="decor-shape shape-circle"></view>
+  <view class="decor-shape shape-triangle"></view>
+  <view class="decor-shape shape-rect"></view>
+</view>
+
+<scroll-view scroll-y class="modern-white-page">
+  <view class="page-header">
+    <text class="title">青笺校园日记</text>
+    <text class="subtitle">理工工具箱 · 纯净体验</text>
+  </view>
+
+  <view class="hitokoto-section">
+    <view class="float-circle circle-1"></view>
+    <view class="float-circle circle-2"></view>
+    <view class="float-circle circle-3"></view>
+    
+    <view class="h-content-wrap">
+      <view class="h-text {{hitokoto.text.length > 16 && hitokoto.text.length <= 18 ? 'h-text-shrink' : (hitokoto.text.length > 18 ? 'h-text-multiline' : '')}}">{{hitokoto.text}}</view>
+      <view class="h-author">—— {{hitokoto.fromWho ? hitokoto.fromWho + ' ' : ''}}「{{hitokoto.from}}」</view>
+    </view>
+  </view>
+
+  <view class="auth-section" wx:if="{{showAuthCard}}">
+    <view class="auth-card" data-url="/pages/mine/tools/auth/auth" bindtap="onToolClick" hover-class="card-active">
+      <image class="auth-icon-pure" src="{{authSvgUrl}}" mode="aspectFit"></image>
+      <view class="auth-info">
+        <text class="auth-name">校内身份认证</text>
+        <text class="auth-tip">核实学籍解锁完整功能与云端同步</text>
+      </view>
+      <view class="arrow-right">></view>
+    </view>
+  </view>
+
+  <view class="category-group" wx:for="{{categories}}" wx:key="title">
+    <view class="group-header">
+      <view class="g-title-wrap">
+        <text class="g-title">{{item.title}}</text>
+        <view class="header-divider" style="background: {{item.dividerColor}}"></view>
+      </view>
+    </view>
+    
+    <scroll-view scroll-x class="horizontal-scroll" enable-flex show-scrollbar="{{false}}">
+      <view class="tool-card" wx:for="{{item.tools}}" wx:for-item="tool" wx:key="name" data-url="{{tool.url}}" bindtap="onToolClick" hover-class="card-active">
+        <image class="tool-icon-pure" src="{{tool.svgUrl}}" mode="aspectFit"></image>
+        <view class="card-info">
+          <text class="tool-name">{{tool.name}}</text>
+          <text class="tool-desc">{{tool.desc}}</text>
+        </view>
+      </view>
+      <view class="scroll-spacer"></view>
+    </scroll-view>
+  </view>
+
+  <view class="coming-soon" data-url="dev" bindtap="onToolClick">
+    <text>更多功能正在制作中...</text>
+  </view>
+
+  <view class="safe-bottom"></view>
+</scroll-view>

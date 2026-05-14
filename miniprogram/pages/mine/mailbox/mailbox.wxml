@@ -1,0 +1,207 @@
+<audit-protector></audit-protector>
+<view class="container" style="padding-bottom: {{showCommentDrawer ? '65vh' : '0rpx'}};"></view>
+<view class="safe-header"></view>
+
+<view class="mailbox-page">
+  <view class="header">
+    <text class="title">我的信箱</text>
+    <view class="capacity-container" catchtap="toggleCapacity">
+      <view class="capacity-text {{showCapacity ? 'visible' : ''}}">{{requests.length}}/{{maxCapacity}}</view>
+      <view class="progress-ring {{isShaking ? 'shake-anim' : ''}}" bindlongpress="onCleanMailbox" style="--percent: {{progressPercent}}%;">
+        <view class="inner-circle"><image class="mail-icon" src="{{icons.mail}}"></image></view>
+      </view>
+    </view>
+  </view>
+
+  <scroll-view class="list-container" scroll-y="true">
+    <block wx:for="{{requests}}" wx:key="_id">
+    
+      <view class="request-card {{item.isDeleting ? 'delete-anim' : ''}} {{ item.isGray ? 'gray-out' : '' }}" style="{{item.isDeleting ? 'transition-delay: ' + item.delay + 'ms;' : ''}}" wx:if="{{item.type === 'system_notification'}}" catchtap="onCardTap" data-subtype="{{item.subType}}" data-notifid="{{item._id}}" data-id="{{item.postId}}" data-targettype="{{item.targetType}}" data-istopic="true"> 
+        <view class="card-header">
+          <view class="user-info">
+            <image class="avatar" src="{{icons.systemLogo}}" mode="aspectFit" style="border-radius: 50%; background: transparent;"></image>
+            <view class="meta">
+              <text class="nickname">青笺校园日记运营组</text>
+              <text class="time">{{item.relativeTime}}</text>
+            </view>
+          </view>
+          <view class="status-tag {{item.subType === 'cdk' ? 'status-success' : item.statusClass}}">
+              {{item.subType === 'bug' ? 'Bug反馈' : (item.subType === 'report' ? '举报受理' : (item.subType === 'cdk' ? '奖励下发' : (item.statusText || '系统通知')))}}
+          </view>
+        </view>
+
+        <view class="card-body" style="display: block;">
+          <view class="msg-text" style="margin-bottom: 20rpx; white-space: pre-wrap; color: #333;">
+            <text wx:if="{{item.subType === 'bug' || item.subType === 'report'}}" style="color: #666; font-size: 26rpx; display: block; margin-bottom: 8rpx;">提交内容：</text>
+            <text>{{item.content || item.description || '无详细文字描述'}}</text>
+          </view>
+          
+          <view class="cdk-reward-box" wx:if="{{item.subType === 'cdk' && item.has_cdk}}">
+            <view class="cdk-info">
+              <text class="cdk-label">CDK</text>
+              <text class="cdk-value">{{item.cdk_code}}</text> 
+            </view>
+            <view class="cdk-copy-btn" catchtap="copyContent" data-content="{{item.cdk_code}}">
+              <image src="{{icons.copy}}" class="copy-icon"></image>
+              <text>复制</text>
+            </view>
+          </view>
+
+          <view class="admin-reply-box" wx:if="{{item.replyContent || item.reply}}" style="background: #f7f8fa; padding: 20rpx; border-radius: 12rpx;">
+            <text class="reply-title" style="font-size: 24rpx; color: #3b5998; font-weight: bold; margin-bottom: 8rpx; display: block;">回复：</text>
+            <text class="reply-text" style="font-size: 28rpx; color: #333; line-height: 1.6;">{{item.replyContent || item.reply}}</text>
+          </view>
+        </view>
+
+        <view class="expand-wrapper {{(activeRewardId === item._id && !item.isGray) ? 'expanded' : ''}}">
+          <view class="reward-footer" style="display: flex; justify-content: flex-end; margin-top: 10rpx; padding-top: 20rpx; border-top: 1rpx dashed #eee;">
+            <button class="s-btn confirm-btn ready" catchtap="onConfirmReward" data-notifid="{{item._id}}" style="background: #faad14; color: #fff; border-radius: 40rpx; font-size: 26rpx; margin: 0; padding: 0 40rpx; height: 60rpx; line-height: 60rpx; font-weight: bold; border: none; box-shadow: 0 4rpx 10rpx rgba(250, 173, 20, 0.3);">确认兑换</button>
+          </view>
+        </view>
+      </view>
+
+      <view class="request-card {{item.isDeleting ? 'delete-anim' : ''}} {{ item.isGray ? 'gray-out' : '' }} {{item.status === 1 ? 'accepted' : ''}} {{activeId === item._id ? 'active-card' : ''}}" style="{{item.isDeleting ? 'transition-delay: ' + item.delay + 'ms;' : ''}}" wx:elif="{{item.type === 'exchange'}}">
+        <view class="card-header">
+          <view class="user-info">
+            <image class="avatar" src="{{item.isSender ? (item.targetInfo.avatar || '/assets/default-avatar.png') : (item.senderInfo.avatar || '/assets/default-avatar.png')}}" mode="aspectFill"></image>
+            <view class="meta">
+              <text class="nickname">{{item.isSender ? '发给: ' + (item.targetInfo.nickName || '神秘同学') : (item.senderInfo.nickName || '神秘同学')}}</text>
+              <text class="time">{{item.relativeTime}}</text>
+            </view>
+          </view>
+          <view class="status-tag status-{{item.status}} {{item.isSender ? 'is-sender' : ''}}">
+            <block wx:if="{{item.status === 1}}">已互换</block>
+            <block wx:elif="{{item.status === 2}}">已拒绝</block>
+            <block wx:elif="{{item.status === 3}}">已过期</block>
+            <block wx:elif="{{item.isSender && item.status === 0}}">待回复</block>
+            <block wx:else>新申请</block>
+          </view>
+        </view>
+        <view class="card-body">
+            <text class="msg-text">{{item.randomMsg}}</text>
+            <view class="report-btn-area {{item.isReported ? 'reported-disabled' : ''}}" catchtap="onReportUser" data-id="{{item._id}}" data-reported-openid="{{item.isSender ? item.to_openid : item.from_openid}}" data-reported-name="{{item.isSender ? item.targetInfo.nickName : item.senderInfo.nickName}}" wx:if="{{item.status === 1 && item.showContactInfo}}">
+                <image class="report-icon" src="{{icons.report}}"></image>
+            </view>
+        </view>
+        <view class="card-footer {{activeId === item._id ? 'hidden-footer' : ''}}" wx:if="{{item.status === 0 && !item.isSender}}">
+          <button class="btn reject-btn" catchtap="onReject" data-id="{{item._id}}">拒绝</button>
+          <button class="btn accept-btn" catchtap="onAcceptClick" data-id="{{item._id}}">同意</button>
+        </view>
+        <view class="expand-wrapper {{activeId === item._id ? 'expanded' : ''}}">
+          <view class="selection-box">
+            <view class="select-title">请勾选想交换的方式</view>
+            <view class="option-grid">
+              <view class="option-item {{!item.intersection[0] ? 'disabled' : (item.tempSelected[0] ? 'active' : 'available')}}" catchtap="toggleOption" data-id="{{item._id}}" data-idx="0">
+                <image class="icon-img phone-adj" src="{{ (item.intersection[0] && item.tempSelected[0]) ? icons.phoneBlue : icons.phoneGray }}"></image>
+                <text class="opt-name">手机号</text>
+              </view>
+              <view class="option-item {{!item.intersection[1] ? 'disabled' : (item.tempSelected[1] ? 'active' : 'available')}}" catchtap="toggleOption" data-id="{{item._id}}" data-idx="1">
+                <image class="icon-img wechat-adj" src="{{ (item.intersection[1] && item.tempSelected[1]) ? icons.wechatBlue : icons.wechatGray }}"></image>
+                <text class="opt-name">微信</text>
+              </view>
+              <view class="option-item {{!item.intersection[2] ? 'disabled' : (item.tempSelected[2] ? 'active' : 'available')}}" catchtap="toggleOption" data-id="{{item._id}}" data-idx="2">
+                <image class="icon-img qq-adj" src="{{ (item.intersection[2] && item.tempSelected[2]) ? icons.qqBlue : icons.qqGray }}"></image>
+                <text class="opt-name">QQ</text>
+              </view>
+            </view>
+            <view class="selection-footer">
+              <button class="s-btn cancel-btn" catchtap="cancelSelection">取消</button>
+              <button class="s-btn confirm-btn {{item.selectedCount > 0 ? 'ready' : ''}}" catchtap="submitExchange">确认发送</button>
+            </view>
+          </view>
+        </view>
+        <view class="result-box" wx:if="{{item.status === 1 && item.showContactInfo}}">
+          <view class="result-item" wx:if="{{item.showPhone}}">
+            <text class="label">手机：</text>
+            <text class="val" user-select>{{item.isSender ? item.targetInfo.phone : item.senderInfo.phone}}</text>
+            <view class="copy-icon-box" catchtap="copyContent" data-content="{{item.isSender ? item.targetInfo.phone : item.senderInfo.phone}}"><image src="{{icons.copy}}" class="copy-icon"></image></view>
+          </view>
+          <view class="result-item" wx:if="{{item.showWechat}}">
+            <text class="label">微信：</text>
+            <text class="val" user-select>{{item.isSender ? item.targetInfo.wechat : item.senderInfo.wechat}}</text>
+            <view class="copy-icon-box" catchtap="copyContent" data-content="{{item.isSender ? item.targetInfo.wechat : item.senderInfo.wechat}}"><image src="{{icons.copy}}" class="copy-icon"></image></view>
+          </view>
+          <view class="result-item" wx:if="{{item.showQQ}}">
+            <text class="label">QQ：</text>
+            <text class="val" user-select>{{item.isSender ? item.targetInfo.qq : item.senderInfo.qq}}</text>
+            <view class="copy-icon-box" catchtap="copyContent" data-content="{{item.isSender ? item.targetInfo.qq : item.senderInfo.qq}}"><image src="{{icons.copy}}" class="copy-icon"></image></view>
+          </view>
+          <view class="empty-result" wx:if="{{!item.showPhone && !item.showWechat && !item.showQQ}}"><text>对方未回传任何联系方式</text></view>
+          <view class="expire-tip">联系方式将在6小时后自动销毁</view>
+        </view>
+      </view>
+
+      <view class="notif-card {{item.isDeleting ? 'delete-anim' : ''}} {{item.isGray ? 'gray-out' : ''}}" wx:elif="{{item.type === 'like_post' || item.type === 'like_comment'}}" catchtap="onNavigateToPost" data-id="{{item.postId}}" data-notifid="{{item._id}}" data-targettype="{{item.targetType}}" data-istopic="{{!!item.topicType || (item.targetType === 'daily_topic')}}"> 
+        <view class="notif-header">
+          <image class="notif-avatar" src="{{item.latestAvatar || '/assets/default-avatar.png'}}" mode="aspectFill"></image>
+          <view class="notif-meta">
+            <text class="notif-title"><text class="highlight">{{item.likerNamesArr}}</text> 赞了你的{{item.type === 'like_post' ? '动态' : '评论'}}</text>
+            <text class="time">{{item.relativeTime}}</text>
+          </view>
+          <image class="action-icon" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23ff4d4f%27%3E%3Cpath d=%27M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z%27/%3E%3C/svg%3E"></image>
+        </view>
+        <view class="post-snippet">{{item.postSnippet}}</view>
+      </view>
+      
+      <view class="notif-card {{item.isDeleting ? 'delete-anim' : ''}} {{item.isGray ? 'gray-out' : ''}}" wx:elif="{{item.type === 'like_profile'}}" catchtap="onNavigateToPost" data-notifid="{{item._id}}" data-targettype="profile">
+        <view class="notif-header">
+          <image class="notif-avatar" src="{{item.latestAvatar || '/assets/default-avatar.png'}}" mode="aspectFill"></image>
+          <view class="notif-meta">
+            <text class="notif-title"><text class="highlight">{{item.likerNamesArr}}</text> 赞了你的名片</text>
+            <text class="time">{{item.relativeTime}}</text>
+          </view>
+          <image class="action-icon" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23faad14%27%3E%3Cpath d=%27M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3%27/%3E%3C/svg%3E"></image>
+        </view>
+      </view>
+
+      <view class="notif-card {{item.isDeleting ? 'delete-anim' : ''}} {{item.isGray ? 'gray-out' : ''}}" wx:elif="{{item.type === 'comment'}}" catchtap="onNavigateToPost" data-id="{{item.postId}}" data-type="comment" data-notifid="{{item._id}}" data-targettype="{{item.targetType}}" data-istopic="{{!!item.topicType || !!item.content}}"> 
+        <view class="notif-header">
+          <image class="notif-avatar" src="{{item.author.avatar || '/assets/default-avatar.png'}}" mode="aspectFill"></image>
+          <view class="notif-meta">
+            <text class="notif-title"><text class="highlight">{{item.author.nickName}}</text> 评论了你</text>
+            <text class="time">{{item.relativeTime}}</text>
+          </view>
+        </view>
+        <view class="notif-content">{{item.content}}</view>
+        <view class="post-snippet">{{item.postSnippet}}</view>
+      </view>
+
+      <view class="request-card {{item.isDeleting ? 'delete-anim' : ''}} {{item.isGray ? 'gray-out' : ''}}" wx:elif="{{item.type === 'my_feedback'}}" data-notifid="{{item._id}}" data-targettype="feedback">
+        <view class="card-header">
+          <view class="user-info">
+            <image class="avatar" src="{{icons.systemLogo}}" mode="aspectFit" style="border-radius: 50%; background: transparent;"></image>
+            <view class="meta">
+              <text class="nickname">青笺校园日记运营组</text>
+              <text class="time">{{item.relativeTime}}</text>
+            </view>
+          </view>
+          <view class="status-tag" style="background: {{item.status === 3 ? '#f5f5f5' : (item.status === 2 ? '#f6ffed' : (item.status === 1 ? '#e6f7ff' : '#fffbe6'))}}; color: {{item.status === 3 ? '#999999' : (item.status === 2 ? '#52c41a' : (item.status === 1 ? '#1890ff' : '#faad14'))}};">
+              {{item.statusText}}
+          </view>
+        </view>
+        <view class="card-body" style="display: block;">
+          <view class="msg-text" style="color: #666; font-size: 26rpx;">
+            {{item.isReport ? '举报' : 'Bug反馈'}}内容：{{item.content}}
+          </view>
+          <view class="admin-reply-box" wx:if="{{item.replyContent || item.reply}}" style="background: #f7f8fa; padding: 20rpx; border-radius: 12rpx; margin-top: 16rpx;">
+            <text class="reply-title" style="font-size: 24rpx; color: #3b5998; font-weight: bold; margin-bottom: 8rpx; display: block;">处理进度：</text>
+            <text class="reply-text" style="font-size: 28rpx; color: #333; line-height: 1.6;">{{item.replyContent || item.reply}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="notif-card" wx:else style="background: #fff0f0; border: 2rpx solid #ff4d4f; padding: 30rpx;">
+        <text style="color: #ff4d4f; font-weight: bold; font-size: 30rpx;">捕捉到未知数据！</text>
+        <view style="font-size: 26rpx; color: #333; margin-top: 12rpx;">
+            当前卡片的 type 值是：<text style="color: red; font-weight: bold;">【{{item.type || '完全没这个字段'}}】</text>
+        </view>
+      </view>
+
+    </block>
+
+    <view class="empty-holder" wx:if="{{requests.length === 0}}">
+      <text class="empty-emoji">📬</text>
+      <text>信箱空空如也，去广场逛逛吧</text>
+    </view>
+  </scroll-view>
+</view>

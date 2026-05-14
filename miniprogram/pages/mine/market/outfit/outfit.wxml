@@ -1,0 +1,97 @@
+<audit-protector></audit-protector>
+<mall-nav title="外观商城" bgColor="rgba(255,255,255,0.4)" titleColor="#8A181A"></mall-nav>
+
+<view class="chinese-container">
+  <view class="ambient-light warm-glow"></view>
+
+  <view class="mall-tabs-wrapper">
+    <view class="mall-tabs">
+      <view class="tab-item {{currentTabIndex === 0 ? 'active' : ''}}" bindtap="switchTab" data-index="0">主页背景</view>
+      <view class="tab-item {{currentTabIndex === 1 ? 'active' : ''}}" bindtap="switchTab" data-index="1">专属头像框</view>
+      <view class="tab-indicator" style="transform: translateX({{ currentTabIndex * 100 + '%' }});"><view class="line"></view></view>
+    </view>
+    
+    <view class="filter-bar">
+      <view class="filter-tag {{filterType === 'all' ? 'active' : ''}}" bindtap="setFilter" data-type="all">全部</view>
+      <view class="filter-tag {{filterType === 'unowned' ? 'active' : ''}}" bindtap="setFilter" data-type="unowned">未拥有</view>
+      <view class="filter-tag {{filterType === 'owned' ? 'active' : ''}}" bindtap="setFilter" data-type="owned">已拥有</view>
+    </view>
+  </view>
+
+  <swiper class="mall-swiper" current="{{currentTabIndex}}" bindchange="onSwiperChange" duration="300">
+    <swiper-item>
+      <scroll-view class="mall-scroll-area" scroll-y>
+        <view class="goods-grid">
+          <view class="goods-card" wx:for="{{displayBgList}}" wx:key="_id" bindtap="openDetail" data-item="{{item}}">
+            <view class="preview-box">
+              <image class="preview-img" src="{{item._displayBgUrlLarge}}" mode="aspectFill" lazy-load="true"></image>
+              <view class="goods-tag tag-{{item.uiTag}}" wx:if="{{item.uiTag && item.uiTag !== 'none'}}">
+                {{item.uiTag === 'faculty' ? '教职工' : item.uiTag === 'event' ? '限定' : item.uiTag === 'rare' ? '绝版' : item.uiTag === 'achievement' ? '成就奖励' : '新品'}}
+              </view>
+              <view class="owned-badge" wx:if="{{item.isOwned}}">已拥有</view>
+            </view>
+            <view class="goods-info">
+              <text class="goods-name">{{item.name}}</text>
+              <text class="goods-desc">{{item.shortDesc || '精美主页背景'}}</text>
+              <view class="action-row">
+                <view class="auth-lock" wx:if="{{item.authLogic === 'role' && item.authCondition === '1' && userInfo.Permission !== 1}}">
+                  <text class="lock-icon">🔒</text> 仅教职工
+                </view>
+                <block wx:else>
+                  <button class="action-btn using" wx:if="{{item.isEquipped}}" catchtap="doNothing">使用中</button>
+                  <button class="action-btn equip" wx:elif="{{item.isOwned}}" catchtap="quickEquip" data-item="{{item}}">立即装备</button>
+                  <button class="action-btn claim {{item.uiTag === 'rare' ? 'rare-btn' : item.uiTag === 'event' ? 'event-btn' : item.authLogic === 'achievement' ? 'achieve-btn' : ''}}" wx:else catchtap="quickClaim" data-item="{{item}}">
+                    {{item.uiTag === 'rare' ? '已绝版' : item.uiTag === 'event' ? '活动获取' : (item.price > 0 ? item.price + ' ' + item.priceUnitDisplay : '免费获取')}}
+                  </button>
+                </block>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="bottom-tips" wx:if="{{displayBgList.length > 0}}">没有更多啦~</view>
+        <view class="empty-tips" wx:else>暂无对应装扮</view>
+        <view class="scroll-bottom-padding"></view>
+      </scroll-view>
+    </swiper-item>
+
+    <swiper-item>
+      <scroll-view class="mall-scroll-area" scroll-y>
+        <view class="goods-grid">
+          <view class="goods-card frame-card" wx:for="{{displayFrameList}}" wx:key="_id" bindtap="openDetail" data-item="{{item}}">
+            <view class="preview-box frame-box">
+              <view class="mock-avatar-base"></view>
+              <image class="preview-frame {{item.realSizeLevel === 'epic' ? 'size-epic' : 'size-normal'}}" src="{{item._displayAvatarFrameUrl}}" mode="aspectFit" lazy-load="true" style="{{item.realShadow ? 'filter: ' + item.realShadow + ';' : ''}}"></image>
+              <view class="goods-tag tag-{{item.uiTag}}" wx:if="{{item.uiTag && item.uiTag !== 'none'}}">
+                {{item.uiTag === 'faculty' ? '教职工' : item.uiTag === 'event' ? '限定' : item.uiTag === 'rare' ? '绝版' : item.uiTag === 'achievement' ? '成就奖励' : '新品'}}
+              </view>
+              <view class="owned-badge" wx:if="{{item.isOwned}}">已拥有</view>
+            </view>
+
+            <view class="goods-info">
+              <text class="goods-name">{{item.name}}</text>
+              <text class="goods-desc">{{item.shortDesc || '个性头像边框'}}</text>
+              <view class="action-row">
+                <view class="auth-lock" wx:if="{{item.authLogic === 'role' && item.authCondition === '1' && userInfo.Permission !== 1}}">
+                  <text class="lock-icon">🔒</text> 仅教职工
+                </view>
+                <block wx:else>
+                  <button class="action-btn using" wx:if="{{item.isEquipped}}" catchtap="doNothing">使用中</button>
+                  <button class="action-btn equip" wx:elif="{{item.isOwned}}" catchtap="quickEquip" data-item="{{item}}">立即装备</button>
+                  <button class="action-btn claim {{item.uiTag === 'rare' ? 'rare-btn' : item.uiTag === 'event' ? 'event-btn' : item.authLogic === 'achievement' ? 'achieve-btn' : ''}}" wx:else catchtap="quickClaim" data-item="{{item}}">
+                    {{item.uiTag === 'rare' ? '已绝版' : item.uiTag === 'event' ? '活动获取' : (item.price > 0 ? item.price + ' ' + item.priceUnitDisplay : '免费获取')}}
+                  </button>
+                </block>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="bottom-tips" wx:if="{{displayFrameList.length > 0}}">没有更多啦~</view>
+        <view class="empty-tips" wx:else>暂无对应装扮</view>
+        <view class="scroll-bottom-padding"></view>
+      </scroll-view>
+    </swiper-item>
+  </swiper>
+
+  <item-detail-drawer show="{{showDetail}}" item="{{currentDetail}}" userInfo="{{userInfo}}" mode="outfit" bind:close="closeDetail" bind:equip="quickEquip" bind:claim="quickClaim" bind:cacheRefresh="processAndFilterData"></item-detail-drawer>
+</view>
+<mall-tabbar currentIdx="2"></mall-tabbar>

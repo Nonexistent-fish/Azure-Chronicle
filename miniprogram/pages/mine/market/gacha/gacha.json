@@ -1,0 +1,6 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "item-detail-drawer": "/components/item-detail-drawer/item-detail-drawer"
+  }
+}

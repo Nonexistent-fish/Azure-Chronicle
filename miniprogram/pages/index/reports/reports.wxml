@@ -1,0 +1,20 @@
+<view class="container">
+  <view class="header-tip">
+    <text class="tip-text">正在举报用户 <text class="highlight">{{reportedName}}</text> 的帖子</text>
+  </view>
+
+  <view class="content-card">
+    <view class="section-title">请选择违规类型 <text class="required">*</text></view>
+    
+    <view class="reason-list">
+      <view class="reason-item {{selectedReason === item ? 'active' : ''}}" wx:for="{{reasons}}" wx:key="*this" bindtap="chooseReason" data-reason="{{item}}">
+        {{item}}
+      </view>
+    </view>
+
+    <view class="section-title">补充详细说明 <text class="optional">(选填)</text></view>
+    <textarea class="detail-input" placeholder="请详细描述违规情况，帮助管理员快速定位问题..." maxlength="200" bindinput="handleInput" value="{{detail}}" disable-default-padding="true"></textarea>
+  </view>
+  
+  <button class="submit-btn" bindtap="submitReport">提交反馈</button>
+</view>

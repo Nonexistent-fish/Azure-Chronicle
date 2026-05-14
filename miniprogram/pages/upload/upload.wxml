@@ -1,0 +1,84 @@
+<view class="container">
+  <view class="card">
+    <input 
+      class="title-input"
+      placeholder="请输入标题 (可选)" 
+      placeholder-style="color: #ccc; font-weight: normal;"
+      maxlength="-1"
+      bindinput="onTitleInput"
+      value="{{titleVal}}"
+    />
+
+    <view class="divider"></view>
+
+    <view class="content-wrapper">
+      <textarea 
+        class="content-input" 
+        placeholder="分享你的新鲜事..." 
+        value="{{contentVal}}" 
+        bindinput="onContentInput" 
+        maxlength="-1" 
+        show-confirm-bar="{{false}}"
+      />
+      
+      <view class="footer-tools">
+        <text class="word-count {{contentLen >= maxChars ? 'limit-red' : ''}} {{isShaking ? 'shake-anim' : ''}}">{{contentLen}}/{{maxChars}}</text>
+        
+        <view class="privacy-badge {{isPrivate ? 'is-private' : ''}}" bindtap="togglePrivacy">
+          <text class="icon">{{isPrivate ? '🔒' : '🌍'}}</text>
+          <text class="text">{{isPrivate ? '私密' : '公开'}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="media-grid">
+      <block wx:for="{{mediaFiles}}" wx:key="tempFilePath">
+        <view class="media-item" wx:if="{{item.tempFilePath}}">
+          <image 
+            wx:if="{{item.fileType === 'image'}}" 
+            src="{{item.tempFilePath}}" 
+            mode="aspectFill" 
+            class="media-content"
+          ></image>
+          <video 
+            wx:if="{{item.fileType === 'video'}}" 
+            src="{{item.tempFilePath}}" 
+            class="media-content"
+            show-center-play-btn="{{true}}"
+            controls="{{false}}"
+          ></video>
+          <view class="delete-btn" catchtap="removeMedia" data-index="{{index}}">×</view>
+        </view>
+      </block>
+
+      <view class="add-btn" bindtap="chooseMedia" wx:if="{{mediaFiles.length < 4}}">
+        <view class="add-icon">+</view>
+      </view>
+    </view>
+
+    <view class="switch-container">
+      <view class="switch-label">
+        <text>匿名发布</text>
+        <text class="switch-desc">隐藏您的真实昵称和头像</text>
+      </view>
+      <switch color="#07c160" checked="{{isAnonymous}}" bindchange="onAnonymousChange"/>
+    </view>
+  </view>
+
+  <button class="submit-btn {{isSubmitting ? 'btn-submitting' : ''}}" bindtap="submitPost" disabled="{{isSubmitting}}">
+    <block wx:if="{{!isSubmitting}}">
+      {{isEdit ? '保存修改' : '立即发布'}}
+    </block>
+    <block wx:else>
+      <view class="fancy-loading">
+        <view class="spinner"></view>
+        <text class="loading-text">投递中...</text>
+      </view>
+    </block>
+  </button>
+  
+  <view class="tips-wrapper">
+    <text class="tips-text">发布内容需经过人工审核，发布即代表您同意</text>
+    <text class="standard-link" bindtap="goToStandard">《青笺校园日记内容发布与社区规范》</text>
+  </view>
+</view>

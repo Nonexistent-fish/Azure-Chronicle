@@ -1,0 +1,126 @@
+<view class="gear-lab" catchtap="clearSelection">
+  <movable-area class="camera-viewport">
+    <movable-view class="world-canvas" direction="all" x="{{camX}}" y="{{camY}}" scale="true" scale-min="0.3" scale-max="2.5" animation="true">
+      <view class="chain-row {{chain.isJammed ? 'state-jammed' : ''}}" wx:for="{{chains}}" wx:for-item="chain" wx:for-index="cIdx" wx:key="id">
+        <block wx:for="{{chain.gears}}" wx:for-item="gear" wx:for-index="gIdx" wx:key="id">
+          <view class="gear-wrapper {{selectedChainIdx === cIdx && selectedGearIdx === gIdx ? 'active' : ''}} {{gear.isSource ? 'source-glow' : ''}}" style="width: {{gear.diameter}}rpx; height: {{gear.diameter}}rpx; margin-right: -12rpx; z-index: {{100 - gIdx}};" catchtap="selectGear" data-cidx="{{cIdx}}" data-gidx="{{gIdx}}">
+            <image class="gear-body" src="{{gear.icon}}" style="animation: spin {{gear.animDuration}}s linear infinite; animation-direction: {{gear.direction === 1 ? 'normal' : 'reverse'}}; animation-play-state: {{chain.isJammed ? 'paused' : 'running'}};"></image>
+            <view class="gear-bearing {{gear.isSource ? 'bearing-source' : ''}}"></view>
+            <view class="gear-badge">{{gear.teeth}}T</view>
+          </view>
+        </block>
+      </view>
+    </movable-view>
+  </movable-area>
+
+  <view class="jam-alert" wx:if="{{selectedChainIdx !== -1 && chains[selectedChainIdx].isJammed}}">
+    <icon type="warn" color="#ef4444" size="40"></icon>
+    <view class="jam-text">
+      <view class="jam-title">SYSTEM JAMMED</view>
+      <view class="jam-desc">第 {{selectedChainIdx + 1}} 组动力冲突！</view>
+    </view>
+  </view>
+
+  <view class="hud-panel" wx:if="{{selectedGear}}" catchtap="preventCollapse">
+    <view class="hud-header">
+      <view class="hud-title-group">
+        <text class="hud-title">链路 #{{selectedChainIdx + 1}} | 齿轮 #{{selectedGearIdx + 1}}</text>
+        <text class="hud-tag" style="background: {{selectedGear.color}}">{{selectedGear.materialName}}</text>
+      </view>
+      <text class="hud-status {{chains[selectedChainIdx].isJammed ? 'danger' : ''}}">{{chains[selectedChainIdx].isJammed ? 'CRITICAL ERROR' : (selectedGear.isSource ? 'ACTIVE MOTOR' : 'IDLER')}}</text>
+    </view>
+    <view class="hud-grid">
+      <view class="hud-item">
+        <text class="label">转速与方向</text>
+        <text class="value highlight {{chains[selectedChainIdx].isJammed ? 'danger' : ''}}">{{selectedGear.rpm}} RPM {{selectedGear.direction === 1 ? '↻' : '↺'}}</text>
+      </view>
+      <view class="hud-item">
+        <text class="label">扭矩 (N·m)</text>
+        <text class="value highlight-torque">{{selectedGear.torque}}</text>
+      </view>
+      <view class="hud-item">
+        <text class="label">直径 (mm)</text>
+        <text class="value">{{selectedGear.diameter}}</text>
+      </view>
+      <view class="hud-item">
+        <text class="label">规格 (Z / m)</text>
+        <text class="value">{{selectedGear.teeth}}T / m{{selectedGear.module}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="control-deck" catchtap="preventCollapse">
+    <view class="setup-mode" wx:if="{{selectedChainIdx === -1}}">
+      <view class="deck-header">
+        <text class="deck-title">建立新传动组</text>
+        <view class="reset-btn" bindtap="resetAll">清空工作台</view>
+      </view>
+      <view class="params-box">
+        <view class="param-row">
+          <text class="param-label highlight">模数</text>
+          <slider class="mini-slider" min="2" max="6" step="0.5" value="{{nextModule}}" activeColor="#3b82f6" block-size="24" bindchanging="onModuleChange" bindchange="onModuleChange"/>
+          <input class="param-input" type="digit" value="{{nextModule}}" bindblur="onInputModule" />
+        </view>
+        <view class="param-row">
+          <text class="param-label">初始齿数</text>
+          <slider class="mini-slider" min="8" max="48" step="1" value="{{nextTeeth}}" activeColor="#10b981" block-size="24" bindchanging="onNextTeethChange" bindchange="onNextTeethChange"/>
+          <input class="param-input" type="number" value="{{nextTeeth}}" bindblur="onInputNextTeeth" />
+        </view>
+      </view>
+      <button class="btn-start" bindtap="createNewChain"><text>⚡ 放置动力源</text></button>
+    </view>
+
+    <view class="running-mode" wx:else>
+      <view class="deck-header">
+        <text class="deck-title">修改或啮合齿轮</text>
+        <view class="delete-btn" bindtap="deleteGear"><text>🗑 删除</text></view>
+      </view>
+      
+      <scroll-view class="params-scroll" scroll-y="true">
+        <view class="role-switch">
+          <view class="switch-item {{selectedGear.isSource ? 'active' : ''}}" bindtap="setRole" data-role="source">⚡ 动力源</view>
+          <view class="switch-item {{!selectedGear.isSource ? 'active' : ''}}" bindtap="setRole" data-role="driven">⚙️ 从动轮</view>
+        </view>
+
+        <view class="quick-toolbar">
+           <view class="qt-btn qt-mat" bindtap="toggleMaterial">
+             <text class="qt-dot" style="background: {{selectedGear.color}}"></text>
+             {{selectedGear.materialName}}
+           </view>
+           <view class="qt-btn qt-dir {{selectedGear.inputDirection === 1 ? 'cw' : 'ccw'}}" bindtap="toggleDirection" wx:if="{{selectedGear.isSource}}">
+             {{selectedGear.inputDirection === 1 ? '↻ 顺时针' : '↺ 逆时针'}}
+           </view>
+        </view>
+
+        <block wx:if="{{selectedGear.isSource}}">
+          <view class="param-row">
+            <text class="param-label highlight">转速</text>
+            <slider class="mini-slider" min="0" max="1000" step="10" value="{{selectedGear.inputRPM}}" activeColor="#ef4444" block-size="24" bindchanging="onSourceSpeedChange" bindchange="onSourceSpeedChange"/>
+            <input class="param-input" type="number" value="{{selectedGear.inputRPM}}" bindblur="onInputRPM" />
+          </view>
+          
+          <view class="strobe-warning" wx:if="{{selectedGear.isStrobe && !chains[selectedChainIdx].isJammed}}">
+            <text class="warn-icon">⚠️</text>
+            <text class="warn-text">转速过高产生频闪，视觉倒转属正常物理现象</text>
+          </view>
+
+          <view class="param-row">
+            <text class="param-label highlight-torque">扭矩</text>
+            <slider class="mini-slider" min="10" max="1000" step="10" value="{{selectedGear.inputTorque}}" activeColor="#f59e0b" block-size="24" bindchanging="onSourceTorqueChange" bindchange="onSourceTorqueChange"/>
+            <input class="param-input" type="number" value="{{selectedGear.inputTorque}}" bindblur="onInputTorque" />
+          </view>
+        </block>
+
+        <view class="param-row">
+          <text class="param-label">齿数</text>
+          <slider class="mini-slider" min="8" max="48" step="1" value="{{selectedGear.teeth}}" activeColor="#10b981" block-size="24" bindchanging="onEditTeeth" bindchange="onEditTeeth"/>
+          <input class="param-input" type="number" value="{{selectedGear.teeth}}" bindblur="onInputTeeth" />
+        </view>
+      </scroll-view>
+
+      <view class="action-row">
+         <button class="btn-append" bindtap="appendGearToChain"><text>+ 追加齿轮 (m{{selectedGear.module}})</text></button>
+      </view>
+    </view>
+  </view>
+</view>

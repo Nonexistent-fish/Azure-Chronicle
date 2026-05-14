@@ -1,0 +1,72 @@
+<view class="container">
+  <view class="header-bar">
+    <view class="header-left">
+      <text class="title">注册审核</text>
+      <view class="badge" wx:if="{{totalPending > 0}}">{{totalPending}}</view>
+    </view>
+    <view class="refresh-btn" bindtap="fetchPendingData">↻ 刷新</view>
+  </view>
+
+  <view wx:if="{{isLoading}}" class="status-center">
+    <view class="loading-spinner"></view>
+    <text>分类中...</text>
+  </view>
+
+  <scroll-view wx:else scroll-y class="scroll-area" enable-flex>
+    <block wx:for="{{groupedList}}" wx:key="title" wx:for-item="group" wx:for-index="gIndex">
+      <view class="group-section">
+        
+        <view class="group-header">
+          <view class="gh-left">
+            <view class="gh-icon"></view>
+            <text class="gh-title">{{group.title}}</text>
+          </view>
+          <text class="gh-count">{{group.list.length}} 人</text>
+        </view>
+
+        <view class="card-list">
+          <block wx:for="{{group.list}}" wx:key="_id" wx:for-item="stu" wx:for-index="sIndex">
+            <view class="student-card">
+              <view class="card-main">
+                <view class="card-left">
+                  <image class="avatar" src="{{stu.weiXinAvatar}}" mode="aspectFill" lazy-load></image>
+                </view>
+
+                <view class="card-mid">
+                  <view class="row-top">
+                    <text class="real-name">{{stu.realName}}</text>
+                    <text class="nick-name">({{stu.nickName}})</text>
+                  </view>
+                  <view class="row-class">
+                    <text class="label">填写:</text>
+                    <text class="class-text">{{stu.className}}</text>
+                  </view>
+                  <view class="row-info">
+                    <text class="time-text">{{stu.displayTime}}</text>
+                  </view>
+                </view>
+
+                <view class="card-right">
+                  <view wx:if="{{!stu._isRejecting}}" class="action-btn pass" bindtap="handlePass" data-id="{{stu._id}}" data-name="{{stu.realName}}"><text>通过</text></view>
+                  <view class="action-btn {{stu._isRejecting ? 'confirm-reject' : 'reject'}}" bindtap="handleRejectToggle" data-gidx="{{gIndex}}" data-sidx="{{sIndex}}">
+                    <text>{{stu._isRejecting ? '确认驳回' : '驳回'}}</text>
+                  </view>
+                </view>
+              </view>
+
+              <view class="reject-input-box" wx:if="{{stu._isRejecting}}">
+                <input class="reason-input" placeholder="请输入驳回理由 (必填)" placeholder-style="color:#ccc" focus="{{true}}" bindinput="handleReasonInput" data-gidx="{{gIndex}}" data-sidx="{{sIndex}}" />
+                <view class="cancel-btn" catchtap="handleCancelReject" data-gidx="{{gIndex}}" data-sidx="{{sIndex}}">取消</view>
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+    </block>
+    
+    <view wx:if="{{groupedList.length === 0}}" class="empty-state">
+      <text>🎉 全部审核完毕</text>
+    </view>
+    <view style="height: 120rpx;"></view>
+  </scroll-view>
+</view>

@@ -1,0 +1,49 @@
+<audit-protector></audit-protector>
+<view class="container">
+  <view class="header-tip">
+    <view class="tip-icon">🛑</view>
+    <view class="tip-text">
+      <text class="main">本页面仅用于反馈程序错误(Bug)</text>
+      <text class="sub">功能建议/吐槽请直接发帖，我们会高强度自搜的！</text>
+    </view>
+  </view>
+
+  <view class="form-card">
+    <view class="section-title">Bug 简述</view>
+    <input class="input-area" placeholder="一句话描述发生了什么..." placeholder-class="ph-style" value="{{desc}}" bindinput="onInputDesc" maxlength="50" />
+
+    <view class="divider"></view>
+
+    <view class="section-title">Bug 严重程度</view>
+    <view class="severity-group">
+      <view wx:for="{{severityOptions}}" wx:key="value" class="severity-item {{item.value}} {{severity === item.value ? 'active' : ''}}" bindtap="selectSeverity" data-value="{{item.value}}">
+        <view class="color-dot"></view>
+        <text class="label">{{item.label}}</text>
+        <text class="desc" wx:if="{{severity === item.value}}">{{item.desc}}</text>
+      </view>
+    </view>
+
+    <view class="divider"></view>
+
+    <view class="row-header">
+      <view class="section-title" style="margin-bottom:0;">复现步骤</view>
+      <view class="reproduce-toggle">
+        <view class="toggle-item {{!isStable ? 'active' : ''}}" bindtap="setStable" data-val="{{false}}">偶然</view>
+        <view class="toggle-item {{isStable ? 'active' : ''}}" bindtap="setStable" data-val="{{true}}">必现</view>
+      </view>
+    </view>
+
+    <textarea class="textarea-area" placeholder="点击了.....，出现了......弹窗/提示，是否能进入....窗口。" placeholder-class="ph-style" value="{{steps}}" bindinput="onInputSteps" maxlength="500" disable-default-padding></textarea>
+
+    <view class="divider"></view>
+
+    <view class="section-title">设备信息 <text class="auto-tag">自动读取</text></view>
+    <view class="device-info-box">
+      <text class="model">{{deviceModel}}</text>
+      <text class="system">{{systemVersion}}</text>
+    </view>
+    <view class="info-collection-tip">* 提交时将自动上传上述设备信息以协助定位问题</view>
+  </view>
+
+  <button class="submit-btn-new" bindtap="submitFeedback" disabled="{{isSubmitting}}">提交反馈</button>
+</view>

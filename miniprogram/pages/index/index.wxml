@@ -1,0 +1,250 @@
+<view class="container" style="padding-bottom: {{showCommentDrawer ? '65vh' : '120rpx'}};">
+  <view class="safe-header"></view>
+
+  <view class="banner-section" wx:if="{{banners.length > 0}}">
+    <swiper class="home-banner" autoplay="true" circular="{{banners.length > 1}}" interval="5000" duration="800" previous-margin="26rpx" next-margin="26rpx" bindchange="onSwiperChange" indicator-dots="{{false}}">
+      <block wx:for="{{banners}}" wx:key="_id">
+        <swiper-item catchtap="onBannerClick" data-item="{{item}}">
+          <view class="banner-item-wrap {{currentSwiperIndex === index ? 'active' : ''}}">
+            <image src="{{item.imageUrl}}" mode="aspectFill" class="banner-img" lazy-load="{{true}}"></image>
+            <view class="click-hint-icon" wx:if="{{item.targetUrl || (item.targetType && item.targetType !== 'none')}}"></view>
+          </view>
+        </swiper-item>
+      </block>
+    </swiper>
+  </view>
+
+  <view class="notice-section" wx:if="{{notice && notice.content}}">
+    <view class="notice-box {{notice.type === 'error' ? 'notice-red' : (notice.type === 'warning' ? 'notice-yellow' : 'notice-blue')}}">
+      <view class="notice-icon">📢</view>
+      <view class="notice-content-mask">
+        <view class="notice-scroll-text">{{notice.content}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="filter-search-wrap">
+    <view class="morph-bar {{isSearchActive ? 'active-state' : ''}} {{isSearchFloating ? 'floating-state' : ''}}">
+      <view class="tab-group {{currentTab === 'latest' ? 'pos-latest' : 'pos-recommend'}}">
+        <view class="tab {{currentTab === 'recommend' ? 'active' : ''}}" catchtap="switchTab" data-tab="recommend">推荐</view>
+        <view class="tab {{currentTab === 'latest' ? 'active' : ''}}" catchtap="switchTab" data-tab="latest">最新</view>
+        <view class="sliding-line"></view>
+      </view>
+      <view class="search-area" bindtap="activateSearch">
+        <icon type="search" size="18" color="{{isSearchActive ? '#999' : '#333'}}" class="s-icon" catchtap="onIconClick"></icon>
+        <input class="s-input" placeholder="搜索你想看的内容..." placeholder-style="color: #999;" value="{{searchKeyword}}" focus="{{isSearchFloating}}" bindinput="onSearchInput" bindconfirm="onSearchConfirm" bindblur="onSearchBlur" confirm-type="search" />
+        <icon wx:if="{{isSearchActive}}" type="clear" size="16" color="#ccc" class="clear-icon" catchtap="onClearSearch"></icon>
+      </view>
+    </view>
+  </view>
+
+  <view class="post-list">
+    <block wx:if="{{currentTab === 'recommend' && dailyTopic}}">
+      <view class="daily-topic-card theme-{{dailyTopic.category || 'default'}}" catchtap="goToDailyTopic">
+        <view class="dt-content">
+          <view class="dt-header">
+            <view class="dt-tag">🔥 今日话题</view>
+          </view>
+          <view class="dt-title">{{dailyTopic.title}}</view>
+          
+          <block wx:if="{{dailyTopic.topicType === 'battle' || !dailyTopic.topicType}}">
+            <view class="dt-battle-container">
+              <view class="dt-labels-row">
+                <view class="dt-label-box text-left"><text class="dt-opt-text">{{dailyTopic.miniOptionA}}</text></view>
+                <view class="dt-label-box text-right"><text class="dt-opt-text">{{dailyTopic.miniOptionB}}</text></view>
+              </view>
+
+              <view class="dt-bar-container">
+                <view class="dt-bar-wrapper">
+                  <view class="dt-bar-track">
+                    <view class="dt-bar-fill red-fill" style="width: {{dailyTopic.percentAStr || '50%'}};"></view>
+                    <view class="dt-cleft-gap"></view>
+                    <view class="dt-bar-fill blue-fill" style="width: {{dailyTopic.percentBStr || '50%'}};"></view>
+                  </view>
+                </view>
+                <view class="dt-vs-badge" data-text="VS">VS</view>
+              </view>
+
+              <view class="dt-comments-battle" wx:if="{{dailyTopic.topCommentA || dailyTopic.topCommentB || true}}">
+                <view class="dt-comment-side comment-a">
+                  <view class="c-quote" wx:if="{{dailyTopic.topCommentA}}">“{{dailyTopic.topCommentA.content}}”</view>
+                  <view class="c-empty" wx:else>等待红方神评...</view>
+                </view>
+                <view class="dt-comment-side comment-b">
+                  <view class="c-quote" wx:if="{{dailyTopic.topCommentB}}">“{{dailyTopic.topCommentB.content}}”</view>
+                  <view class="c-empty" wx:else>等待蓝方神评...</view>
+                </view>
+              </view>
+            </view>
+          </block>
+
+          <block wx:if="{{dailyTopic.topicType === 'none'}}">
+            <view class="dt-none-container">
+              <view class="dt-desc-text">{{dailyTopic.content}}</view>
+              <view class="dt-top-comment {{!dailyTopic.topComment ? 'is-empty' : ''}}">
+                <block wx:if="{{dailyTopic.topComment}}"><view class="dt-tc-content">“{{dailyTopic.topComment.content}}”</view></block>
+                <view class="dt-tc-empty-text" wx:else>正在等待神评降临...</view>
+              </view>
+            </view>
+          </block>
+
+          <block wx:if="{{dailyTopic.topicType === 'choice'}}">
+            <view class="dt-choice-container">
+              <wxs module="letterUtil">
+                module.exports.get = function(i) { var chars = ['A', 'B', 'C', 'D', 'E']; return chars[i] || ''; }
+              </wxs>
+              <view class="dt-choices-list">
+                <block wx:for="{{dailyTopic.choices}}" wx:key="*this" wx:for-index="idx">
+                  <view class="dt-choice-item">
+                    <text class="dt-choice-letter color-{{letterUtil.get(idx)}}">{{letterUtil.get(idx)}}</text>
+                    <view class="dt-choice-divider"></view>
+                    <text class="dt-choice-text">{{item}}</text>
+                  </view>
+                </block>
+              </view>
+              <view class="dt-top-comment {{!dailyTopic.topComment ? 'is-empty' : ''}}" style="margin-top: 36rpx;">
+                <block wx:if="{{dailyTopic.topComment}}"><view class="dt-tc-content">“{{dailyTopic.topComment.content}}”</view></block>
+                <view class="dt-tc-empty-text" wx:else>正在等待神评降临...</view>
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+    </block>
+
+    <block wx:for="{{posts}}" wx:key="_id" wx:for-index="postIndex">
+      <view class="post-card">
+        <view class="card-header">
+          <view class="user-info">
+            <image class="avatar" src="{{item.author.avatar}}" mode="aspectFill" lazy-load="{{true}}" catchtap="onAvatarClick" data-post="{{item}}"></image>
+            <view class="meta-info">
+              <view class="name-line">
+                <text class="nickname">{{item.author.nickName}}</text>
+                <view wx:if="{{item.author.Permission > 0}}" class="role-tag tag-{{item.author.Permission}}">{{item.author.Permission == 1 ? '教职工' : (item.author.Permission == 2 ? '管理员' : '开发者')}}</view>
+              </view>
+              <text class="time">{{item.relativeTime}}</text>
+            </view>
+          </view>
+          <view class="header-right" style="display: flex; align-items: center;">
+            <view wx:if="{{item.isPinned}}" class="pin-tag">TOP</view>
+            <view class="more-btn" catchtap="onMoreOptions" data-id="{{item._id}}" data-openid="{{item.author.id || item._openid}}" data-name="{{item.author.nickName || '匿名同学'}}"><text>•••</text></view>
+          </view>
+        </view>
+        
+        <view class="card-content" bindtap="goToDetail" data-id="{{item._id}}">
+          <view class="post-title" wx:if="{{item.title}}">{{item.title}}</view>
+          <text user-select="true" class="post-text" catchtap="goToDetail" data-id="{{item._id}}">{{item.content}}</text>
+          
+          <view class="media-grid" wx:if="{{item.media.length > 0}}">
+            <block wx:for="{{item.media}}" wx:for-item="mediaItem" wx:key="fileID">
+              <image wx:if="{{mediaItem.fileType === 'image'}}" class="media-item" src="{{mediaItem.displayUrl || mediaItem.fileID}}" mode="aspectFill" lazy-load="{{true}}" catchtap="onPreviewMedia" data-current="{{mediaItem.fileID}}" data-postindex="{{postIndex}}"></image>
+              
+              <view wx:if="{{mediaItem.fileType === 'video'}}" class="media-item video-wrapper" style="position: relative; width: 220rpx; height: 220rpx;">
+                <video src="{{mediaItem.fileID}}" show-center-play-btn="{{false}}" show-play-btn="{{false}}" controls="{{false}}" style="width: 100%; height: 100%; pointer-events: none;"></video>
+                <view class="video-mask" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center;" catchtap="onPreviewMedia" data-current="{{mediaItem.fileID}}" data-postindex="{{postIndex}}">
+                  <view style="width: 60rpx; height: 60rpx; background: rgba(0,0,0,0.5); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <view style="border-left: 20rpx solid white; border-top: 12rpx solid transparent; border-bottom: 12rpx solid transparent; margin-left: 6rpx;"></view>
+                  </view>
+                </view>
+              </view>
+            </block>
+          </view>
+        </view>
+        
+        <view class="card-footer">
+          <view class="action-group">
+            <view class="action-item" catchtap="openComment" data-post="{{item}}" data-index="{{postIndex}}">
+              <image class="action-svg" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23aaaaaa%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M12 21a9 9 0 1 0-9-9c0 1.488.36 2.891 1 4.127L3 21l4.873-1c1.236.64 2.64 1 4.127 1Z%27/%3E%3C/svg%3E"></image>
+              <text class="action-num">{{item.commentCount || 0}}</text>
+            </view>
+            <view class="action-item" catchtap="onLikePost" data-id="{{item._id}}" data-index="{{postIndex}}">
+              <image class="action-svg {{item.hasLiked ? 'heart-pop' : ''}}" src="{{item.hasLiked ? 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23ff4d4f%27 stroke=%27%23ff4d4f%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z%27/%3E%3C/svg%3E' : 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23aaaaaa%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z%27/%3E%3C/svg%3E'}}" />
+              <text class="action-num {{item.hasLiked ? 'red-num' : ''}}">{{item.likeCount || 0}}</text>
+            </view>
+            <view class="action-item" catchtap="onFavoritePost" data-id="{{item._id}}" data-index="{{postIndex}}">
+              <image class="action-svg {{item.hasFavorited ? 'star-pop' : ''}}" src="{{item.hasFavorited ? 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23f5a623%27 stroke=%27%23f5a623%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.165.75c.46.067.644.63.31.956l-3.738 3.645a.53.53 0 0 0-.152.468l.882 5.145c.078.458-.402.806-.81.592L12 16.388a.53.53 0 0 0-.494 0l-4.624 2.43c-.408.215-.888-.134-.81-.592l.882-5.145a.53.53 0 0 0-.152-.468L3.064 8.97c-.334-.326-.15-.89.31-.956l5.165-.75a.53.53 0 0 0 .4-.29l2.31-4.68Z%27/%3E%3C/svg%3E' : 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23aaaaaa%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a.53.53 0 0 0 .4.29l5.165.75c.46.067.644.63.31.956l-3.738 3.645a.53.53 0 0 0-.152.468l.882 5.145c.078.458-.402.806-.81.592L12 16.388a.53.53 0 0 0-.494 0l-4.624 2.43c-.408.215-.888-.134-.81-.592l.882-5.145a.53.53 0 0 0-.152-.468L3.064 8.97c-.334-.326-.15-.89.31-.956l5.165-.75a.53.53 0 0 0 .4-.29l2.31-4.68Z%27/%3E%3C/svg%3E'}}" />
+              <text class="action-num {{item.hasFavorited ? 'yellow-num' : ''}}">{{item.favoriteCount || 0}}</text>
+            </view>
+          </view>
+        </view> 
+
+        <view class="post-top-comment" wx:if="{{item.topComment}}" catchtap="goToDetail" data-id="{{item._id}}">
+          <text class="ptc-name">{{item.topComment.author.nickName || item.topComment.nickName || '匿名同学'}}：</text>
+          <text class="ptc-content">{{item.topComment.content}}</text>
+        </view>
+      </view>
+    </block>
+
+    <view class="loading-tips" wx:if="{{isLoading && posts.length > 0}}" style="display: flex; align-items: center; justify-content: center;">
+      <view class="inline-spinner" style="position: static; width: 24rpx; height: 24rpx; margin-right: 12rpx;"></view>
+      <text>正在加载更多...</text>
+    </view>
+
+    <view class="loading-tips" wx:if="{{!hasMore && posts.length > 0}}">已经到底啦~</view>
+    <view class="loading-tips" wx:if="{{posts.length === 0 && !isLoading}}">{{searchKeyword ? '未查找到相关内容' : '暂无动态，快去发布吧！'}}</view>
+  </view>
+</view>
+
+<view class="comment-drawer {{showCommentDrawer ? 'show' : ''}}">
+  <view class="drawer-header">
+    <text class="drawer-title">全部评论 ({{currentComments.length}})</text>
+    <view class="close-btn" catchtap="closeComment">×</view>
+  </view>
+  <view class="top-input-area">
+    <image class="top-avatar" src="{{currentUserAvatar}}"></image>
+    <view class="input-wrapper">
+      <input class="real-top-input" focus="{{inputFocus}}" placeholder="{{replyTargetName ? '回复 ' + replyTargetName + '：' : '发条友善的评论...'}}" value="{{commentText}}" bindinput="onCommentInput" bindblur="onInputBlur" confirm-type="send" bindconfirm="submitComment" adjust-position="true" cursor-spacing="20" disabled="{{isSubmittingComment}}" />
+      <view class="inline-spinner" wx:if="{{isSubmittingComment}}"></view>
+    </view>
+    <button class="top-send-btn" catchtap="submitComment" disabled="{{!commentText || isSubmittingComment}}">发送</button>
+  </view>
+  <scroll-view class="comment-list" scroll-y="true">
+    <block wx:for="{{currentComments}}" wx:key="_id" wx:for-index="cIndex">
+      <view class="comment-item">
+        <image class="c-avatar" src="{{item.avatar}}" lazy-load="{{true}}"></image>
+        <view class="c-content" catchtap="onReplyClick" data-id="{{item._id}}" data-name="{{item.nickName}}">
+          <view class="c-name-row">
+            <text class="c-name" style="margin-bottom: 0;">{{item.nickName}}</text>
+            <view wx:if="{{item.Permission > 0}}" class="role-dot dot-{{item.Permission}}"></view>
+          </view>
+          <text class="c-text">{{item.content}}</text>
+          <view class="c-footer">
+            <text class="c-time">{{item.time}}</text>
+            <view class="c-actions">
+              <view class="c-action-box" catchtap="onLikeComment" data-id="{{item._id}}" data-index="{{cIndex}}">
+                <image class="c-action-svg {{item.hasLiked ? 'heart-pop' : ''}}" src="{{item.hasLiked ? 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23ff4d4f%27 stroke=%27%23ff4d4f%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z%27/%3E%3C/svg%3E' : 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23aaaaaa%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z%27/%3E%3C/svg%3E'}}" />
+                <text class="c-action-num {{item.hasLiked ? 'red-num' : ''}}">{{item.likes || 0}}</text>
+              </view>
+            </view>
+          </view>
+          <view class="sub-comments" wx:if="{{item.subComments && item.subComments.length > 0}}">
+            <block wx:for="{{item.isExpanded ? item.subComments : [item.subComments[0]]}}" wx:for-item="sub" wx:key="_id">
+              <view class="sub-item" hover-class="sub-hover" catchtap="onReplyClick" data-id="{{item._id}}" data-name="{{sub.nickName}}">
+                <text class="sub-name">{{sub.nickName}}</text>
+                <view wx:if="{{sub.Permission > 0}}" class="role-dot dot-{{sub.Permission}}"></view>
+                <text wx:if="{{sub.replyToName && sub.replyToName !== item.nickName}}" class="reply-text"> 回复 </text>
+                <text wx:if="{{sub.replyToName && sub.replyToName !== item.nickName}}" class="sub-name">{{sub.replyToName}}</text>
+                <text class="colon">：</text>
+                <text class="sub-text">{{sub.content}}</text>
+              </view>
+            </block>
+            <view class="expand-btn" wx:if="{{item.subComments.length > 1 && !item.isExpanded}}" catchtap="expandReplies" data-index="{{cIndex}}">
+              展开剩余 {{item.subComments.length - 1}} 条回复 ▾
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+    <view style="height: 60rpx;"></view> 
+  </scroll-view>
+</view>
+
+<profile-popup show="{{showProfilePopup}}" target-data="{{currentProfile}}" bind:close="closeProfilePopup"></profile-popup>
+
+<view class="action-sheet-mask {{showActionSheet ? 'show' : ''}}" catchtap="closeActionSheet" catchtouchmove="true"></view>
+<view class="action-sheet-panel {{showActionSheet ? 'show' : ''}}" catchtouchmove="true">
+  <view class="action-btn-group">
+    <button class="action-btn" catchtap="onHidePostClick">不再显示该内容</button>
+    <button class="action-btn danger" catchtap="onReportPostClick">举报该内容</button>
+  </view>
+</view>

@@ -1,0 +1,64 @@
+<view class="profile-mask {{show ? 'show' : ''}}" catchtap="closePopup" catchtouchmove="preventTouchMove"></view>
+
+<view class="profile-sheet {{show ? 'show' : ''}}" catchtouchmove="preventTouchMove">
+  <view class="mine-card {{(!pData.cardTheme || pData.cardTheme === 'dark') ? 'theme-dark' : 'theme-light'}}">
+    <image wx:if="{{pData.miniCardBgUrl}}" class="mc-bg-img" src="{{pData.miniCardBgUrl}}" mode="aspectFill"></image>
+
+    <view class="mc-avatar-wrapper {{pData.avatarFrameSizeLevel === 'epic' ? 'epic-spacing' : ''}}">
+      <image wx:if="{{pData.avatarFrameUrl && pData.avatarFrameUrl !== 'white_shadow'}}" 
+             class="avatar-frame size-{{pData.avatarFrameSizeLevel || 'normal'}}" 
+             src="{{pData.avatarFrameUrl}}" mode="aspectFill"
+             style="{{pData.avatarFrameShadow ? 'filter: ' + pData.avatarFrameShadow + ';' : ''}}">
+      </image>
+      <view wx:if="{{pData.avatarFrameUrl === 'white_shadow'}}" class="white-ring-layer"></view>
+      <image class="mc-avatar" src="{{pData.avatar}}" mode="aspectFill"></image>
+      
+      <view wx:if="{{pData.gender === 1}}" class="gender-badge male">♂</view>
+      <view wx:if="{{pData.gender === 2}}" class="gender-badge female">♀</view>
+    </view>
+
+    <view class="mc-info">
+      <view class="mc-name-row">
+        <view class="level-wrapper" wx:if="{{levelInfo}}">
+          <view class="level-entry-btn" style="{{badgeStyle}}">
+            <text class="lv-text">Lv.{{levelInfo.level}} {{levelInfo.title}}</text>
+          </view>
+        </view>
+        
+        <text class="mc-name {{pData.nickName.length > 6 ? 'long-name' : ''}}">{{pData.nickName}}</text>
+        
+        <view class="role-wrapper" wx:if="{{pData.permission > 0}}">
+          <view class="role-tag tag-{{pData.permission}}">
+            {{pData.permission == 1 ? '教职工' : (pData.permission == 2 ? '管理员' : '开发者')}}
+          </view>
+        </view>
+      </view>
+      <text class="mc-bio">{{targetStats.bio || '这个人很懒，什么都没留下~'}}</text>
+    </view>
+
+    <view class="mc-like-box" catchtap="onLikeProfile" catchlongpress="onLongPressProfileLike" catchtouchend="clearLongPress" catchtouchcancel="clearLongPress">
+      <view class="thumb-wrapper">
+        <image class="thumb-svg {{thumbAnim ? 'haptic-pop' : ''}}" src="{{profileHasLiked ? 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23ff4d4f%27 stroke=%27%23ff4d4f%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3%27/%3E%3C/svg%3E' : 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23aaaaaa%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3%27/%3E%3C/svg%3E'}}"></image>
+        
+        <block wx:for="{{particleBursts}}" wx:key="id">
+          <view class="particles {{item.level}}" wx:if="{{item.level}}">
+            <image class="p-icon p-red pt1" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23ff4d4f%27 stroke=%27%23ff4d4f%27%3E%3Cpath d=%27M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3%27/%3E%3C/svg%3E"></image>
+            <image class="p-icon p-red pt2" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23ff4d4f%27 stroke=%27%23ff4d4f%27%3E%3Cpath d=%27M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3%27/%3E%3C/svg%3E"></image>
+            <image class="p-icon p-red pt3" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23ff4d4f%27 stroke=%27%23ff4d4f%27%3E%3Cpath d=%27M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3%27/%3E%3C/svg%3E"></image>
+            <block wx:if="{{item.level === 'epic' || item.level === 'legendary'}}">
+              <image class="p-icon p-blue pt4" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%231890ff%27 stroke=%27%231890ff%27%3E%3Cpath d=%27M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3%27/%3E%3C/svg%3E"></image>
+              <image class="p-icon p-yellow pt5" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23faad14%27 stroke=%27%23faad14%27%3E%3Cpath d=%27M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3%27/%3E%3C/svg%3E"></image>
+              <image class="p-icon p-green pt6" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%2352c41a%27 stroke=%27%2352c41a%27%3E%3Cpath d=%27M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3%27/%3E%3C/svg%3E"></image>
+            </block>
+            <block wx:if="{{item.level === 'legendary'}}">
+              <image class="p-icon pt7" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%239254de%27 stroke=%27%239254de%27%3E%3Cpath d=%27M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3%27/%3E%3C/svg%3E"></image>
+              <image class="p-icon pt8" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23f5222d%27 stroke=%27%23f5222d%27%3E%3Cpath d=%27M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3%27/%3E%3C/svg%3E"></image>
+              <image class="p-icon pt9" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23ffadd2%27 stroke=%27%23ffadd2%27%3E%3Cpath d=%27M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3%27/%3E%3C/svg%3E"></image>
+            </block>
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+  <button class="mc-exchange-btn" catchtap="sendExchangeRequest">交换联系方式</button>
+</view>

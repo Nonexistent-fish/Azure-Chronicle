@@ -1,0 +1,83 @@
+<view class="countdown-page">
+  <view class="header">
+    <text class="title">我的倒计时</text>
+    <text class="subtitle">云端同步，不遗漏任何重要日程</text>
+  </view>
+
+  <scroll-view class="list-container" scroll-y="true">
+    <block wx:if="{{countdowns.length === 0 && !isLoading}}">
+      <view class="empty-state">
+        <text class="empty-icon">🍃</text>
+        <text class="empty-text">暂无日程，点击右下角添加</text>
+      </view>
+    </block>
+
+    <block wx:for="{{countdowns}}" wx:key="_id">
+      <view class="countdown-card" catchtap="toggleExpand" data-id="{{item._id}}">
+        <view class="card-top">
+          <view class="info-group">
+            <text class="event-icon">{{item.icon}}</text>
+            <text class="event-title {{item.title.length > 8 ? 'text-shrink' : ''}}">{{item.title}}</text>
+            <text wx:if="{{item.isPublic}}" class="official-tag">官方发布</text>
+          </view>
+
+          <view class="time-group">
+            <text class="time-num">{{item.leftDays}}</text>
+            <text class="time-unit">天</text>
+            <text class="time-num">{{item.leftHours}}</text>
+            <text class="time-unit">:</text>
+            <text class="time-num">{{item.leftMinutes}}</text>
+            <text class="time-unit">:</text>
+            <text class="time-num">{{item.leftSeconds}}</text>
+          </view>
+        </view>
+
+        <view class="progress-box">
+          <view class="progress-bar">
+            <view class="progress-fill {{item.statusClass}}" style="width: {{item.percent + '%'}};"></view>
+          </view>
+        </view>
+
+        <view class="expanded-drawer {{expandedId === item._id ? 'show' : ''}}">
+          <text class="exact-time-text">到期时间：{{item.exactTime}}</text>
+          <view wx:if="{{!item.isPublic}}" class="delete-btn" catchtap="deleteCountdown" data-id="{{item._id}}"><text>×</text></view>
+        </view>
+      </view> 
+    </block>
+    
+    <view style="height: 120rpx;"></view> 
+  </scroll-view>
+
+  <view class="fab-add-btn" catchtap="showAddModal">+</view>
+
+  <view class="modal-mask {{showModal ? 'show' : ''}}" catchtap="hideAddModal"></view>
+  <view class="add-modal {{showModal ? 'show' : ''}}">
+    <view class="modal-title">新建日程</view>
+    
+    <view class="input-row">
+      <text class="input-label">图标</text>
+      <input class="input-field icon-input" placeholder="输入1个Emoji如: 📖" maxlength="2" value="{{newIcon}}" bindinput="onIconInput" />
+    </view>
+    
+    <view class="input-row">
+      <text class="input-label">名称</text>
+      <input class="input-field" placeholder="最多10个字" maxlength="10" value="{{newTitle}}" bindinput="onTitleInput" />
+    </view>
+    
+    <view class="input-row">
+      <text class="input-label">目标日</text>
+      <picker mode="date" bindchange="onDateChange" start="{{todayStr}}">
+        <view class="picker-box {{newDate ? '' : 'placeholder'}}">{{newDate || '请选择日期'}}</view>
+      </picker>
+    </view>
+
+    <view class="input-row">
+      <text class="input-label">时间点</text>
+      <picker mode="time" bindchange="onTimeChange" value="{{newTime}}">
+        <view class="picker-box">{{newTime}}</view>
+      </picker>
+    </view>
+
+    <button class="submit-btn" catchtap="submitNewCountdown" disabled="{{isSubmitting}}">保存到云端</button>
+  </view>
+</view>

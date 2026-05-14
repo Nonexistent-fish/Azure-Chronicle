@@ -1,0 +1,117 @@
+<view class="rules-icon" bindtap="openRulesPopup"><text class="question-mark">?</text></view>
+
+<view wx:if="{{activityData.bgm_url}}" class="bgm-icon {{isPlayingBGM ? 'is-playing' : ''}}" bindtap="toggleBGM">
+  <image wx:if="{{activityData.bgm_cover}}" class="bgm-cover" src="{{activityData.bgm_cover}}" mode="aspectFill"></image>
+  <view wx:else class="bgm-default-note"></view>
+</view>
+
+<view class="circus-container">
+  <image wx:if="{{activityData.page_bg_image}}" class="fullscreen-bg" src="{{activityData.page_bg_image}}" mode="aspectFill"></image>
+
+  <view class="title-wrapper">
+    <view class="main-title" wx:if="{{activityData.main_title}}">{{activityData.main_title}}</view>
+    <view class="sub-title" wx:if="{{activityData.sub_title}}">{{activityData.sub_title}}</view>
+  </view>
+
+  <view class="prize-showcase-frame large-frame">
+    <view class="awning-roof"></view>
+    <view class="awning-scallops"></view>
+    <view class="spinner-container large-spinner">
+      <view class="spinner-track" style="animation-duration: {{displayPrizes.length * 3 || 10}}s;">
+        <block wx:for="{{displayPrizes}}" wx:key="index">
+          <view class="prize-item-retro large-item">
+            <view class="prize-img-wrapper large-img-wrapper">
+              <view class="prize-plaque-body">
+                <image class="prize-img large-img" src="{{item.image}}" mode="aspectFill"></image>
+              </view>
+              <view class="prize-pedestal large-pedestal"></view>
+            </view>
+            <view class="prize-name">{{item.name}}</view>
+            <view class="prize-limit">×{{item.quantity}}</view>
+          </view>
+        </block>
+        <view wx:if="{{displayPrizes.length === 0}}" class="empty-cabinet-tips">奖品运送中...</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="capsule-btn-wrapper">
+    <view class="retro-capsule-btn" bindtap="openTicketsPopup">🎟️ 我的抽奖券 ( {{userInfo.tickets.length}} )</view>
+  </view>
+
+  <view class="retro-card invite-card">
+    <view class="card-title-ribbon">获取更多</view>
+    <view class="my-code-box">
+      <text class="label">你的邀请码：</text>
+      <text class="code">{{userInfo.myInviteCode || '生成中...'}}</text>
+      <view class="btn-copy-retro" bindtap="copyMyCode">复制</view>
+    </view>
+    <view class="retro-divider"></view>
+
+    <view class="fill-friend-box {{userInfo.hasFilledFriendCode ? 'disabled-box' : ''}}">
+      <input class="friend-code-input" placeholder="输入好友的邀请码" placeholder-class="ph-color" value="{{friendCode}}" bindinput="onInputFriendCode" disabled="{{userInfo.hasFilledFriendCode}}" />
+      <view class="btn-submit-retro {{userInfo.hasFilledFriendCode ? 'btn-disabled' : ''}}" bindtap="submitFriendCode">
+        {{userInfo.hasFilledFriendCode ? '已兑换' : '兑换'}}
+      </view>
+    </view>
+
+    <view class="retro-divider"></view>
+    <view class="task-list">
+      <view class="task-item-retro">
+        <view class="task-desc">
+          <view class="task-name">每日活动签到</view>
+          <view class="task-reward">抽奖码 +1</view>
+        </view>
+        <view class="task-status {{userInfo.dailyTaskDone ? 'done' : ''}}" bindtap="claimDailyTicket">
+          {{userInfo.dailyTaskDone ? '已领取' : '点击领取'}}
+        </view>
+      </view>
+      <view class="task-item-retro">
+        <view class="task-desc">
+          <view class="task-name">邀请好友使用你的邀请码</view>
+          <view class="task-reward">抽奖码 +3</view>
+        </view>
+        <button class="task-status btn-share" open-type="share">去邀请</button>
+      </view>
+    </view>
+  </view>
+  <view style="height: 80rpx;"></view>
+</view>
+
+<view class="bottom-sheet-mask {{showTicketsPopup ? 'show' : ''}}" bindtap="closeTicketsPopup"></view>
+<view class="bottom-sheet-content {{showTicketsPopup ? 'show' : ''}}">
+  <view class="sheet-header">
+    <view class="sheet-title">🎫 你的专属抽奖券</view>
+    <view class="sheet-close" bindtap="closeTicketsPopup">×</view>
+  </view>
+  <scroll-view scroll-y class="ticket-scroll-view">
+    <block wx:if="{{userInfo.tickets.length > 0}}">
+      <view class="ticket-grid">
+        <view class="real-ticket-item small-ticket" wx:for="{{userInfo.tickets}}" wx:key="index">
+          <view class="ticket-inner small-inner">
+            <text class="ticket-no-label small-label">NO.</text>
+            <text class="ticket-code small-code">{{item.ticket_code || item}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="empty-tips-retro">口袋空空如也，快去做任务吧！</view>
+    </block>
+  </scroll-view>
+</view>
+
+<view class="center-popup-mask {{showRulesPopup ? 'show' : ''}}" bindtap="closeRulesPopup"></view>
+<view class="center-popup-content {{showRulesPopup ? 'show' : ''}}">
+  <view class="rules-header">📜 活动规则</view>
+  <scroll-view scroll-y class="rules-scroll">
+    <view class="rules-text">
+      <view>1. 每日登录本页面，点击领取即可获得 1 张抽奖券。</view>
+      <view>2. 本次活动中，每个用户仅能填写一次别人的邀请码，填写成功后无法修改。</view>
+      <view>3. 邀请好友，每有一个好友参与活动并填写你的邀请码，即可额外获得 3 张抽奖码。</view>
+      <view>4. 活动倒计时结束后，系统将从所有发放的抽奖券中随机抽取幸运儿分配奖品。</view>
+      <view>5. 开奖时间请留意官方Q群</view>
+    </view>
+  </scroll-view>
+  <view class="rules-btn" bindtap="closeRulesPopup">我知道了</view>
+</view>

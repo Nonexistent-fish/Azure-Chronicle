@@ -1,0 +1,6 @@
+{
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "profile-popup": "/components/profile-popup/profile-popup"
+  }
+}

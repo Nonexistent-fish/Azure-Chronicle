@@ -1,0 +1,187 @@
+<scroll-view scroll-y class="dt-page">
+  <view class="header-banner">
+    <image class="header-img" src="{{topic.bgImageUrl}}" mode="aspectFill"></image>
+    <view class="header-mask"></view>
+    
+    <view class="history-btn" catchtap="goToHistory">
+      <text class="icon">🕒</text> 往期记录
+    </view>
+
+    <view class="header-content">
+      <view class="topic-tag">🔥 每日话题</view>
+      <view class="topic-title">{{topic.title}}</view>
+    </view>
+  </view>
+
+  <view class="battle-wrap">
+    <block wx:if="{{!topic._id}}">
+      <view class="battle-field skeleton-pulse" wx:if="{{topic.topicType === 'battle' || !topic.topicType}}">
+        <view class="dt-bar-container" style="margin-top: 60rpx;">
+          <view class="dt-vs-badge" style="background: #ddd; color: #fff; border-color: #fff;">VS</view>
+          <view class="dt-bar-wrapper">
+            <view class="dt-bar-track" style="background: #f0f0f0;"></view>
+          </view>
+        </view>
+      </view>
+
+      <view class="choice-field skeleton-pulse" wx:if="{{topic.topicType === 'choice'}}">
+        <view class="choice-list" style="margin-top: 30rpx;">
+          <view class="choice-item" wx:for="{{3}}" wx:key="*this" style="height: 88rpx; background: #f0f0f0; border: none; margin-bottom: 24rpx; border-radius: 44rpx;"></view>
+        </view>
+      </view>
+
+      <view class="none-field skeleton-pulse" wx:if="{{topic.topicType === 'none'}}">
+        <view class="none-tip-box" style="height: 120rpx; background: #f0f0f0; border: none; border-radius: 16rpx;"></view>
+      </view>
+    </block>
+
+    <block wx:else>
+      <view class="topic-desc-box" wx:if="{{topic.content}}">
+        <view class="quote-mark left-quote">“</view>
+        <text class="desc-text">{{topic.content}}</text>
+        <view class="quote-mark right-quote">”</view>
+      </view>
+
+      <view class="battle-field" wx:if="{{topic.topicType === 'battle' || !topic.topicType}}">
+        <view class="battle-board">
+          <view class="detail-args-row">
+            <view class="arg-col left-arg">
+              <text class="arg-side">RED</text>
+              <text class="arg-desc">{{topic.optionA}}</text>
+            </view>
+            <view class="arg-divider"></view>
+            <view class="arg-col right-arg">
+              <text class="arg-side">BLUE</text>
+              <text class="arg-desc">{{topic.optionB}}</text>
+            </view>
+          </view>
+
+          <view class="dt-bar-container">
+            <view class="dt-vs-badge" data-text="VS">VS</view>
+            <view class="dt-bar-wrapper">
+              <view class="dt-bar-track">
+                <view class="dt-bar-fill red-fill" style="width: {{percentAStr}};">
+                  <view class="result-num-box" wx:if="{{votedOption}}"><text class="result-num">{{percentAStr}}</text></view>
+                </view>
+                <view class="dt-cleft-gap"></view>
+                <view class="dt-bar-fill blue-fill" style="width: {{percentBStr}};">
+                  <view class="result-num-box right-box" wx:if="{{votedOption}}"><text class="result-num">{{percentBStr}}</text></view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="vote-section">
+          <block wx:if="{{!votedOption}}">
+            <view class="action-buttons">
+              <view class="charge-btn red-btn {{chargingOption === 'A' ? 'charging' : ''}}" bind:touchstart="onVoteStart" bind:touchend="onVoteEnd" data-option="A">
+                <view class="charge-fill fill-red" style="width: {{chargePercentRed}};"></view>
+                <view class="btn-content">{{topic.miniOptionA || '支持红方'}}</view>
+              </view>
+              <view class="charge-btn blue-btn {{chargingOption === 'B' ? 'charging' : ''}}" bind:touchstart="onVoteStart" bind:touchend="onVoteEnd" data-option="B">
+                <view class="charge-fill fill-blue" style="width: {{chargePercentBlue}};"></view>
+                <view class="btn-content">{{topic.miniOptionB || '支持蓝方'}}</view>
+              </view>
+            </view>
+          </block>
+          <block wx:else>
+            <view class="voted-desc">
+              你已选择 <text class="voted-highlight {{votedOption === 'A' ? 'text-red' : 'text-blue'}}"> [{{votedOption === 'A' ? (topic.miniOptionA || '支持红方') : (topic.miniOptionB || '支持蓝方')}}]</text>，快去下方发表看法吧！
+            </view>
+          </block>
+        </view>
+      </view>
+
+      <view class="choice-field" wx:if="{{topic.topicType === 'choice'}}">
+        <view class="choice-list">
+          <block wx:for="{{topic.choices}}" wx:key="*this" wx:for-index="idx">
+            <view class="choice-item {{votedOption ? 'is-voted' : 'can-vote'}} {{votedOption === letters[idx] ? 'is-selected' : ''}} {{(!votedOption && chargingChoiceIndex === idx) ? 'charging' : ''}}" bind:touchstart="onChoiceVoteStart" bind:touchend="onChoiceVoteEnd" data-index="{{idx}}">
+              <view class="choice-fill" wx:if="{{votedOption}}" style="width: {{choicePercents[idx]}};"></view>
+              <view class="choice-charge-fill charge-{{letters[idx]}}" wx:if="{{!votedOption && chargingChoiceIndex === idx}}" style="width: {{chargePercent + '%'}};"></view>
+              <view class="choice-content">
+                <text class="choice-text"><text class="choice-letter">{{letters[idx]}}.</text> {{item}}</text>
+                <text class="choice-percent-num" wx:if="{{votedOption}}">{{choicePercents[idx]}}</text>
+              </view>
+            </view>
+          </block>
+        </view>
+        <view class="voted-desc" wx:if="{{votedOption}}" style="margin-top: 40rpx;">
+          你已选择 <text class="voted-highlight text-choice-{{votedOption}}">[{{votedOption}}]</text>，去评论区畅所欲言吧！
+        </view>
+      </view>
+
+      <view class="none-field" wx:if="{{topic.topicType === 'none'}}">
+        <view class="none-tip-box">
+          <text>本话题为开放探讨，欢迎在下方发表你的见解</text>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view class="comments-section">
+    <view class="comments-header"><view class="comment-count">全部评论 ({{comments.length}})</view></view>
+    <view class="comment-list" wx:if="{{comments.length > 0}}">
+      <block wx:for="{{comments}}" wx:key="_id" wx:for-index="mindex" wx:for-item="mainComment">
+        <view class="comment-item">
+          <image class="c-avatar" src="{{mainComment.avatar}}" catchtap="onAvatarClick" data-source="main" data-mindex="{{mindex}}"></image>
+          <view class="c-main">
+            <view class="c-name-row">
+              <text class="c-name">{{mainComment.nickName}}</text>
+              <view class="role-dot dot-{{mainComment.Permission || 0}}"></view>
+            </view>
+            <view class="c-content" catchtap="onReplyClick" data-id="{{mainComment._id}}" data-name="{{mainComment.nickName}}">
+              <text class="vote-badge badge-{{mainComment.prefixType}}" wx:if="{{mainComment.prefixType}}">{{mainComment.prefixType}}</text>
+              <text>{{mainComment.cleanContent}}</text>
+            </view>
+            <view class="c-footer">
+              <text class="c-time">{{mainComment.time}} · <text catchtap="onReplyClick" data-id="{{mainComment._id}}" data-name="{{mainComment.nickName}}" style="color: #576b95; font-weight: bold;">回复</text></text>
+              <view class="c-actions">
+                <text class="c-delete" wx:if="{{isAdmin}}" catchtap="onDeleteComment" data-id="{{mainComment._id}}">删除</text>
+                <view class="action-item" catchtap="onLikeComment" data-id="{{mainComment._id}}" data-index="{{mindex}}">
+                  <image class="action-svg {{mainComment.hasLiked ? 'heart-pop' : ''}}" src="{{mainComment.hasLiked ? 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23ff4d4f%27 stroke=%27%23ff4d4f%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z%27/%3E%3C/svg%3E' : 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23aaaaaa%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z%27/%3E%3C/svg%3E'}}" />
+                  <text class="action-num {{mainComment.hasLiked ? 'red-num' : ''}}">{{mainComment.likes || 0}}</text>
+                </view>
+              </view>
+            </view>
+            <view class="sub-comments" wx:if="{{mainComment.subComments && mainComment.subComments.length > 0}}">
+              <block wx:for="{{mainComment.subComments}}" wx:key="_id" wx:for-index="sindex" wx:for-item="subComment">
+                <view class="sub-c-item">
+                  <text class="sub-name" catchtap="onAvatarClick" data-source="sub" data-mindex="{{mindex}}" data-sindex="{{sindex}}">{{subComment.nickName}}</text>
+                  <view class="role-dot dot-{{subComment.Permission || 0}}"></view>
+                  <block wx:if="{{subComment.replyToName && subComment.replyToName !== mainComment.nickName}}">
+                    <text class="reply-text">回复</text><text class="sub-name">{{subComment.replyToName}}</text>
+                  </block>
+                  <text class="sub-content" catchtap="onReplyClick" data-id="{{mainComment._id}}" data-name="{{subComment.nickName}}">：<text class="vote-badge badge-{{subComment.prefixType}}" wx:if="{{subComment.prefixType}}">{{subComment.prefixType}}</text>{{subComment.cleanContent}}</text>
+                  <view class="c-footer" style="margin-top: 12rpx; border-top: none; padding: 0;">
+                    <text class="c-time">{{subComment.time}}</text>
+                    <view class="c-actions">
+                      <text class="sub-delete" wx:if="{{isAdmin}}" catchtap="onDeleteComment" data-id="{{subComment._id}}">删除</text>
+                      <view class="action-item" catchtap="onLikeSubComment" data-id="{{subComment._id}}" data-mindex="{{mindex}}" data-sindex="{{sindex}}">
+                        <image class="action-svg {{subComment.hasLiked ? 'heart-pop' : ''}}" src="{{subComment.hasLiked ? 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27%23ff4d4f%27 stroke=%27%23ff4d4f%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z%27/%3E%3C/svg%3E' : 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27%23aaaaaa%27 stroke-width=%271.5%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpath d=%27M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z%27/%3E%3C/svg%3E'}}" />
+                        <text class="action-num {{subComment.hasLiked ? 'red-num' : ''}}">{{subComment.likes || ''}}</text>
+                      </view>
+                    </view>
+                  </view>
+                </view>
+              </block>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+    <view class="empty-comments" wx:else>暂无评论，快来发表你的看法吧！</view>
+  </view>
+  <view style="height: 180rpx;"></view>
+</scroll-view>
+
+<view class="bottom-input-bar">
+  <image class="top-avatar" src="{{currentUserAvatar}}"></image>
+  <view class="input-wrapper">
+    <input class="real-top-input" placeholder="{{replyTargetName ? '回复 ' + replyTargetName + '：' : '发条友善的评论...'}}" value="{{commentText}}" bindinput="onCommentInput" bindblur="onInputBlur" confirm-type="send" bindconfirm="submitComment" focus="{{inputFocus}}" disabled="{{isSubmittingComment}}" cursor-spacing="20" />
+    <view class="inline-spinner" wx:if="{{isSubmittingComment}}"></view>
+  </view>
+  <button class="top-send-btn" catchtap="submitComment" disabled="{{!commentText || isSubmittingComment}}">发送</button>
+</view>
+
+<profile-popup show="{{showProfilePopup}}" targetData="{{currentProfile}}" bind:close="closeProfilePopup"></profile-popup>

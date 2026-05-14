@@ -1,0 +1,7 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "white",
+  "backgroundTextStyle": "dark",
+  "usingComponents": {},
+  "enablePullDownRefresh": false
+}

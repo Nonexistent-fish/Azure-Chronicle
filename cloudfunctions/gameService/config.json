@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "openapi": []
+  },
+  "triggers": [
+    {
+      "name": "autoDrawTimer",
+      "type": "timer",
+      "config": "0 */10 6-22 * * * *"
+    }
+  ]
+}

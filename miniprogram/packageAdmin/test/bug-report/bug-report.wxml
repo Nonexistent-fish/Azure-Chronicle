@@ -1,0 +1,68 @@
+<view class="admin-container">
+  <view class="glass-header">
+    <view class="header-title">Bug 故障池</view>
+    <view class="tab-box">
+      <view class="tab-item {{currentTab === 0 ? 'active' : ''}}" bindtap="switchTab" data-tab="0">待跟进<view class="active-line"></view></view>
+      <view class="tab-item {{currentTab === 1 ? 'active' : ''}}" bindtap="switchTab" data-tab="1">已结单<view class="active-line"></view></view>
+    </view>
+  </view>
+
+  <scroll-view class="list-scroll" scroll-y>
+    <view class="scroll-inner-wrapper">
+      <view wx:if="{{isLoading}}" class="loading-state">
+        <view class="spinner"></view><text>加载数据中...</text>
+      </view>
+
+      <view wx:elif="{{bugList.length > 0}}" class="bug-list-container">
+        <view class="bug-card" wx:for="{{bugList}}" wx:key="_id">
+          
+          <view class="card-top-bar">
+            <view class="user-profile">
+              <image class="user-avatar" src="{{item.reporterAvatar}}" mode="aspectFill"></image>
+              <text class="user-name">{{item.reporterName}}</text>
+            </view>
+            <view class="status-badge st-{{item.safeStatus}}">{{item.statusText}}</view>
+          </view>
+
+          <view class="card-header">
+            <view class="title-wrap">
+              <view class="severity-dot sv-{{item.safeSeverity}}"></view>
+              <text class="bug-title">{{item.description}}</text>
+            </view>
+          </view>
+
+          <view class="meta-row">
+            <text class="meta-tag {{item.isStable ? 'tag-red' : 'tag-gray'}}">{{item.isStable ? '稳定必现' : '偶然出现'}}</text>
+            <text class="meta-tag tag-gray">{{item.safeModel}}</text>
+            <text class="meta-tag tag-gray">{{item.safeSystem}}</text>
+            <text class="time-text">{{item.fmtTime}}</text>
+          </view>
+
+          <view class="step-box">
+            <text class="step-label">复现步骤：</text>
+            <text class="step-content">{{item.reproductionSteps}}</text>
+          </view>
+
+          <view class="reply-box" wx:if="{{item.replyContent}}">
+            <view class="reply-header">
+              <text class="reply-label">官方回复</text>
+              <text class="edit-btn" bindtap="onReplyUser" data-item="{{item}}">修改</text>
+            </view>
+            <text class="reply-content">{{item.replyContent}}</text>
+          </view>
+
+          <view class="card-actions">
+            <button class="action-btn outline" bindtap="onChangeStatus" data-id="{{item._id}}" data-current="{{item.safeStatus}}">更新状态</button>
+            <button class="action-btn primary" bindtap="onReplyUser" data-item="{{item}}">{{item.replyContent ? '修改回复' : '回复用户'}}</button>
+          </view>
+        </view>
+      </view>
+
+      <view wx:else class="empty-state">
+        <view class="css-check-circle"></view><text>当前没有任何数据</text>
+      </view>
+      
+      <view class="bottom-spacer"></view>
+    </view>
+  </scroll-view>
+</view>

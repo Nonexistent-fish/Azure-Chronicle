@@ -1,0 +1,49 @@
+page { background-color: #f7f8fa; height: 100vh; display: flex; flex-direction: column; }
+.container { height: 100%; display: flex; flex-direction: column; }
+
+.header-bar { background: #fff; padding: 20rpx 30rpx; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.03); z-index: 99; }
+.header-left { display: flex; align-items: center; }
+.title { font-size: 34rpx; font-weight: 800; color: #333; }
+.badge { background: #ff4d4f; color: #fff; font-size: 20rpx; padding: 2rpx 12rpx; border-radius: 20rpx; margin-left: 12rpx; }
+.refresh-btn { font-size: 26rpx; color: #1890ff; padding: 10rpx 20rpx; background: #e6f7ff; border-radius: 30rpx; }
+
+.scroll-area { flex: 1; height: 0; }
+.group-section { margin-bottom: 30rpx; }
+.group-header { padding: 24rpx 30rpx; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #f7f8fa; z-index: 10; }
+.gh-left { display: flex; align-items: center; }
+.gh-icon { width: 8rpx; height: 32rpx; background: #1890ff; border-radius: 4rpx; margin-right: 16rpx; }
+.gh-title { font-size: 30rpx; font-weight: bold; color: #333; }
+.gh-count { font-size: 24rpx; color: #999; }
+.card-list { padding: 0 30rpx; }
+
+.student-card { background: #fff; border-radius: 16rpx; padding: 24rpx; margin-bottom: 20rpx; display: flex; flex-direction: column; box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.02); transition: all 0.2s ease; }
+.card-main { display: flex; align-items: flex-start; width: 100%; }
+.card-left { margin-right: 24rpx; }
+.avatar { width: 110rpx; height: 110rpx; border-radius: 12rpx; background: #eee; }
+.card-mid { flex: 1; display: flex; flex-direction: column; margin-right: 20rpx; }
+
+.row-top { display: flex; align-items: baseline; margin-bottom: 8rpx; }
+.real-name { font-size: 32rpx; font-weight: bold; color: #333; margin-right: 10rpx; }
+.nick-name { font-size: 24rpx; color: #999; max-width: 180rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row-class { background: #fff7e6; border-radius: 8rpx; padding: 6rpx 12rpx; display: inline-flex; margin-bottom: 12rpx; align-self: flex-start; }
+.label { font-size: 22rpx; color: #fa8c16; margin-right: 8rpx; }
+.class-text { font-size: 24rpx; color: #d46b08; font-weight: bold; }
+.row-info { display: flex; justify-content: space-between; align-items: center; }
+.time-text { font-size: 22rpx; color: #ccc; }
+
+.card-right { display: flex; flex-direction: column; justify-content: space-between; height: 110rpx; }
+.action-btn { width: 120rpx; height: 50rpx; display: flex; align-items: center; justify-content: center; border-radius: 8rpx; font-size: 24rpx; font-weight: 500; }
+.pass { background: #07c160; color: #fff; }
+.reject { background: #fff; color: #ff4d4f; border: 1rpx solid #ff4d4f; box-sizing: border-box; }
+.confirm-reject { background: #ff4d4f; color: #fff; border: 1rpx solid #ff4d4f; font-weight: bold; animation: pulse 0.3s ease; }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(0.95); } 100% { transform: scale(1); } }
+
+.reject-input-box { margin-top: 20rpx; border-top: 1rpx solid #f5f5f5; padding-top: 20rpx; animation: slideDown 0.2s ease-out; display: flex; align-items: center; gap: 20rpx; }
+.reason-input { background: #f9f9f9; padding: 16rpx; border-radius: 8rpx; font-size: 26rpx; color: #333; flex: 1; box-sizing: border-box; }
+.cancel-btn { font-size: 26rpx; color: #999; padding: 10rpx 20rpx; white-space: nowrap; &:active { color: #666; background: #eee; border-radius: 8rpx; } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10rpx); } to { opacity: 1; transform: translateY(0); } }
+
+.status-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #999; font-size: 26rpx; }
+.loading-spinner { width: 40rpx; height: 40rpx; border: 4rpx solid #e6f7ff; border-top-color: #1890ff; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20rpx; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.empty-state { text-align: center; margin-top: 100rpx; color: #999; }

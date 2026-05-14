@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "fortune-card": "/components/fortune-card/fortune-card",
+    "mall-tabbar": "/components/mall-tabbar/mall-tabbar"
+  },
+  "navigationBarTitleText": "我的",
+  "navigationStyle": "custom", 
+  "navigationBarTextStyle": "white"
+}

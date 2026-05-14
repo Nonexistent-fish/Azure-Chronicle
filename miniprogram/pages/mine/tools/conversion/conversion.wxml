@@ -1,0 +1,64 @@
+<view class="converter-page">
+  <scroll-view class="category-scroll" scroll-x="true" show-scrollbar="false">
+    <view class="category-list">
+      <block wx:for="{{categories}}" wx:key="id">
+        <view class="category-item {{activeCategory === item.id ? 'active' : ''}}" catchtap="switchCategory" data-id="{{item.id}}">
+          <text class="cat-icon">{{item.icon}}</text>
+          <text class="cat-name">{{item.name}}</text>
+        </view>
+      </block>
+    </view>
+  </scroll-view>
+
+  <view class="calc-board">
+    <view class="unit-card">
+      <view class="card-header">
+        <text class="card-label">转换自</text>
+        <picker bindchange="onFromUnitChange" value="{{fromUnitIndex}}" range="{{currentUnits}}" range-key="name">
+          <view class="picker-box">
+            <text class="unit-name">{{currentUnits[fromUnitIndex].name}}</text>
+            <text class="dropdown-icon">▼</text>
+          </view>
+        </picker>
+      </view>
+      
+      <view class="input-wrap">
+        <view class="currency-symbol {{inputValue ? '' : 'empty'}}" wx:if="{{currentUnits[fromUnitIndex].symbol}}">{{currentUnits[fromUnitIndex].symbol}}</view>
+        <input class="value-input" type="digit" value="{{inputValue}}" bindinput="onInput" placeholder="0" placeholder-class="placeholder-style" />
+      </view>
+    </view>
+
+    <view class="swap-divider-overlap">
+      <view class="swap-btn" catchtap="swapUnits" hover-class="btn-hover">
+        <image class="swap-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCcgZmlsbD0nbm9uZScgc3Ryb2tlPScjZmZmZmZmJyBzdHJva2Utd2lkdGg9JzInIHN0cm9rZS1saW5lY2FwPSdyb3VuZCcgc3Ryb2tlLWxpbmVqb2luPSdyb3VuZCc+PGxpbmUgeDE9JzE3JyB5MT0nNCcgeDI9JzE3JyB5Mj0nMjAnLz48cG9seWxpbmUgcG9pbnRzPScxMyAxNiAxNyAyMCAyMSAxNicvPjxsaW5lIHgxPSc3JyB5MT0nMjAnIHgyPSc3JyB5Mj0nNCcvPjxwb2x5bGluZSBwb2ludHM9JzMgOCA3IDQgMTEgOCcvPjwvc3ZnPg=="></image>
+      </view>
+    </view>
+
+    <block wx:for="{{targetCards}}" wx:key="index">
+      <view class="unit-card target-card" style="{{index > 0 ? 'margin-top: 30rpx;' : ''}}">
+        <view class="card-header">
+          <text class="card-label">转换为</text>
+          <view class="header-right-actions">
+            <picker bindchange="onToUnitChange" data-index="{{index}}" value="{{item.unitIndex}}" range="{{currentUnits}}" range-key="name">
+              <view class="picker-box">
+                <text class="unit-name">{{currentUnits[item.unitIndex].name}}</text>
+                <text class="dropdown-icon">▼</text>
+              </view>
+            </picker>
+          </view>
+        </view>
+        
+        <view class="value-output">
+          <text class="currency-symbol {{(!item.outputValue || item.outputValue === '0.00') ? 'empty' : ''}}" wx:if="{{currentUnits[item.unitIndex].symbol}}">{{currentUnits[item.unitIndex].symbol}}</text>
+          <text class="output-text {{(!item.outputValue || item.outputValue === '0.00') ? 'empty' : ''}}" user-select="{{true}}">{{item.outputValue || '0'}}</text>
+        </view>
+      </view>
+    </block>
+
+    <view class="add-circle-btn" wx:if="{{targetCards.length < 2}}" catchtap="addTargetCard">
+      <view class="plus-icon"></view>
+    </view>
+  </view>
+
+  <view class="footer-tip"><text></text></view>
+</view>

@@ -1,0 +1,35 @@
+.container { padding-top: 40rpx; }
+.content-card { margin: 0 30rpx; background: #fff; border-radius: 24rpx; padding: 40rpx; box-shadow: 0 8rpx 30rpx rgba(0,0,0,0.05); }
+.button-hover { transform: scale(0.96) !important; opacity: 0.85 !important; }
+
+.form-box {
+  .title { font-size: 36rpx; font-weight: bold; color: #333; text-align: center; }
+  .subtitle { font-size: 24rpx; color: #999; text-align: center; margin-top: 10rpx; margin-bottom: 40rpx; }
+  .input-group {
+    margin-bottom: 30rpx;
+    .label { font-size: 28rpx; color: #333; font-weight: bold; margin-bottom: 15rpx; .required { color: #ff4d4f; } }
+    .question-text { background: #f0f7ff; padding: 20rpx; border-radius: 12rpx; font-size: 30rpx; color: #1890ff; margin-bottom: 15rpx; text-align: center; .blank { font-weight: bold; text-decoration: underline; margin: 0 10rpx; } }
+    .input-field { background: #f8f8f8; height: 90rpx; padding: 0 30rpx; border-radius: 12rpx; font-size: 28rpx; box-sizing: border-box; border: 1px solid transparent; transition: border-color 0.2s; }
+  }
+  .submit-btn { background: #1890ff; color: #fff; border-radius: 50rpx; margin-top: 40rpx; font-weight: bold; transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+  .tips-box { margin-top: 30rpx; font-size: 22rpx; color: #bbb; line-height: 1.6; text-align: center; }
+}
+
+.avatar-wrapper {
+  background: none; padding: 0; width: 180rpx !important; height: auto !important; margin: 0 auto 40rpx; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: visible;
+  &::after { border: none; }
+  .avatar-preview { width: 140rpx; height: 140rpx; min-width: 140rpx; min-height: 140rpx; display: block; border-radius: 50%; background: #f0f0f0; box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.1); margin-bottom: 16rpx; }
+  .avatar-tip { font-size: 24rpx; color: #1890ff; line-height: 1; white-space: nowrap; }
+}
+
+.error-text { color: #ff4d4f; font-size: 22rpx; margin-top: 8rpx; padding-left: 10rpx; display: block; }
+.error-border { border: 1px solid #ff4d4f !important; background-color: #fff1f0 !important; }
+
+.status-center {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50rpx 0;
+  .status-title { font-size: 34rpx; font-weight: bold; margin-top: 20rpx; }
+  .status-desc { color: #999; font-size: 24rpx; margin: 8rpx 0 30rpx; text-align: center; }
+  .rejection-box { background: #fff1f0; border: 1rpx solid #ffccc7; border-radius: 16rpx; padding: 16rpx 24rpx; margin: 20rpx 0; width: 100%; box-sizing: border-box; text-align: center; .rejection-label { font-size: 22rpx; color: #ff4d4f; font-weight: bold; display: block; margin-bottom: 4rpx; text-transform: uppercase; } .rejection-text { font-size: 26rpx; color: #666; font-weight: normal; line-height: 1.4; display: block; } }
+}
+
+.white-btn { width: 80% !important; margin-top: 20rpx; background: white; border: 1rpx solid #eee; border-radius: 40rpx; font-size: 26rpx; color: #666; }

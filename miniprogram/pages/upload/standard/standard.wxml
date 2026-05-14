@@ -1,0 +1,67 @@
+<view class="container">
+  <view class="doc-card">
+    
+    <view class="header">
+      <text class="title">校园墙内容发布与社区规范</text>
+      <view class="divider"></view>
+    </view>
+
+    <view class="intro">
+      <text>欢迎来到青笺集！为了维护我们共同的校园树洞，让每一条分享都能被善待，请花一分钟了解这简单的“两不要”</text>
+    </view>
+
+    <view class="section">
+      <view class="section-title">
+        <text class="num">01</text>
+        <text>说话有分寸，社区更和谐</text>
+      </view>
+      <image class="guideline-image" src="cloud://test1-3gu356f7c94728ab.7465-test1-3gu356f7c94728ab-1404357158/校园墙内容发布与社区规范/对事不对人缩.jpg" mode="widthFix"></image>
+      
+      <view class="summary-box warning-summary">
+        <view class="summary-title">核心要点：</view>
+        <view class="summary-list">
+          <view class="summary-item">
+            <text class="dot"></text>
+            <text>对事不对人，每个人都有犯错的时候。</text>
+          </view>
+          <view class="summary-item">
+            <text class="dot"></text>
+            <text class="bold">禁止挂真实姓名进行辱骂、污蔑、引战。</text>
+          </view>
+          <view class="summary-item">
+            <text class="dot"></text>
+            <text class="bold">禁止出现极端与过分内容。</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">
+        <text class="num">02</text>
+        <text>拒绝虚假信息与垃圾广告</text>
+      </view>
+      <image class="guideline-image" src="cloud://test1-3gu356f7c94728ab.7465-test1-3gu356f7c94728ab-1404357158/校园墙内容发布与社区规范/广告缩.jpg" mode="widthFix"></image>
+      
+      <view class="summary-box warning-summary">
+        <view class="summary-title">核心要点：</view>
+        <view class="summary-list">
+          <view class="summary-item">
+            <text class="dot"></text>
+            <text class="bold">禁止发布垃圾广告、骚扰信息及诈骗内容。</text>
+          </view>
+          <view class="summary-item">
+            <text class="dot"></text>
+            <text>禁止擅自承诺（如送皮肤等）无法兑现的事情。</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="footer">
+      <text class="quote">“保护别人的隐私和体面，就是保护我们自己自由说话的空间。快去发布你的第一条动态吧！”</text>
+      <text class="sign">—— 青笺集运营组 宣</text>
+    </view>
+
+  </view>
+</view>

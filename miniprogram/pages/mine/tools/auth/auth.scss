@@ -1,0 +1,19 @@
+page { background-color: #f6f7f9; }
+.container { padding: 40rpx 0 20rpx; min-height: 100vh; box-sizing: border-box; }
+.content-card { margin: 0 30rpx; background: white; border-radius: 24rpx; padding: 40rpx; box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05); }
+
+.form-box {
+  .title { font-size: 36rpx; font-weight: bold; margin-bottom: 10rpx; color: #333; text-align: center; }
+  .subtitle { color: #888; font-size: 24rpx; margin-bottom: 40rpx; text-align: center; }
+  .avatar-wrapper { background: none !important; padding: 0 !important; width: 140rpx !important; height: 160rpx; margin: 0 auto 30rpx; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; &::after { border: none; } .avatar-preview { width: 110rpx; height: 110rpx; border-radius: 50%; background-color: #f0f0f0; margin-bottom: 12rpx; display: block; } .avatar-tip { font-size: 22rpx; color: #999; font-weight: normal; } }
+  .input-group { margin-bottom: 30rpx; .label { font-size: 26rpx; color: #333; margin-bottom: 10rpx; font-weight: bold; } .input-field { background: #f8f8f8; height: 90rpx; line-height: 90rpx; padding: 0 30rpx; border-radius: 12rpx; font-size: 28rpx; color: #0f172a; box-sizing: border-box; border: 1px solid transparent; transition: border-color 0.2s; &.picker-view { display: flex; justify-content: space-between; align-items: center; .arrow { font-size: 22rpx; color: #ccc; } } } }
+  .submit-btn { background: #10b981; color: white; margin-top: 50rpx; font-weight: bold; border-radius: 45rpx; height: 90rpx; line-height: 90rpx; transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+}
+
+.status-center { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50rpx 0; .status-title { font-size: 34rpx; font-weight: bold; margin-top: 20rpx; } .status-desc { color: #999; font-size: 24rpx; margin: 8rpx 0 30rpx; text-align: center; } .rejection-box { background: #fff1f0; border: 1rpx solid #ffccc7; border-radius: 16rpx; padding: 16rpx 24rpx; margin: 20rpx 0; width: 100%; box-sizing: border-box; text-align: center; .rejection-label { font-size: 22rpx; color: #ff4d4f; font-weight: bold; display: block; margin-bottom: 4rpx; text-transform: uppercase; } .rejection-text { font-size: 26rpx; color: #666; font-weight: normal; line-height: 1.4; display: block; } } }
+.white-btn { width: 80% !important; margin-top: 20rpx; background: white; border: 1rpx solid #eee; border-radius: 40rpx; font-size: 26rpx; color: #666; }
+.faculty-entrance { text-align: center; margin-top: 30rpx; font-size: 28rpx; color: #1890ff; text-decoration: underline; padding-bottom: 10rpx; &:active { opacity: 0.7; } }
+.privacy-link { text-align: center; font-size: 24rpx; color: #94a3b8; text-decoration: underline; padding-bottom: 10rpx; &:active { color: #334155; } }
+.error-text { color: #ff4d4f; font-size: 22rpx; margin-top: 8rpx; padding-left: 10rpx; display: block; }
+.error-border { border: 1px solid #ff4d4f !important; background-color: #fff1f0 !important; }
+.button-hover { transform: scale(0.96) !important; opacity: 0.85 !important; }

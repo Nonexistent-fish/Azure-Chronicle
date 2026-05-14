@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "openapi": []
+  },
+  "triggers": [
+    {
+      "name": "dailyMorningTopic",
+      "type": "timer",
+      "config": "0 0 7 * * * *",
+      "payload": "{\"action\":\"refreshDailyTopic\"}"
+    },
+    {
+      "name": "dailySyncExchange",
+      "type": "timer",
+      "config": "0 0 1 * * * *",
+      "payload": "{\"action\":\"syncExchangeRate\"}"
+    },
+    {
+      "name": "dailySyncHitokoto",
+      "type": "timer",
+      "config": "0 0 0 * * * *",
+      "payload": "{\"action\":\"refreshHitokoto\"}"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "mall-nav": "/components/mall-nav/mall-nav",
+    "mall-tabbar": "/components/mall-tabbar/mall-tabbar",
+    "item-detail-drawer": "/components/item-detail-drawer/item-detail-drawer"
+  },
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "black"
+}
