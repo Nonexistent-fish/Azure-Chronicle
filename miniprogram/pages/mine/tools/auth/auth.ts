@@ -5,7 +5,7 @@ Page<any, any>({
   data: {
     isLoading: true, isRegistered: false, isSubmitting: false, userInfo: null as any,
     tempName: '', tempClass: '', avatarUrl: '', tempNickName: '', nickNameError: '', 
-    campusList: ['月罗路校区', '四元路校区'], campusIndex: 0, tempCampus: '月罗路校区' 
+    campusList: ['一号小区', '二号校区'], campusIndex: 0, tempCampus: '一号校区' 
   },
 
   onShow() { this.checkLoginStatus(); },
@@ -23,7 +23,7 @@ Page<any, any>({
     if (newName.length < 3) return this.setData({ nickNameError: '昵称不能少于3个字' });
     if (newName.length > 8) return this.setData({ nickNameError: '最高只有8个字' });
 
-    if (['博智拾光', '博智未来', '青笺拾光', '青笺校园','青笺校园日记'].some(word => newName.includes(word))) return this.setData({ nickNameError: '包含系统违禁词' });
+    if (['青笺集', '青笺拾光', '青笺校园','青笺校园日记'].some(word => newName.includes(word))) return this.setData({ nickNameError: '包含系统违禁词' });
 
     try {
       const textCheck: any = await wx.cloud.callFunction({ name: 'auditService', data: { action: 'autoCheck', text: newName } });
