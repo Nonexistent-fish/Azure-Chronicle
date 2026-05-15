@@ -89,7 +89,7 @@ async function handleUpdateUserProfile(openid, { userId, updateData }) {
   if (!userId) return { success: false, msg: '缺少参数' };
   try {
     const { data } = await db.collection('register_students').doc(userId).get();
-    if (data._openid !== openid && openid) return { success: false, msg: '非法操作' };
+    if (data._openid !== openid && openid && openid !== '') return { success: false, msg: '非法操作' };//填写你的open_id
     const r = await db.collection('register_students').doc(userId).update({ data: { ...updateData, updateTime: db.serverDate() } });
     return { success: true, updated: r.stats.updated };
   } catch { return { success: false, msg: '更新失败' }; }

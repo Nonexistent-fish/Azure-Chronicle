@@ -8,8 +8,11 @@ const SUPER_IDS = [''];//使用你自己的_openid
 // 检查是否具备管理员或开发者权限
 async function checkAdmin(openid) {
   if (SUPER_IDS.includes(openid)) return true;
-  const { data } = await db.collection('register_students').where({ _openid: openid }).get();
-  return data.length > 0 && [2, 3].includes(data[0].Permission);
+  const { data } = await db.collection('register_students').where({ 
+    _openid: openid,
+    Permission: _.in([2, 3])
+  }).get();
+  return data.length > 0;
 }
 
 // 微信官方图文安全内容检测与降级处理
@@ -71,7 +74,7 @@ async function handleAuditUser({ targetUid, auditStatus, rejectReason = '信息�
 }
 
 // 处理用户动态帖子审核
-async function handleAuditPost({ postId, auditStatus, rejectReason = '内容违规' }) {
+async function handleAuditPost({ postId, auditStatus, rejectReason = '内容不符合社区规范' }) {
   if (!postId) return { success: false, msg: '参数缺失' };
   const isPass = auditStatus === 'pass';
   if (!isPass && auditStatus !== 'reject') return { success: false, msg: `未知审核状态: ${auditStatus}` };

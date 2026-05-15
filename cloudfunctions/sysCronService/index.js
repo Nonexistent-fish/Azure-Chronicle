@@ -97,8 +97,7 @@ exports.main = async (event) => {
   const routers = {
     refreshHitokoto,
     refreshDailyTopic,
-    syncExchangeRate,
-    getAppStatus
+    syncExchangeRate
   };
 
   return routers[action] ? routers[action]() : { success: false, msg: `未知指令: ${action}` };

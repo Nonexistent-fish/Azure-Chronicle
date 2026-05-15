@@ -146,7 +146,7 @@ async function handleSoftDeletePost({ postId }) {
 
 // 7. 投票
 async function handleVoteTopic(openId, { topicId, topicType, option, choiceIndex }) {
-  try { await db.collection('daily_topics').doc(topicId).update({ data: { [topicType === 'choice' ? `votesC${choiceIndex}` : (option === 'A' ? 'votesA' : 'votesB')]: _.inc(1) } }); return { success: true }; } catch (e) { return { success: false }; }
+  try { await db.collection('daily_topics').doc(topicId).update({ data: { [topicType === 'choice' ? `votesC${choiceIndex}` : (option === 'A' ? 'votesA' : 'votesB')]: _.inc(1) } }); return { success: true, msg: '投票成功', openid: openId }; } catch (e) { return { success: false, errMsg: '数据库写入失败' }; }
 }
 
 // 8. 点赞/收藏

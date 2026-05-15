@@ -12,7 +12,7 @@ module.exports = {
     const todayStr = getBeijingDateStr();
     let xpToAdd = 0, returnData = {};
 
-    // 拦截自燃行为
+    // 拦截自己点自己
     if (['like_post', 'favorite_post', 'like_comment', 'like_profile'].includes(action) && targetUserId === sourceUserId) {
       return { success: false, msg: '不加经验' };
     }
@@ -36,16 +36,16 @@ module.exports = {
       } 
       // 名片点赞双重上限分支
       else if (action === 'like_profile') {
-        if (await checkLimit({ dateStr: todayStr, action, userId: targetUserId, sourceUserId }, 5)) return { success: false, msg: '同源名片点赞达上限' };
+        if (await checkLimit({ dateStr: todayStr, action, userId: targetUserId, sourceUserId }, 5)) return { success: false, msg: '名片点赞达上限' };
         if (await checkLimit({ dateStr: todayStr, action, userId: targetUserId }, 20)) return { success: false, msg: '名片经验已达今日上限(20点)' };
         xpToAdd = 1;
       } 
       // 规则化动作分发路由
       else {
         const rules = {
-          like_post: { q: { dateStr: todayStr, action, userId: targetUserId, sourceUserId }, max: 2, xp: 2, msg: '同源动态点赞达上限' },
+          like_post: { q: { dateStr: todayStr, action, userId: targetUserId, sourceUserId }, max: 2, xp: 2, msg: '动态点赞达上限' },
           favorite_post: { q: { action, targetId: targetItemId, sourceUserId }, max: 1, xp: 5, msg: '已收藏过该动态' },
-          like_comment: { q: { dateStr: todayStr, action, userId: targetUserId, sourceUserId }, max: 3, xp: 1, msg: '同源评论点赞达上限' },
+          like_comment: { q: { dateStr: todayStr, action, userId: targetUserId, sourceUserId }, max: 3, xp: 1, msg: '评论点赞达上限' },
           report_success: { xp: 20 },
           daily_first_like: { q: { dateStr: todayStr, action, userId: targetUserId }, max: 1, xp: 1, msg: '今日已获取首赞经验' },
           daily_first_comment: { q: { dateStr: todayStr, action, userId: targetUserId }, max: 1, xp: 2, msg: '今日已获取首评经验' },

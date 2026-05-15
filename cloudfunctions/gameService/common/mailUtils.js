@@ -63,6 +63,25 @@ module.exports = {
     } catch (err) { return { success: false, err: err.message || err }; }
   },
 
+  // 发送系统通知信件
+  async sendSystemMail(mailData) {
+    try {
+      const finalData = {
+        ...mailData,
+        isRead: false,
+        isDeleted: false,
+        type: 'system_notification',
+        createTime: db.serverDate(),
+        updateTime: db.serverDate()
+      };
+      await db.collection('user_notifications').add({ data: finalData });
+      return { success: true };
+    } catch (err) {
+      console.error('发信失败:', err);
+      return { success: false, err: err.message || err };
+    }
+  },
+
   // 发送评论通知
   async sendCommentNotification({ targetOpenId, postId, commentId, author, content, postSnippet, targetType = 'post' }) {
     try {
@@ -73,7 +92,7 @@ module.exports = {
     } catch (err) { return { success: false, err: err.message || err }; }
   },
 
-  // 发送点赞通知（自动折叠同类消息）
+  // 发送点赞通知
   async sendLikeNotification({ targetOpenId, type, postId = '', commentId = '', likerName, likerAvatar, postSnippet = '' }) {
     try {
       const query = { targetOpenId, type, isDeleted: false };
