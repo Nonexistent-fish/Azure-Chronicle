@@ -6,14 +6,20 @@ Component({
       value: {},
       observer(newVal) {
         if (!newVal?._id || newVal._cacheChecked) return;
-        
-        const now = Date.now();
-        const cacheKey = `outfit_img_v_${newVal._id}`;
-        let lastRefresh = wx.getStorageSync(cacheKey) || 0;
-        
-        if (now - lastRefresh > 604800000) {
-          lastRefresh = now;
-          wx.setStorageSync(cacheKey, lastRefresh);
+        wx.nextTick(() => {
+          // 在异步队列中重新获取一下确保数据最新
+          const currentItem = this.properties.item;
+          if (!currentItem || currentItem._cacheChecked) return;
+
+          const now = Date.now();
+          const cacheKey = `outfit_img_v_${currentItem._id}`;
+          let lastRefresh = wx.getStorageSync(cacheKey) || 0;
+          const isExpired = !lastRefresh || (now - lastRefresh > 604800000);
+          
+          if (isExpired) {
+            lastRefresh = now;
+            wx.setStorageSync(cacheKey, lastRefresh);
+          }
           
           const addV = (url: string) => {
             if (!url || url.match(/^(wxfile|http:\/\/tmp|cloud):\/\//)) return url;
@@ -21,9 +27,7 @@ Component({
             return `${cleanUrl}${cleanUrl.includes('?') ? '&' : '?'}v=${lastRefresh}`;
           };
 
-          const updated: any = { ...newVal, _cacheChecked: true };
-          
-          // 直接覆写你指定的原生字段名
+          const updated: any = { ...currentItem, _cacheChecked: true };
           if (updated.type === 'bg') {
             updated.bgUrlLarge = addV(updated.bgUrlLarge);
             updated.bgUrlSmall = addV(updated.bgUrlSmall);
@@ -32,8 +36,11 @@ Component({
           }
           
           this.setData({ item: updated });
-          this.triggerEvent('cacheRefresh', { id: newVal._id });
-        }
+
+          if (isExpired) {
+            this.triggerEvent('cacheRefresh', { id: currentItem._id });
+          }
+        });
       }
     },
     userInfo: { type: Object, value: {} },

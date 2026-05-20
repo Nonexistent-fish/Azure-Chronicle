@@ -34,7 +34,10 @@ Component({
 
       if (exactTargetId === user._id && rawTargetName === user.nickName) {
         wx.showToast({ title: '这是你自己哦~', icon: 'none' });
-        return this.closePopup();
+        wx.nextTick(() => {
+          this.closePopup(); // 推迟到下一帧执行
+        });
+        return;
       }
 
       let pData: Record<string, any> = {
@@ -56,7 +59,7 @@ Component({
           Object.assign(pData, {
             targetRealId: ud._id, miniCardBgUrl: getUrl(ud.miniCardBgUrl) || getUrl(ud.cardBgUrl) || '', cardTheme: ud.cardTheme || 'dark',
             avatarFrameUrl: getUrl(ud.avatarFrameUrl), avatarFrameSizeLevel: ud.avatarFrameSizeLevel || 'normal', avatarFrameShadow: ud.avatarFrameShadow || '',
-            targetContactCount: [ud.phoneNumber, ud.wechatId, ud.qqId].filter(x => x?.trim()).length
+targetContactCount: [ud.phoneNumber, ud.wechatId, ud.qqId].filter(x => x !== undefined && x !== null && String(x).trim() !== '').length
           });
           if (t.author?.gender === undefined) pData.gender = ud.gender;
           currentXp = ud.xp || 0;
@@ -129,10 +132,10 @@ Component({
       const fromOpenId = wx.getStorageSync('realOpenID') || user._openid || ''; 
       if (!fromOpenId) return wx.showModal({ title: '状态异常', content: '账号信息不全，请重新登录试试', showCancel: false });
 
-      const content: number[] = []; 
-      if (user.phoneNumber?.trim()) content.push(0);
-      if (user.wechatId?.trim()) content.push(1);
-      if (user.qqId?.trim()) content.push(2);
+const content: number[] = []; 
+if (user.phoneNumber && String(user.phoneNumber).trim()) content.push(0);
+if (user.wechatId && String(user.wechatId).trim()) content.push(1);
+if (user.qqId && String(user.qqId).trim()) content.push(2);
 
       if (content.length < 2) return wx.showModal({ title: '权限拦截', content: '要先绑定两个联系方式才能开通此服务哦', confirmText: '去完善', success: (res) => res.confirm && wx.navigateTo({ url: '/pages/settings/settings' }) });
       if ((this.data.pData.targetContactCount || 0) < 2) return wx.showToast({ title: '对方未开通该服务', icon: 'none' });
