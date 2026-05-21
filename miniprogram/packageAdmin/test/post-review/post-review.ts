@@ -50,9 +50,10 @@ Page({
   },
 
   handlePass(e: any) {
+    const targetId = e.currentTarget.dataset.id; 
     wx.showModal({
       title: '发布确认', content: '确认允许这条内容发布吗？', confirmColor: '#07c160',
-      success: (res) => res.confirm && this.executeAudit(e.currentTarget.dataset.id, 'pass', '')
+      success: (res) => res.confirm && this.executeAudit(targetId, 'pass', '')
     });
   },
 

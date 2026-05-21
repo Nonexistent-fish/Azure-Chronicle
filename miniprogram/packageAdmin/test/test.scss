@@ -1,316 +1,96 @@
 /* 基础容器 */
-.test-container {
-  padding: 30rpx;
-  background-color: #f4f5f7; 
-  min-height: 100vh;
-  box-sizing: border-box;
-  padding-bottom: env(safe-area-inset-bottom);
-}
+.test-container { padding: 30rpx; background-color: #f4f5f7; min-height: 100vh; box-sizing: border-box; padding-bottom: env(safe-area-inset-bottom); }
 
 /* 通用区块 */
-.section-block {
-  background: #ffffff;
-  border-radius: 32rpx;
-  padding: 40rpx 30rpx;
-  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.03); 
-  margin-bottom: 40rpx;
-}
-.transparent-block {
-  background: transparent;
-  box-shadow: none;
-  padding: 0;
-}
+.section-block { background: #fff; border-radius: 32rpx; padding: 40rpx 30rpx; box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.03); margin-bottom: 40rpx; }
+.transparent-block { background: transparent; box-shadow: none; padding: 0; }
 
 /* 标题区 */
 .section-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 36rpx;
-  .emoji-icon {
-    font-size: 40rpx;
-    margin-right: 16rpx;
-  }
-  .title {
-    font-size: 34rpx;
-    font-weight: 800;
-    color: #2c3e50;
-    letter-spacing: 1rpx;
-  }
+  display: flex; align-items: center; margin-bottom: 36rpx;
+  .emoji-icon { font-size: 40rpx; margin-right: 16rpx; }
+  .title { font-size: 34rpx; font-weight: 800; color: #2c3e50; letter-spacing: 1rpx; }
 }
 .row-between {
   justify-content: space-between;
-  .header-left {
-    display: flex;
-    align-items: center;
-  }
+  .header-left { display: flex; align-items: center; }
 }
 
-/* ================= 点击反馈类 ================= */
-.card-hover {
-  transform: scale(0.96) !important;
-  background-color: #f0f2f5 !important;
-  box-shadow: inset 0 4rpx 10rpx rgba(0,0,0,0.05) !important;
-  opacity: 0.95;
-  transition: all 0.1s ease;
-}
+/* 点击反馈 */
+.card-hover { transform: scale(0.96) !important; background-color: #f0f2f5 !important; box-shadow: inset 0 4rpx 10rpx rgba(0,0,0,0.05) !important; opacity: 0.95; transition: all 0.1s ease; }
+.btn-hover { transform: scale(0.92) !important; opacity: 0.85 !important; transition: all 0.1s ease; }
+.del-hover { transform: scale(0.85) !important; background: #ffccc7 !important; transition: all 0.1s ease; }
 
-.btn-hover {
-  transform: scale(0.92) !important;
-  opacity: 0.85 !important;
-  transition: all 0.1s ease;
-}
-
-.del-hover {
-  transform: scale(0.85) !important;
-  background: #ffccc7 !important;
-  transition: all 0.1s ease;
-}
-
-/* ================= 4宫格工具区 ================= */
-.tool-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24rpx; 
-}
-
+/* 4宫格工具区 */
+.tool-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24rpx; }
 .tool-card {
-  background: #f8f9fa;
-  border-radius: 24rpx;
-  padding: 24rpx;
-  display: flex;
-  align-items: center;
-  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-  border: 1rpx solid rgba(0, 0, 0, 0.01);
-
-  .icon-box {
-    width: 72rpx;
-    height: 72rpx;
-    border-radius: 20rpx;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 20rpx;
-    flex-shrink: 0;
-    .tool-emoji { font-size: 38rpx; }
-  }
-
+  background: #f8f9fa; border-radius: 24rpx; padding: 24rpx; display: flex; align-items: center; transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); border: 1rpx solid rgba(0, 0, 0, 0.01);
+  .icon-box { width: 72rpx; height: 72rpx; border-radius: 20rpx; display: flex; align-items: center; justify-content: center; margin-right: 20rpx; flex-shrink: 0; .tool-emoji { font-size: 38rpx; } }
   .blue-bg { background: rgba(24, 144, 255, 0.1); }
   .orange-bg { background: rgba(250, 140, 22, 0.1); }
   .red-bg { background: rgba(245, 34, 45, 0.1); }
   .purple-bg { background: rgba(114, 46, 209, 0.1); }
-
-  .tool-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .tool-name {
-    font-size: 28rpx;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 6rpx;
-  }
-  .tool-desc {
-    font-size: 20rpx;
-    color: #999;
-  }
+  .tool-info { display: flex; flex-direction: column; justify-content: center; }
+  .tool-name { font-size: 28rpx; font-weight: 700; color: #333; margin-bottom: 6rpx; }
+  .tool-desc { font-size: 20rpx; color: #999; }
 }
 
-/* ================= 纯 CSS 绘制图标 ================= */
+/* 纯 CSS 绘制图标 */
 .css-plus {
-  position: relative;
-  width: 20rpx; height: 20rpx;
-  margin-right: 10rpx;
-  &::before, &::after {
-    content: ''; position: absolute; background: #fff; border-radius: 4rpx;
-    top: 50%; left: 50%; transform: translate(-50%, -50%);
-  }
+  position: relative; width: 20rpx; height: 20rpx; margin-right: 10rpx;
+  &::before, &::after { content: ''; position: absolute; background: #fff; border-radius: 4rpx; top: 50%; left: 50%; transform: translate(-50%, -50%); }
   &::before { width: 100%; height: 4rpx; }
   &::after { width: 4rpx; height: 100%; }
 }
-
 .css-close {
-  position: relative;
-  width: 24rpx; height: 24rpx;
-  &::before, &::after {
-    content: ''; position: absolute; background: #ff4d4f; border-radius: 4rpx;
-    top: 50%; left: 50%; width: 100%; height: 4rpx;
-  }
+  position: relative; width: 24rpx; height: 24rpx;
+  &::before, &::after { content: ''; position: absolute; background: #ff4d4f; border-radius: 4rpx; top: 50%; left: 50%; width: 100%; height: 4rpx; }
   &::before { transform: translate(-50%, -50%) rotate(45deg); }
   &::after { transform: translate(-50%, -50%) rotate(-45deg); }
 }
 
-/* ================= 人格实验室按钮 ================= */
-.add-btn-advanced {
-  margin: 0 !important;
-  background: #111827; 
-  color: #ffffff;
-  font-size: 24rpx;
-  font-weight: 600;
-  border-radius: 40rpx;
-  padding: 0 28rpx;
-  height: 60rpx;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 8rpx 20rpx rgba(17, 24, 39, 0.2);
-  transition: all 0.2s ease;
-}
+/* 人格实验室按钮 */
+.add-btn-advanced { margin: 0 !important; background: #111827; color: #fff; font-size: 24rpx; font-weight: 600; border-radius: 40rpx; padding: 0 28rpx; height: 60rpx; display: flex; align-items: center; box-shadow: 0 8rpx 20rpx rgba(17, 24, 39, 0.2); transition: all 0.2s ease; }
 
-/* ================= 人格分身卡片列表 ================= */
-.persona-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24rpx;
-}
-
+/* 人格分身卡片列表 */
+.persona-list { display: flex; flex-direction: column; gap: 24rpx; }
 .persona-card {
-  background: #ffffff;
-  border-radius: 32rpx;
-  padding: 30rpx;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.02);
-  border: 2rpx solid transparent;
-  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-
-  &.is-current {
-    border-color: rgba(7, 193, 96, 0.3);
-    background: linear-gradient(145deg, #ffffff 0%, #f6fffa 100%);
-    box-shadow: 0 8rpx 24rpx rgba(7, 193, 96, 0.08);
-  }
+  background: #fff; border-radius: 32rpx; padding: 30rpx; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.02); border: 2rpx solid transparent; transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  &.is-current { border-color: rgba(7, 193, 96, 0.3); background: linear-gradient(145deg, #fff 0%, #f6fffa 100%); box-shadow: 0 8rpx 24rpx rgba(7, 193, 96, 0.08); }
 }
-
 .card-main {
-  display: flex;
-  align-items: center;
-  flex: 1;
-
+  display: flex; align-items: center; flex: 1;
   .avatar-wrap {
-    position: relative;
-    margin-right: 24rpx;
-    .avatar {
-      width: 96rpx;
-      height: 96rpx;
-      border-radius: 50%;
-      background: #f0f0f0;
-      border: 4rpx solid #fff;
-      box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.06);
-    }
-    .current-badge {
-      position: absolute;
-      bottom: -6rpx;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #07c160;
-      color: #fff;
-      font-size: 16rpx;
-      padding: 2rpx 12rpx;
-      border-radius: 20rpx;
-      white-space: nowrap;
-      font-weight: bold;
-      border: 2rpx solid #fff;
-    }
+    position: relative; margin-right: 24rpx;
+    .avatar { width: 96rpx; height: 96rpx; border-radius: 50%; background: #f0f0f0; border: 4rpx solid #fff; box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06); }
+    .current-badge { position: absolute; bottom: -6rpx; left: 50%; transform: translateX(-50%); background: #07c160; color: #fff; font-size: 16rpx; padding: 2rpx 12rpx; border-radius: 20rpx; white-space: nowrap; font-weight: bold; border: 2rpx solid #fff; }
   }
-
-  .detail {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .name-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 12rpx;
-  }
-  .name {
-    font-size: 30rpx;
-    font-weight: 800;
-    color: #2c3e50;
-  }
-
-  .tag-group {
-    display: flex;
-    align-items: center;
-    gap: 12rpx;
-  }
-  .role-tag {
-    font-size: 20rpx;
-    padding: 4rpx 12rpx;
-    border-radius: 8rpx;
-    font-weight: 600;
-  }
-  .status-tag {
-    font-size: 20rpx;
-    color: #a0aec0;
-    background: #f7fafc;
-    padding: 4rpx 10rpx;
-    border-radius: 6rpx;
-  }
-
-  /* 质感胶囊（透明背景+同色系文字） */
-  .tag-0 { background: rgba(7, 193, 96, 0.1); color: #07c160; } /* 学生：绿色 */
-  .tag-1 { background: rgba(24, 144, 255, 0.1); color: #1890ff; } /* 教工：蓝色 */
-  .tag-2 { background: rgba(114, 46, 209, 0.1); color: #722ed1; } /* 管理员：紫色 */
-  .tag-3 { background: rgba(250, 140, 22, 0.1); color: #fa8c16; } /* 开发者：橙色 */
+  .detail { display: flex; flex-direction: column; justify-content: center; }
+  .name-row { display: flex; align-items: center; margin-bottom: 12rpx; }
+  .name { font-size: 30rpx; font-weight: 800; color: #2c3e50; }
+  .tag-group { display: flex; align-items: center; gap: 12rpx; }
+  .role-tag { font-size: 20rpx; padding: 4rpx 12rpx; border-radius: 8rpx; font-weight: 600; }
+  .status-tag { font-size: 20rpx; color: #a0aec0; background: #f7fafc; padding: 4rpx 10rpx; border-radius: 6rpx; }
+  .tag-0 { background: rgba(7, 193, 96, 0.1); color: #07c160; } 
+  .tag-1 { background: rgba(24, 144, 255, 0.1); color: #1890ff; } 
+  .tag-2 { background: rgba(114, 46, 209, 0.1); color: #722ed1; } 
+  .tag-3 { background: rgba(250, 140, 22, 0.1); color: #fa8c16; } 
 }
 
 /* 操作按钮区 */
 .card-actions {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-
-  .action-btn {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    transition: all 0.2s;
-    &::after { display: none; }
-  }
-
+  display: flex; align-items: center; gap: 16rpx;
+  .action-btn { margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; box-sizing: border-box; transition: all 0.2s; &::after { display: none; } }
   .switch-btn {
-    width: 130rpx;
-    height: 56rpx;
-    border-radius: 28rpx;
-    font-size: 24rpx;
-    font-weight: 600;
-    background: #07c160;
-    color: #fff;
-    box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.2);
-
-    &[disabled] {
-      background: #f0f0f0 !important;
-      color: #bfbfbf !important;
-      box-shadow: none !important;
-    }
+    width: 130rpx; height: 56rpx; border-radius: 28rpx; font-size: 24rpx; font-weight: 600; background: #07c160; color: #fff; box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.2);
+    &[disabled] { background: #f0f0f0 !important; color: #bfbfbf !important; box-shadow: none !important; }
   }
-
-  .del-btn {
-    width: 56rpx;
-    height: 56rpx;
-    border-radius: 50%;
-    background: #fff1f0;
-    border: 2rpx solid #ffa39e;
-  }
+  .del-btn { width: 56rpx; height: 56rpx; border-radius: 50%; background: #fff1f0; border: 2rpx solid #ffa39e; }
 }
 
 /* 空状态 */
 .empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 80rpx 0;
-  .empty-icon {
-    font-size: 80rpx;
-    margin-bottom: 20rpx;
-  }
-  text {
-    font-size: 24rpx;
-    color: #bfbfbf;
-    letter-spacing: 1rpx;
-  }
+  display: flex; flex-direction: column; align-items: center; padding: 80rpx 0;
+  .empty-icon { font-size: 80rpx; margin-bottom: 20rpx; }
+  text { font-size: 24rpx; color: #bfbfbf; letter-spacing: 1rpx; }
 }

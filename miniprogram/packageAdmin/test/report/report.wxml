@@ -1,81 +1,72 @@
-<view class="test-container">
-  
-  <view class="section-block">
-    <view class="section-header">
-      <text class="emoji-icon">🛠️</text>
-      <text class="title">数据与审核</text>
-    </view>
-    
-    <view class="tool-grid">
-      <navigator url="/packageAdmin/test/registraion-review/registraion-review" class="tool-card" hover-class="card-hover">
-        <view class="icon-box blue-bg"><text class="tool-emoji">📋</text></view>
-        <view class="tool-info"><text class="tool-name">注册审核</text><text class="tool-desc">审批新用户</text></view>
-      </navigator>
-
-      <navigator url="/packageAdmin/test/post-review/post-review" class="tool-card" hover-class="card-hover">
-        <view class="icon-box orange-bg"><text class="tool-emoji">⚖️</text></view>
-        <view class="tool-info"><text class="tool-name">动态审核</text><text class="tool-desc">管理帖子池</text></view>
-      </navigator>
-
-      <navigator url="/packageAdmin/test/bug-report/bug-report" class="tool-card" hover-class="card-hover">
-        <view class="icon-box red-bg"><text class="tool-emoji">🐛</text></view>
-        <view class="tool-info"><text class="tool-name">Bug反馈</text><text class="tool-desc">用户故障池</text></view>
-      </navigator>
-
-      <navigator url="/packageAdmin/test/report/report" class="tool-card" hover-class="card-hover">
-        <view class="icon-box purple-bg"><text class="tool-emoji">🚨</text></view>
-        <view class="tool-info"><text class="tool-name">举报中心</text><text class="tool-desc">违规处理池</text></view>
-      </navigator>
+<view class="admin-container">
+  <view class="glass-header">
+    <view class="header-title">举报处理池</view>
+    <view class="tab-box">
+      <view class="tab-item {{currentTab === 0 ? 'active' : ''}}" bindtap="switchTab" data-tab="0">待核实<view class="active-line"></view></view>
+      <view class="tab-item {{currentTab === 1 ? 'active' : ''}}" bindtap="switchTab" data-tab="1">已结单<view class="active-line"></view></view>
     </view>
   </view>
 
-  <view class="section-block transparent-block">
-    <view class="section-header row-between">
-      <view class="header-left">
-        <text class="emoji-icon">🎭</text>
-        <text class="title">人格实验室</text>
+  <scroll-view class="list-scroll" scroll-y>
+    <view class="scroll-inner-wrapper">
+      <view wx:if="{{isLoading}}" class="loading-state">
+        <view class="spinner"></view><text>加载数据中...</text>
       </view>
-      <button class="add-btn-advanced" hover-class="btn-hover" bindtap="createTestAccount">
-        <view class="css-plus"></view>新建分身
-      </button>
-    </view>
 
-    <view class="persona-list">
-      <block wx:for="{{myAccounts}}" wx:key="_id">
-        <view class="persona-card {{item._id === currentId ? 'is-current' : ''}}" hover-class="{{item._id === currentId ? '' : 'card-hover'}}" hover-stay-time="100">
+      <view wx:elif="{{reportList.length > 0}}" class="bug-list-container">
+        <view class="bug-card" wx:for="{{reportList}}" wx:key="_id">
           
-          <view class="card-main">
-            <view class="avatar-wrap">
-              <image class="avatar" src="{{item.weiXinAvatar}}" mode="aspectFill"></image>
-              <view wx:if="{{item._id === currentId}}" class="current-badge">正在使用</view>
+          <view class="card-top-bar">
+            <view class="user-profile">
+              <view class="profile-label">举报人：</view>
+              <text class="user-name">{{item.reporterName || '匿名用户'}}</text>
             </view>
-            <view class="detail">
-              <view class="name-row">
-                <text class="name">{{item.nickName}}</text>
-              </view>
-              <view class="tag-group">
-                <text class="role-tag tag-{{item.Permission}}">{{item.role}}</text>
-                <text class="status-tag">Status: {{item.registerStatus}}</text>
-              </view>
-            </view>
+            <view class="status-badge st-{{item.safeStatus}}">{{item.statusText}}</view>
           </view>
-          
-          <view class="card-actions">
-            <button class="action-btn switch-btn" hover-class="btn-hover" bindtap="switchAccount" data-index="{{index}}" disabled="{{item._id === currentId}}">
-              {{item._id === currentId ? '当前' : '切换身份'}}
-            </button>
-            <view class="action-btn del-btn" hover-class="del-hover" bindtap="deleteAccount" data-id="{{item._id}}" wx:if="{{index !== 0 && item._id !== currentId}}">
-              <view class="css-close"></view>
+
+          <view class="card-header">
+            <view class="title-wrap">
+              <view class="severity-dot sv-{{item.colorTag}}"></view>
+              <text class="bug-title">被举报人：{{item.reportedName || '未知用户'}}</text>
             </view>
           </view>
 
+          <view class="meta-row">
+            <text class="meta-tag tag-{{item.colorTag}}">违规理由: {{item.reason}}</text>
+            <text class="time-text">{{item.fmtTime}}</text>
+          </view>
+
+          <view class="step-box">
+            <text class="step-label">举报人补充说明：</text>
+            <text class="step-content">{{item.detail || '未填写具体说明，仅提交了快捷分类。'}}</text>
+          </view>
+
+          <view class="post-preview-box" bindtap="goToPostDetail" data-postid="{{item.postId}}">
+            <view class="preview-header">
+              <text class="preview-title">涉嫌违规原贴内容</text>
+              <text class="jump-link">点击查看详情 ></text>
+            </view>
+            <text class="preview-content">{{item.postPreview}}</text>
+          </view>
+
+          <view class="reply-box" wx:if="{{item.handleResult}}">
+            <view class="reply-header"><text class="reply-label">系统反馈信件内容</text></view>
+            <text class="reply-content">{{item.handleResult}}</text>
+          </view>
+
+          <view class="card-actions" wx:if="{{item.safeStatus === 0}}">
+            <button class="action-btn outline" bindtap="onRejectReport" data-item="{{item}}">驳回 (正常)</button>
+            <button class="action-btn primary danger-btn" bindtap="onVerifyReport" data-item="{{item}}">核实 (下架)</button>
+          </view>
         </view>
-      </block>
-      
-      <view wx:if="{{myAccounts.length === 0}}" class="empty-state">
-        <text class="empty-icon">🕳️</text>
-        <text>数据异常，未能找到人格数据</text>
       </view>
+
+      <view wx:else class="empty-state">
+        <view class="css-check-circle"></view>
+        <text>太棒了！社区氛围非常和谐</text>
+      </view>
+      
+      <view class="bottom-spacer"></view>
     </view>
-  </view>
+  </scroll-view>
 </view>

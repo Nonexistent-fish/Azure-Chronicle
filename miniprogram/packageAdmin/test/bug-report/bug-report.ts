@@ -100,7 +100,7 @@ Page({
     wx.showModal({
       title: '官方回复', content: item.replyContent || '', editable: true, placeholderText: '告知处理结果...',
       success: async (res) => {
-        if (res.confirm && res.content) {
+        if (res.confirm && res.content !== undefined) {
           const reply = res.content.trim();
           wx.showLoading({ title: '发送中...' });
           try {
