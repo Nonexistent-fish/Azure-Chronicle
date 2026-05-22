@@ -14,34 +14,54 @@ Page<any, any>({
   goBack() { wx.navigateBack({ fail: () => wx.switchTab({ url: '/pages/index/index' }) }); },
 
   fetchActivityData(id: string) {
-    wx.cloud.database().collection('activities').doc(id).get({
+    const db = wx.cloud.database();
+    db.collection('activities').doc(id).get({
       success: (res) => {
         const data = res.data;
         const now = Date.now();
-        const start = data.start_time ? new Date(data.start_time).getTime() : 0;
-        const end = data.end_time ? new Date(data.end_time).getTime() : Infinity;
 
-        if (data.status === false || now < start || now > end) {
-          return this.setData({ isOffline: true, offlineTips: data.offline_tips || '当前活动暂不可用，去论坛看看吧~' });
+        // 1. 修复 iOS 无法解析中划线日期导致页面强行下线的兼容性隐患
+        const parseDate = (t: any) => t ? new Date(String(t).replace(/-/g, '/')).getTime() : 0;
+        const startTime = parseDate(data.start_time);
+        const endTime = data.end_time ? parseDate(data.end_time) : Infinity;
+
+        if (data.status === false || now < startTime || now > endTime) {
+          this.setData({
+            isOffline: true,
+            offlineTips: data.offline_tips || '当前活动暂不可用'
+          });
+          return;
         }
 
         if (data.html_content) {
-          const hrSpc = "margin: 30px 0 !important;";
-          const hrDash = "border: none; border-top: 1px dashed #ddd;";
-          const imgLyt = "width: 48% !important; height: auto !important; float: left !important; margin: 1% !important; border-radius: 8px; display: block; box-sizing: border-box;";
-
-          data.html_content = data.html_content
-            .replace(/<p([\s>])/gi, '<p style="line-height: 2 !important; letter-spacing: 1px !important; margin-bottom: 12px !important;"$1')
-            .replace(/<span([\s>])/gi, '<span style="line-height: 2 !important; letter-spacing: 1px !important;"$1')
-            .replace(/<hr([^>]*?)>/gi, (m: string) => /style\s*=\s*"/i.test(m) ? m.replace(/style\s*=\s*"/i, `style="${hrSpc} `) : `<hr style="${hrSpc} ${hrDash}">`)
-            .replace(/<img([^>]*?)>/gi, (m: string) => /style\s*=\s*"/i.test(m) ? m.replace(/style\s*=\s*"/i, `style="${imgLyt} `) : `<img style="${imgLyt}">`)
-            + '<div style="clear: both;"></div>';
+          let html = data.html_content;
+          html = html.replace(/<p([\s>])/gi, '<p style="line-height: 2 !important; letter-spacing: 1px !important; margin-bottom: 12px !important;"$1');
+          html = html.replace(/<span([\s>])/gi, '<span style="line-height: 2 !important; letter-spacing: 1px !important;"$1');
+          
+          const hrSpacing = "margin: 30px 0 !important;";
+          const hrDashedStyle = "border: none; border-top: 1px dashed #ddd;";
+          html = html.replace(/<hr([^>]*?)>/gi, (match) => {
+            return /style\s*=\s*"/i.test(match) ? match.replace(/style\s*=\s*"/i, `style="${hrSpacing} `) : `<hr style="${hrSpacing} ${hrDashedStyle}">`;
+          });
+          
+          // 2. 修复开源版过度简写导致无 inline style 的图片直接白屏丢失原属性的致命 Bug
+          const imgLayout = "width: 48% !important; height: auto !important; float: left !important; margin: 1% !important; border-radius: 8px; display: block; box-sizing: border-box;";
+          html = html.replace(/<img([^>]*?)>/gi, (match, attrs) => {
+            return /style\s*=\s*"/i.test(match) ? match.replace(/style\s*=\s*"/i, `style="${imgLayout} `) : `<img ${attrs || ''} style="${imgLayout}">`;
+          });
+          
+          html += '<div style="clear: both;"></div>';
+          data.html_content = html;
         }
 
         this.setData({ activityData: data });
         if (data.bgm_url) this.initBGM(data.bgm_url);
+        wx.hideLoading();
       },
-      fail: () => this.setData({ isOffline: true, offlineTips: '找不到该活动信息' })
+      fail: () => {
+        this.setData({ isOffline: true, offlineTips: '找不到该活动信息' });
+        wx.hideLoading();
+      }
     });
   },
 

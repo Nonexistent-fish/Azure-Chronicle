@@ -127,7 +127,9 @@
           </view>
           <view class="header-right" style="display: flex; align-items: center;">
             <view wx:if="{{item.isPinned}}" class="pin-tag">TOP</view>
-            <view class="more-btn" catchtap="onMoreOptions" data-id="{{item._id}}" data-openid="{{item.author.id || item._openid}}" data-name="{{item.author.nickName || '匿名同学'}}"><text>•••</text></view>
+            <view class="more-btn" catchtap="onMoreOptions" data-index="{{postIndex}}" data-id="{{item._id}}" data-openid="{{item.author.id || item._openid}}" data-name="{{item.author.nickName || '匿名同学'}}">
+              <text>•••</text>
+            </view>
           </view>
         </view>
         

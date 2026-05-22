@@ -11,15 +11,21 @@ Page<any, any>({
   async fetchHistory() {
     this.setData({ isLoading: true });
     wx.showNavigationBarLoading();
-
     try {
-      const { result } = await wx.cloud.callFunction({ name: 'postService', data: { action: 'getTopicHistory' } }) as any;
-      if (!result?.success) throw new Error(result?.msg || '云端拉取失败');
-      this.setData({ historyList: result.data, isLoading: false });
-    } catch {
+      const res: any = await wx.cloud.callFunction({
+        name: 'postService',
+        data: { action: 'getTopicHistory' }
+      });
+      if (res.result?.success) {
+        this.setData({ historyList: res.result.data });
+      } else {
+        throw new Error(res.result?.msg || 'Fetch failed');
+      }
+    } catch (e) {
+      console.error(e);
       wx.showToast({ title: '加载失败', icon: 'none' });
-      this.setData({ isLoading: false });
     } finally {
+      this.setData({ isLoading: false });
       wx.hideNavigationBarLoading();
     }
   }

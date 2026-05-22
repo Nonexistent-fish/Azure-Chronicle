@@ -5,7 +5,8 @@ const _ = db.command;
 
 const formatRelativeTime = (dateStr: any) => {
   if (!dateStr) return '刚刚';
-  const diff = (Date.now() - new Date(dateStr).getTime()) / 1000;
+  const targetTime = typeof dateStr === 'string' ? dateStr.replace(/-/g, '/') : dateStr;
+  const diff = (Date.now() - new Date(targetTime).getTime()) / 1000;
   if (diff < 60) return '刚刚';
   if (diff < 3600) return `${Math.floor(diff / 60)}分钟前`;
   if (diff < 86400) return `${Math.floor(diff / 3600)}小时前`;
@@ -683,13 +684,15 @@ Page<any, any>({
 
   closeActionSheet() { this.setData({ showActionSheet: false }); },
   
-  onMoreOptions(e: any) { 
-    this.setData({ 
+  onMoreOptions(e: any) {
+    const { id, openid, name, index } = e.currentTarget.dataset;
+    this.setData({
       showActionSheet: true, 
-      actionSheetPostId: e.currentTarget.dataset.id, 
-      actionSheetPostOpenId: e.currentTarget.dataset.openid, 
-      actionSheetAuthorName: e.currentTarget.dataset.name 
-    }); 
+      actionSheetPostId: id, 
+      actionSheetPostIndex: index, 
+      actionSheetPostOpenId: openid, 
+      actionSheetAuthorName: name   
+    });
   },
   
   preventTouchMove() {}
