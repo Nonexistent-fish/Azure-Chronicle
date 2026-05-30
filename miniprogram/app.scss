@@ -1,7 +1,7 @@
-/** app.wxss - 全局通用样式 **/
+/** 全局通用样式 **/
 page {
   background-color: #f6f7f9;
-  /* 🔥 加上了 Apple Color Emoji 等系统原生表情库，保命专用！ */
+  /* 系统原生字体与表情库降级方案 */
   font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial, Roboto, 'PingFang SC', 'miui', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
@@ -10,6 +10,4 @@ page {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  /* 🔥 去掉 align-items: center，让子元素默认能撑满宽度 */
-  /* 🔥 去掉固定的 padding，把控制权还给每个页面 */
 }

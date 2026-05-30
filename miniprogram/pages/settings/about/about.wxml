@@ -2,8 +2,8 @@
 <view class="about-container">
   
   <view class="header-box">
-    <image class="real-logo" src="/assets/icons/青笺拾光logo缩.jpg" mode="aspectFill"></image>
-    <text class="app-version">Version 1.3.0</text>
+    <image class="real-logo" src="/你的校园墙logo路径" mode="aspectFill"></image>
+    <text class="app-version">Version 1.0.0</text>
   </view>
 
   <view class="content-card">

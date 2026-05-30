@@ -79,6 +79,6 @@
   
   <view class="tips-wrapper">
     <text class="tips-text">发布内容需经过人工审核，发布即代表您同意</text>
-    <text class="standard-link" bindtap="goToStandard">《青笺校园日记内容发布与社区规范》</text>
+    <text class="standard-link" bindtap="goToStandard">《青笺集内容发布与社区规范》</text>
   </view>
 </view>

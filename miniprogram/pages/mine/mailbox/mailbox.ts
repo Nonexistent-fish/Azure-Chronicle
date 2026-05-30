@@ -209,7 +209,9 @@ Page<any, any>({
 
   formatRelativeTime(date: any) {
     if (!date) return '';
-    const diff = (Date.now() - new Date(date).getTime()) / 1000;
+    const targetTime = typeof date === 'string' ? date.replace(/-/g, '/') : date;
+    const diff = (Date.now() - new Date(targetTime).getTime()) / 1000;
+    
     if (diff < 60) return '刚刚';
     if (diff < 3600) return Math.floor(diff / 60) + '分钟前';
     if (diff < 86400) return Math.floor(diff / 3600) + '小时前';

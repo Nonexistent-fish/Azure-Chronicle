@@ -5,7 +5,7 @@ Page<any, any>({
   data: {
     isLoading: true, isRegistered: false, isSubmitting: false, userInfo: null as any,
     tempName: '', tempClass: '', avatarUrl: '', tempNickName: '', nickNameError: '', 
-    campusList: ['一号小区', '二号校区'], campusIndex: 0, tempCampus: '一号校区' 
+    campusList: ['一号校区', '二号校区'], campusIndex: 0, tempCampus: '一号校区' 
   },
 
   onShow() { this.checkLoginStatus(); },

@@ -20,7 +20,7 @@ Page<any, any>({
     if (newName.length < 3) return this.setData({ nickNameError: '昵称不能少于3个字' });
     if (newName.length > 8) return this.setData({ nickNameError: '最高只有8个字' });
 
-    const forbiddenWords = ['博智拾光', '博智未来', '青笺拾光', '青笺校园','青笺校园日记'];
+    const forbiddenWords = ['青笺集', '青笺拾光', '青笺校园','青笺校园日记'];
     if (forbiddenWords.some(word => newName.includes(word))) return this.setData({ nickNameError: '包含系统违禁词' });
 
     try {

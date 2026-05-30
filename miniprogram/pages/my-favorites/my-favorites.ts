@@ -44,9 +44,11 @@ Page<any, any>({
     } catch (err) { this.setData({ isLoading: false }); }
   },
 
-  formatRelativeTime(dateStr: string | Date) {
+  formatRelativeTime(dateStr: any) {
     if (!dateStr) return '刚刚';
-    const diff = (Date.now() - new Date(dateStr).getTime()) / 1000;
+    const targetTime = typeof dateStr === 'string' ? dateStr.replace(/-/g, '/') : dateStr;
+    const diff = (Date.now() - new Date(targetTime).getTime()) / 1000;
+    
     if (diff < 60) return '刚刚';
     if (diff < 3600) return `${Math.floor(diff / 60)}分钟前`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}小时前`;

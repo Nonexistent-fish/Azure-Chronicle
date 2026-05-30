@@ -1,4 +1,3 @@
-<audit-protector></audit-protector>
 <view class="container">
   <view wx:if="{{isLoading}}" class="status-center">
     <view class="loading-text">正在同步数据...</view>
@@ -32,13 +31,13 @@
 
       <view class="input-group">
         <view class="label">身份核验 <text class="required">*</text></view>
-        <view class="question-text">博智未来<text class="blank">__ __ __ __</text>对接群</view>
-        <input class="input-field" placeholder="请输入中间缺失的四个字" bindinput="onInputAnswer" value="{{tempAnswer}}" />
+        <view class="question-text">你的工作群<text class="blank">__ __ __ __</text>工作群名</view>
+        <input class="input-field" placeholder="请输入中间缺失的字" bindinput="onInputAnswer" value="{{tempAnswer}}" />
       </view>
 
       <button class="submit-btn" hover-class="button-hover" loading="{{isSubmitting}}" bindtap="submitFacultyForm">{{isSubmitting ? '提交中...' : '提交审核'}}</button>
       
-      <view class="tips-box"><text>温馨提示：该入口仅限本校教职工使用，身份核验请查看微信对接群名称。</text></view>
+      <view class="tips-box"><text>温馨提示：该入口仅限本校教职工使用，身份核验请查看微信群名称。</text></view>
     </view> 
   </view> 
 

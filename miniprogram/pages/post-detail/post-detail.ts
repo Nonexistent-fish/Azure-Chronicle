@@ -76,7 +76,7 @@ Page<any, any>({
   },
 
   checkAuthorAdminLogic(data: any, isAuthor: boolean, isAdmin: boolean) {
-    const statusMap: any = { 0: '审核中', 1: '已通过', 2: '未通过' };
+    const statusMap: any = { 0: '待审核', 1: '已通过', 2: '未通过' };
     let canDelete = isAdmin || (isAuthor && (data.status === 0 || data.status === 2)), deleteTip = '';
 
     if (!canDelete && isAuthor && data.status === 1) {
@@ -193,7 +193,23 @@ Page<any, any>({
     this.setData({ 'post.hasFavorited': !isFav, 'post.favoriteCount': Math.max(0, (this.data.post.favoriteCount || 0) + countVal) });
     this.syncToHomePage('hasFavorited', !isFav); this.syncToHomePage('favoriteCount', this.data.post.favoriteCount);
 
-    try { await wx.cloud.callFunction({ name: 'postService', data: { action: 'likeService', postId: pid, type: 'favorite', count: countVal, uid: user._id, openId: user._openid || '' } }); } 
+    try { 
+      await wx.cloud.callFunction({ 
+        name: 'postService', 
+        data: { 
+          action: 'likeService', 
+          postId: pid, 
+          type: 'favorite', 
+          count: countVal, 
+          uid: user._id, 
+          openId: user._openid || '',
+          targetOpenId: this.data.post._openid || this.data.post.authorUID || '', 
+          likerName: user.nickName, 
+          likerAvatar: user.weiXinAvatar, 
+          postSnippet: this.data.post.title || this.data.post.content || '分享了动态'
+        } 
+      }); 
+    } 
     catch (e) { this.setData({ 'post.hasFavorited': isFav, 'post.favoriteCount': Math.max(0, (this.data.post.favoriteCount || 0) - countVal) }); }
   },
   
@@ -280,7 +296,9 @@ Page<any, any>({
 
   formatRelativeTime(dateStr: any) {
     if (!dateStr) return '刚刚';
-    const diff = (Date.now() - new Date(dateStr).getTime()) / 1000;
+    const targetTime = typeof dateStr === 'string' ? dateStr.replace(/-/g, '/') : dateStr;
+    const diff = (Date.now() - new Date(targetTime).getTime()) / 1000;
+    
     if (diff < 60) return '刚刚';
     if (diff < 3600) return `${Math.floor(diff / 60)}分钟前`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}小时前`;

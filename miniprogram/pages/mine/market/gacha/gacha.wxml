@@ -1,4 +1,3 @@
-<audit-protector></audit-protector>
 <view class="skeleton-screen" wx:if="{{isLoading}}">
   <view class="custom-nav-bar" style="padding-top: {{statusBarHeight}}px; height: {{navBarHeight}}px;">
     <view class="back-btn" catchtap="goBack"><view class="back-arrow"></view></view>

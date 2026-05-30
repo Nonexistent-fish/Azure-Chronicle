@@ -11,7 +11,7 @@ const LEVEL_CONFIG = [
   { level: 7, title: '风云人物', color: '#fa8c16' }, { level: 8, title: '校园百事通', color: '#f5222d' }, { level: 9, title: '镇站之宝', color: '#d48806' }, { level: 10, title: '校园传说', color: '#ff0000' }
 ];
 
-const FORBIDDEN_WORDS = ['博智拾光', '博智未来', '青笺拾光', '青笺校园','青笺校园日记'];
+const FORBIDDEN_WORDS = ['青笺集', '青笺拾光', '青笺校园','青笺校园日记'];//可自行添加昵称屏蔽词
 let GLOBAL_IMAGE_CACHE: Record<string, string> = {};
 
 const SHADOW_DICT: Record<string, string> = {
@@ -78,15 +78,17 @@ Page<any, any>({
     wx.navigateTo({ url: '/packageAdmin/test/test' }); 
   },
   
-  goToMailbox() {
-    wx.navigateTo({ url: '/pages/mine/mailbox/mailbox' });
-    const user = wx.getStorageSync('currentUser');
-    if (!user?._id) return;
-    user.lastMailboxVisit = Date.now();
-    wx.setStorageSync('currentUser', user);
-    this.setData({ hasUnreadMail: false }); 
-    wx.cloud.callFunction({ name: 'userService', data: { action: 'updateMailboxTime', userId: user._id } }).catch(()=>{});
-  },
+  goToMailbox(){
+    wx.navigateTo({url:'/pages/mine/mailbox/mailbox'});
+    const currentUser=wx.getStorageSync('currentUser');
+    if(!currentUser||!currentUser._id)return;
+    currentUser.lastMailboxVisit=Date.now();
+    wx.setStorageSync('currentUser',currentUser);
+    this.setData({hasUnreadMail:false});
+    const tabBar:any=this.getTabBar();
+    if(tabBar)tabBar.setData({showRedDot:false});
+    wx.cloud.callFunction({name:'userService',data:{action:'updateMailboxTime',userId:currentUser._id}}).catch(()=>{});
+    },
   
   updateTabBarStatus() {
     const tabBar: any = this.getTabBar();
@@ -98,19 +100,40 @@ Page<any, any>({
     if (!user) return;
     const myOpenId = wx.getStorageSync('realOpenID') || user._openid;
     if (!myOpenId) return;
-    
-    const lastVisitDate = new Date((wx.getStorageSync('last_mailbox_visit') || user.lastMailboxVisit || (Date.now() - 86400000)) - 5000); 
+  
+    const lastVisit = wx.getStorageSync('last_mailbox_visit') || user.lastMailboxVisit || 0;
+    const COOLDOWN_MS = 10 * 1000; // 10 秒内刚看过信箱，直接“无新邮件”
+  
+    if (Date.now() - lastVisit < COOLDOWN_MS) {
+      this.setData({ hasUnreadMail: false });
+      this.getTabBar()?.setData({ showRedDot: false });
+      return;
+    }
+  
+    const lastVisitDate = new Date(lastVisit - 5000); 
+  
     try {
       const safeCount = (p: Promise<any>) => p.catch(() => ({ total: 0 }));
       const [notif, feedback, ex] = await Promise.all([
-        safeCount(db.collection('user_notifications').where(_.and([_.or([{ _openid: myOpenId }, { targetOpenId: myOpenId }]), { isRead: false }, { isDeleted: false }])).count()),
-        safeCount(db.collection('feedback_reports').where({ _openid: myOpenId, isRead: false }).count()),
-        safeCount(db.collection('contact_exchanges').where({ to_openid: myOpenId, status: 0, createTime: _.gt(lastVisitDate) }).count())
+        safeCount(db.collection('user_notifications')
+          .where(_.and([
+            _.or([{ _openid: myOpenId }, { targetOpenId: myOpenId }]),
+            { isRead: false },
+            { isDeleted: false }
+          ]))
+          .count()),
+        safeCount(db.collection('feedback_reports')
+          .where({ _openid: myOpenId, isRead: false })
+          .count()),
+        safeCount(db.collection('contact_exchanges')
+          .where({ to_openid: myOpenId, status: 0, createTime: _.gt(lastVisitDate) })
+          .count())
       ]);
       const hasNew = (notif.total || 0) + (feedback.total || 0) + (ex.total || 0) > 0;
       this.setData({ hasUnreadMail: hasNew });
-      this.getTabBar()?.setData({ showRedDot: hasNew }); 
-    } catch {}
+      this.getTabBar()?.setData({ showRedDot: hasNew });
+    } catch {
+    }
   },
 
   renderUserData(userData: any) {

@@ -57,11 +57,11 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页"
+        "text": "广场"
       },
       {
         "pagePath": "pages/upload/upload",
-        "text": "上传"
+        "text": "发布"
       },
       {
         "pagePath": "pages/mine/mine",
@@ -69,6 +69,10 @@
       }
     ]
   },
-  "usingComponents": {},
-  "lazyCodeLoading": "requiredComponents"
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "青笺集",
+    "navigationBarTextStyle": "black"
+  }
 }

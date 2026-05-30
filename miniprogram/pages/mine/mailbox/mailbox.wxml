@@ -1,4 +1,3 @@
-<audit-protector></audit-protector>
 <view class="container" style="padding-bottom: {{showCommentDrawer ? '65vh' : '0rpx'}};"></view>
 <view class="safe-header"></view>
 
