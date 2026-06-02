@@ -5,12 +5,23 @@ const _ = db.command;
 
 const formatRelativeTime = (dateStr: any) => {
   if (!dateStr) return '刚刚';
-  const targetTime = typeof dateStr === 'string' ? dateStr.replace(/-/g, '/') : dateStr;
-  const diff = (Date.now() - new Date(targetTime).getTime()) / 1000;
-  if (diff < 60) return '刚刚';
-  if (diff < 3600) return `${Math.floor(diff / 60)}分钟前`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}小时前`;
-  return `${Math.floor(diff / 86400)}天前`;
+    let timeMs = 0;
+    if (typeof dateStr === 'number') {
+      timeMs = dateStr;
+    } else if (dateStr instanceof Date) {
+      timeMs = dateStr.getTime();
+    } else if (typeof dateStr === 'string') {
+      if (dateStr.includes('T')) {
+        timeMs = new Date(dateStr).getTime();
+      } else {
+        timeMs = new Date(dateStr.replace(/-/g, '/')).getTime();
+      }
+    }   
+    const diff = (Date.now() - timeMs) / 1000;
+    if (diff < 60) return '刚刚';
+    if (diff < 3600) return `${Math.floor(diff / 60)}分钟前`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}小时前`;
+    return `${Math.floor(diff / 86400)}天前`;
 };
 
 Page<any, any>({
@@ -585,9 +596,17 @@ Page<any, any>({
   },
 
   async submitComment() {
-    if (!this.data.commentText.trim() || this.data.isSubmittingComment) return;
+    if (this.data.isSubmittingComment) return;
     this.setData({ isSubmittingComment: true });
     
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    const realText = this.data.commentText.trim();
+    if (!realText) {
+      this.setData({ isSubmittingComment: false });
+      return wx.showToast({ title: '不能发送空内容哦', icon: 'none' });
+    }
+
     const user = wx.getStorageSync('currentUser');
     if (!user) {
       this.setData({ isSubmittingComment: false });
@@ -595,7 +614,7 @@ Page<any, any>({
     }
 
     try {
-      const { result } = await wx.cloud.callFunction({ name: 'auditService', data: { action: 'autoCheck', text: this.data.commentText } }) as any;
+      const { result } = await wx.cloud.callFunction({ name: 'auditService', data: { action: 'autoCheck', text: realText } }) as any;
       if (result?.isRisky) {
         this.setData({ isSubmittingComment: false });
         return wx.showToast({ title: '包含违规词汇', icon: 'none' });
@@ -605,7 +624,7 @@ Page<any, any>({
         this.setData({ 
           currentComments: [{ 
             _id: 'temp_' + Date.now(), 
-            content: this.data.commentText, 
+            content: realText, 
             time: '刚刚', 
             likes: 0, 
             hasLiked: false, 
@@ -632,7 +651,7 @@ Page<any, any>({
           postId: this.data.currentPostId, 
           parentId: this.data.replyParentId, 
           replyToName: this.data.replyTargetName, 
-          content: this.data.commentText, 
+          content: realText, 
           uid: user._id, 
           author: { nickName: this.data.currentUserNickName, avatar: this.data.currentUserAvatar, Permission: user.Permission || 0 } 
         } 

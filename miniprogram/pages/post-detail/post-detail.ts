@@ -101,26 +101,47 @@ Page<any, any>({
   onInputBlur() { if (!this.data.commentText.trim()) this.setData({ replyParentId: '', replyTargetName: '' }); },
 
   async submitComment() { 
-    const user = wx.getStorageSync('currentUser');
-    if (!user) return wx.showModal({ title: '提示', content: '请先绑定身份' });
-    const realText = this.data.commentText.trim();
-    if (!realText) return wx.showToast({ title: '不能发送空内容哦', icon: 'none' });
     if (this.data.isSubmitting) return;
-
     this.setData({ isSubmitting: true });
+
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    const realText = this.data.commentText.trim();
+    if (!realText) {
+      this.setData({ isSubmitting: false });
+      return wx.showToast({ title: '不能发送空内容哦', icon: 'none' });
+    }
+
+    const user = wx.getStorageSync('currentUser');
+    if (!user) {
+      this.setData({ isSubmitting: false });
+      return wx.showModal({ title: '提示', content: '请先绑定身份' });
+    }
+
     try {
       const textCheck: any = await wx.cloud.callFunction({ name: 'auditService', data: { action: 'autoCheck', text: realText } });
-      if (textCheck.result?.isRisky) return this.setData({ isSubmitting: false }), wx.showToast({ title: '包含违规词汇', icon: 'none' });
+      if (textCheck.result?.isRisky) {
+        this.setData({ isSubmitting: false });
+        return wx.showToast({ title: '包含违规词汇', icon: 'none' });
+      }
 
       const addRes: any = await wx.cloud.callFunction({ name: 'postService', data: { action: 'addComment', postId: this.data.post._id, parentId: this.data.replyParentId || "", replyToName: this.data.replyTargetName || "", content: realText, uid: user._id, author: { nickName: user.nickName, avatar: user.weiXinAvatar, Permission: user.Permission || 0 } } });
 
       const newComment = { _id: addRes.result._id, postId: this.data.post._id, parentId: this.data.replyParentId || "", replyToName: this.data.replyTargetName || "", content: realText, authorUID: user._id, _openid: user._openid, author: { nickName: user.nickName, avatar: user.weiXinAvatar, Permission: user.Permission || 0 }, likes: 0, createTime: new Date().toISOString() };
-      this.data.rawComments.push(newComment); this.processComments();
+      this.data.rawComments.push(newComment); 
+      this.processComments();
 
-      if (!this.data.replyParentId) this.syncToHomePage('commentCount', this.data.post.commentCount); 
+      if (!this.data.replyParentId) {
+        const newCount = (this.data.post.commentCount || 0) + 1;
+        this.setData({ 'post.commentCount': newCount });
+        this.syncToHomePage('commentCount', newCount);
+      } 
       this.setData({ commentText: '', canSend: false, replyParentId: '', replyTargetName: '', inputFocus: false, isSubmitting: false });
       wx.showToast({ title: '评论成功', icon: 'success' });
-    } catch (err) { this.setData({ isSubmitting: false }); wx.showToast({ title: '发送失败', icon: 'none' }); }
+    } catch (err) { 
+      this.setData({ isSubmitting: false }); 
+      wx.showToast({ title: '发送失败', icon: 'none' }); 
+    }
   },
 
   onDeleteComment(e: any) { 
@@ -133,15 +154,21 @@ Page<any, any>({
           try {
             const cfRes: any = await wx.cloud.callFunction({ name: 'postService', data: { action: 'deleteComment', commentId: id, postId: postId, uid: user._id } });
             if (!cfRes.result.success) throw new Error();
+            
+            const targetComment = this.data.rawComments.find((c: any) => c._id === id);
             this.setData({ rawComments: this.data.rawComments.filter(c => c._id !== id && c.parentId !== id) });
             this.processComments();
-            const targetComment = this.data.rawComments.find((c: any) => c._id === id);
+            
             if (targetComment && !targetComment.parentId) {
-              this.setData({ 'post.commentCount': Math.max(0, this.data.post.commentCount - 1) });
-              this.syncToHomePage('commentCount', this.data.post.commentCount);
+              const newCount = Math.max(0, (this.data.post.commentCount || 0) - 1);
+              this.setData({ 'post.commentCount': newCount });
+              this.syncToHomePage('commentCount', newCount);
             }
             wx.hideLoading(); wx.showToast({ title: '已删除', icon: 'success' });
-          } catch(e) { wx.hideLoading(); wx.showToast({ title: '删除失败', icon: 'none' }); }
+          } catch(e) { 
+            wx.hideLoading(); 
+            wx.showToast({ title: '删除失败', icon: 'none' }); 
+          }
         }
       }
     });
@@ -296,9 +323,19 @@ Page<any, any>({
 
   formatRelativeTime(dateStr: any) {
     if (!dateStr) return '刚刚';
-    const targetTime = typeof dateStr === 'string' ? dateStr.replace(/-/g, '/') : dateStr;
-    const diff = (Date.now() - new Date(targetTime).getTime()) / 1000;
-    
+    let timeMs = 0;    
+    if (typeof dateStr === 'number') {
+      timeMs = dateStr;
+    } else if (dateStr instanceof Date) {
+      timeMs = dateStr.getTime();
+    } else if (typeof dateStr === 'string') {
+      if (dateStr.includes('T')) {
+        timeMs = new Date(dateStr).getTime();
+      } else {
+        timeMs = new Date(dateStr.replace(/-/g, '/')).getTime();
+      }
+    }
+    const diff = (Date.now() - timeMs) / 1000;
     if (diff < 60) return '刚刚';
     if (diff < 3600) return `${Math.floor(diff / 60)}分钟前`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}小时前`;
